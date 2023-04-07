@@ -1,7 +1,11 @@
-from fastapi import Fastapi
+from fastapi import FastAPI
+from module.openapi import openapi_service
 
-app = Fastapi()
 
-@app.get('/')
-def help_check():
+app = FastAPI()
+
+@app.get("/")
+def hello_word() -> dict :
   return {"hello" : "world"}
+
+app.include_router(openapi_service.router)
