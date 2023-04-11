@@ -14,8 +14,9 @@ from pydantic import BaseModel
 class TextGenerationResponse(BaseModel):
     generated_text: str
 
-class Prompt(BaseModel):
-    text: str
+class OpenAiRequest(BaseModel):
+    prompt: str
+    model: str
 
 
 openai.api_key = os.environ.get("OPANAI_KEY")
@@ -28,7 +29,7 @@ router = APIRouter(
 
 
 @router.post("/gennerate", status_code=200, response_model=str)
-def proxy_open_ai(prompt: Prompt) -> str:
+def proxy_open_ai(prompt: OpenAiRequest) -> str:
     """
     this function to create proxy to openai
     
@@ -37,7 +38,7 @@ def proxy_open_ai(prompt: Prompt) -> str:
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
-            {"role": "user", "content": prompt.text},
+            {"role": "user", "content": prompt.prompt},
         ],
     )
 
