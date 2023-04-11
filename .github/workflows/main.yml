@@ -36,4 +36,4 @@ jobs:
           --region asia-southeast1 \
           --platform managed \
           --allow-unauthenticated \
-          --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }}
+          --set-env-vars OPANAI_KEY=${{ secrets.OPENAI_KEY }}
