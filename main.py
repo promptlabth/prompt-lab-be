@@ -8,7 +8,8 @@ app = FastAPI()
 origins = [
     "http://localhost",
     "http://localhost:3000",
-    "https://prompt.sutmeme.com"
+    "https://prompt.sutmeme.com",
+    "https://tao-isaman-studious-engine-pgqpqq7rvvq2r5rw-3000.preview.app.github.dev"
 ]
 app.add_middleware(
     CORSMiddleware,
