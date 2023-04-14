@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import openapi_service
+from module.openapi import openapi_service, predict_service
 
 
 app = FastAPI()
@@ -25,6 +25,7 @@ def hello_word() -> dict :
   return {"hello" : "world"}
 
 app.include_router(openapi_service.router)
+app.include_router(predict_service.router)
 
 if __name__ == "__main__":
     import uvicorn
