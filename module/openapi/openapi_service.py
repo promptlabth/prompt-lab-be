@@ -4,7 +4,6 @@ Router for openAI Service
 """
 
 import os
-from typing import List, Optional
 
 from fastapi import APIRouter
 import openai
@@ -12,9 +11,15 @@ from pydantic import BaseModel
 
 
 class TextGenerationResponse(BaseModel):
+    """
+    this class is model for text genneration on BaseModel
+    """
     generated_text: str
 
 class OpenAiRequest(BaseModel):
+    """
+    this class is model for Request on BaseModel
+    """
     prompt: str
     model: str
 
@@ -24,7 +29,7 @@ openai.api_key = os.environ.get("OPANAI_KEY")
 
 router = APIRouter(
     tags=["OpenAI Service"],
-    responses={404: {"description": "Not found in /create"}},
+    responses={404: {"description": "Not found in"}},
 )
 
 
