@@ -14,8 +14,6 @@ step to run backend to local
 
 5. use command `uvicorn main:app --reload` to run fastapi in your local
 
-uvicorn main:app --reload
-
 ## run docker
 
 docker run -d --name test-api-con -p 8000:8000 -e OPANAI_KEY test-api
