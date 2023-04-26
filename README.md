@@ -10,7 +10,7 @@ step to run backend to local
 
 3. install library from requirements.txt use command `pip install -r requirements.txt`
 
-4.create a file `.env` in ./ folder and add OPENAI_KEY
+4. create a file `.env` in ./ folder and add OPENAI_KEY
 
 5. use command `uvicorn main:app --reload` to run fastapi in your local
 
