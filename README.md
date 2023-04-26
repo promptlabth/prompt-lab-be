@@ -1,7 +1,18 @@
 
 ## run in local machine
 
-uvicorn main:app --reload
+step to run backend to local
+1. create environment use command `python -m venv {ENV NAME}`
+
+2. activate a environment 
+- windows `./{ENV NAME}/Scripts/activate`
+- Mac ....
+
+3. install library from requirements.txt use command `pip install -r requirements.txt`
+
+4. create a file `.env` in ./ folder and add OPENAI_KEY
+
+5. use command `uvicorn main:app --reload` to run fastapi in your local
 
 ## run docker
 
