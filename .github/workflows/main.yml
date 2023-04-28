@@ -37,4 +37,3 @@ jobs:
         --platform managed \
         --allow-unauthenticated \
         --set-env-vars OPANAI_KEY=${{ secrets.OPENAI_KEY }} \
-        --concurrency 5
