@@ -6,7 +6,7 @@ step to run backend to local
 
 2. activate a environment 
 - windows `./env/Scripts/activate`
-- Mac ....
+- Mac `source ./env/bin/activate`
 
 3. install library from requirements.txt use command `pip install -r requirements.txt`
 
