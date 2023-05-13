@@ -2,6 +2,8 @@ from sqlmodel import Field, SQLModel, create_engine, Session
 import os
 from dotenv import load_dotenv
 load_dotenv()
+import languages
+import tones
 
 
 DATABASE_USER = os.environ.get("DB_USER")
@@ -20,3 +22,5 @@ def create_database():
 
 def session_engine(): 
     return Session(engine)
+
+create_database()
