@@ -2,6 +2,11 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from module.openapi import openapi_service, predict_service
 
+import model 
+
+# from model.database import postgres_URL
+# print(postgres_URL)
+
 
 app = FastAPI()
 
@@ -26,6 +31,8 @@ def hello_word() -> dict :
 
 app.include_router(openapi_service.router)
 app.include_router(predict_service.router)
+
+
 
 if __name__ == "__main__":
     import uvicorn
