@@ -42,8 +42,8 @@ def list_users():
 
 # get user by id ??
 # ?id should be use userid of datatbase or userid of firebase???
-@router.get("/:id", status_code=200, response_model=users_model.Users)
-def get_user():
-    pass
+# @router.get("/:id", status_code=200, response_model=users_model.Users)
+# def get_user():
+#     pass
 
 
