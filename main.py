@@ -1,11 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from module.openapi import openapi_service, predict_service
+from module.usersapi import userapi_service
 
-import model 
 
-# from model.database import postgres_URL
-# print(postgres_URL)
+# this code for create table in database is will be execute whne you run a api server....
+import model
+from model.database import create_database
+create_database()
+
 
 
 app = FastAPI()
@@ -32,6 +35,8 @@ def hello_word() -> dict :
 app.include_router(openapi_service.router)
 app.include_router(predict_service.router)
 
+
+app.include_router(userapi_service.router, prefix="/users")
 
 
 if __name__ == "__main__":
