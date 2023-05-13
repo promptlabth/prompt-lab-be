@@ -1,0 +1,1 @@
+from . import sponsortypes_model

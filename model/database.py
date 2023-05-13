@@ -1,6 +1,7 @@
 from sqlmodel import Field, SQLModel, create_engine, Session
 import os
 from dotenv import load_dotenv
+import users,sponsors,sponsortypes,users_sponser_select
 load_dotenv()
 
 
@@ -20,3 +21,5 @@ def create_database():
 
 def session_engine(): 
     return Session(engine)
+
+create_database()
