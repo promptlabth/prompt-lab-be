@@ -5,6 +5,7 @@ import users,sponsors,sponsortypes,users_sponser_select,features,featureusings
 load_dotenv()
 import languages
 import tones
+import promptMessages, promptRows
 
 
 DATABASE_USER = os.environ.get("DB_USER")
