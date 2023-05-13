@@ -1,11 +1,13 @@
 from sqlmodel import Field, SQLModel, create_engine, Session
 import os
-from dotenv import load_dotenv
 import users,sponsors,sponsortypes,users_sponser_select,features,featureusings
-load_dotenv()
 import languages
 import tones
 import promptMessages, promptRows
+
+# should be remove before push to production
+from dotenv import load_dotenv 
+load_dotenv() 
 
 
 DATABASE_USER = os.environ.get("DB_USER")
