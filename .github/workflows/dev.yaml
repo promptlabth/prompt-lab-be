@@ -36,5 +36,5 @@ jobs:
         --region asia-southeast1 \
         --platform managed \
         --allow-unauthenticated \
-        --set-env-vars OPANAI_KEY=${{ secrets.OPENAI_KEY }}, DB_USER=${{ secrets.USER_DB_DEV }}, DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }}, DB_HOST=${{ secrets.DB_HOST }}, DB_PORT=${{ secrets.DB_PORT_DEV }}, DB_NAME=${{ secrets.DB_NAME_DEV}} \
+        --set-env-vars OPANAI_KEY=${{ secrets.OPENAI_KEY }}, DB_USER=${{ secrets.DB_USER_DEV }}, DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }}, DB_HOST=${{ secrets.DB_HOST }}, DB_PORT=${{ secrets.DB_PORT_DEV }}, DB_NAME=${{ secrets.DB_NAME_DEV}} \
         --max-instances=10
