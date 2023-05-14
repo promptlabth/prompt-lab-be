@@ -36,7 +36,7 @@ app.include_router(openapi_service.router)
 app.include_router(predict_service.router)
 
 
-app.include_router(userapi_service.router, prefix="/users")
+# app.include_router(userapi_service.router, prefix="/users")
 
 
 if __name__ == "__main__":
