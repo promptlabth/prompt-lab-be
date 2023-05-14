@@ -29,3 +29,4 @@ yarl==1.8.2
 sqlmodel==0.0.8
 psycopg2-binary==2.9.6
 firebase-admin==6.1.0
+python-dotenv==1.0.0
