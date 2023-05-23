@@ -33,7 +33,7 @@ jobs:
     
     - name: list-file
       run: |
-        ls -la
+        echo firebase-credential.json
 
     - name: Build and push Docker image
       run: |
