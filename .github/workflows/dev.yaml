@@ -29,7 +29,7 @@ jobs:
       uses: jsdaniell/create-json@v1.2.2
       with:
         name: "firebase-credential.json"
-        json: ${{secrets.FIREBASE}}
+        json: ${{secrets.FIREBASE_KEY}}
     
     - name: list-file
       run: |
