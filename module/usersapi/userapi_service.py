@@ -1,19 +1,20 @@
 from datetime import datetime
 from sqlmodel import Session, select
-from fastapi import APIRouter
+from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel
-from typing import List, Any
+from typing import List, Any, Annotated, Optional
+
+# 
+from firebase import init_firebase
+from firebase_admin import auth
 
 # import a model session for read, create, update, delete a data in table
 from model import database
 
-
-
-
 # Import model of user model for dto, execute user table  
 from model.users import users_model
 
-users_model.Users()
+# users_model.Users()
 # dto for CRUD data (response user data)
 class User(BaseModel):
     name: str
@@ -39,6 +40,80 @@ def list_users():
         for user in users:
             data.append(user)
     return data
+
+# def login_user(user_agent: str = Header(default=None)):
+
+# POST to login with username and any token access
+@router.post("/login", status_code=200)
+def login_user(Authorization:str = Header(default=None)):
+
+    # Check Have Authorization Token ?
+    if(Authorization == None):
+        print("no Access Token")
+        raise HTTPException(status_code=401, detail="DON'T HAVE ACCESS TOKEN")
+
+    # Check it have "Bearer" ?
+    bearer = Authorization.split(" ")
+    if(len(bearer) != 2 and bearer[1] != "Bearer"):
+        raise HTTPException(status_code=401, detail="INCORRECT TOKEN")
+    
+    # Extract a token from bearer
+    token = bearer[1]
+
+    # validate and extract a token from firebase
+    try:
+        firebase_app = init_firebase.firebase_app_module()
+        extract = auth.verify_id_token(
+        id_token=token,
+        app=firebase_app
+        )
+    except:
+        raise HTTPException(status_code=401, detail="DON'T AUTH")
+    
+    # extract a uid from main structure
+    uid = extract["uid"]
+    
+    # GET A USER FOR CHECK IT HAVE USER??
+    
+    with database.session_engine() as session:
+        # Check if
+        statement = select(users_model.Users).where(users_model.Users.uid == uid)
+        results = session.exec(statement=statement)
+        try:
+            old_user = results.one()
+        except:
+            pass
+
+    # CHECK if have userid in database ? 
+    # ? We should PUT or update database OR NOT???? ?
+    if(not old_user):
+        try:
+            user = users_model.Users(
+                email=extract["email"], 
+                name=extract["name"],
+                profilepic=extract["picture"],
+                uid=extract["uid"]
+                )
+            with database.session_engine() as session:
+                session.add(user)
+                session.commit()
+                session.refresh(user)
+        except:
+            raise HTTPException(status_code=403, detail="CREATE FAILED")
+    
+    # else:
+    #     # if user have some change 
+    #     if(extract["picture"] != old_user["profilepic"] or
+    #         extract["name"] != old_user["name"] or
+    #         extract["email"] != old_user["email"]):
+    #         return old_user
+        
+
+
+    return user
+    
+
+
 
 # get user by id ??
 # ?id should be use userid of datatbase or userid of firebase???

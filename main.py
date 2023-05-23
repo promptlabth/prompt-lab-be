@@ -2,13 +2,12 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from module.openapi import openapi_service, predict_service
 from module.usersapi import userapi_service
-
+from firebase import init_firebase
 
 # this code for create table in database is will be execute whne you run a api server....
 import model
 from model.database import create_database
 create_database()
-
 
 
 app = FastAPI()
