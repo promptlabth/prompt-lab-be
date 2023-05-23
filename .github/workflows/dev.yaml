@@ -30,6 +30,11 @@ jobs:
       with:
         name: "firebase-credential.json"
         json: ${{secrets.FIREBASE}}
+        dir: "app/"
+    
+    - name: list-file
+      run: |
+        ls -la
 
     - name: Build and push Docker image
       run: |
