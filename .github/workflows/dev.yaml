@@ -29,6 +29,13 @@ jobs:
         docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/prompt-lab-be-dev:${{ github.sha }} .
         docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/prompt-lab-be-dev:${{ github.sha }}
 
+    - name: create-cred-json
+      id: create-cred-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "firebase-credential.json"
+        json: ${{secrets.FIREBASE}}
+
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy prompt-lab-be-dev \

@@ -43,7 +43,7 @@ def list_users():
 
 # def login_user(user_agent: str = Header(default=None)):
 
-# POST to login with username and any token access
+# POST login/register to collect data of user to database 
 @router.post("/login", status_code=200)
 def login_user(Authorization:str = Header(default=None)):
 
@@ -61,6 +61,8 @@ def login_user(Authorization:str = Header(default=None)):
     token = bearer[1]
 
     # validate and extract a token from firebase
+    # (should check a refresh token and send to frontend if token is expirat)
+    # TODO set a system to use refresh token and send access token to frontend if token is expirate
     try:
         firebase_app = init_firebase.firebase_app_module()
         extract = auth.verify_id_token(
@@ -70,22 +72,22 @@ def login_user(Authorization:str = Header(default=None)):
     except:
         raise HTTPException(status_code=401, detail="DON'T AUTH")
     
-    # extract a uid from main structure
+    # extract a uid(firebaseID) from main structure
     uid = extract["uid"]
     
     # GET A USER FOR CHECK IT HAVE USER??
     
     with database.session_engine() as session:
-        # Check if
+        # Find a user in database is have user ? (by uid is mean firebase id)
         statement = select(users_model.Users).where(users_model.Users.uid == uid)
         results = session.exec(statement=statement)
         try:
             old_user = results.one()
         except:
-            pass
+            old_user = {}
 
-    # CHECK if have userid in database ? 
-    # ? We should PUT or update database OR NOT???? ?
+    # CHECK if have userid in database ?
+
     if(not old_user):
         try:
             user = users_model.Users(
@@ -101,24 +103,29 @@ def login_user(Authorization:str = Header(default=None)):
         except:
             raise HTTPException(status_code=403, detail="CREATE FAILED")
     
-    # else:
-    #     # if user have some change 
-    #     if(extract["picture"] != old_user["profilepic"] or
-    #         extract["name"] != old_user["name"] or
-    #         extract["email"] != old_user["email"]):
-    #         return old_user
+    else:
+        # if user have some change profile on facebook
+        change_pic = extract["picture"] != old_user.profilepic
+        change_name = extract["name"] != old_user.name
+        change_email = extract["email"] != old_user.email
+        # if not change (will return the user on database)
+        if(not (change_pic or change_name or change_email)):
+            print("\n\n\n")
+            return old_user
         
+        if(change_pic):
+            old_user.profilepic = extract["picture"]
+        if(change_name):
+            old_user.name = extract["name"]
+        if(change_email):
+            old_user.email = extract["email"]
+        # Update database if something is changed
+        with database.session_engine() as session:
+            session.add(old_user)
+            session.commit()
+            session.refresh(old_user)
+        return old_user
 
-
-    return user
-    
-
-
-
-# get user by id ??
-# ?id should be use userid of datatbase or userid of firebase???
-# @router.get("/:id", status_code=200, response_model=users_model.Users)
-# def get_user():
-#     pass
+    return old_user
 
 
