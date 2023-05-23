@@ -30,7 +30,6 @@ jobs:
       with:
         name: "firebase-credential.json"
         json: ${{secrets.FIREBASE}}
-        dir: "app/"
     
     - name: list-file
       run: |
