@@ -8,7 +8,9 @@ import os
 from fastapi import APIRouter
 import openai
 from pydantic import BaseModel
+import dotenv
 
+dotenv.load_dotenv()
 
 class TextGenerationResponse(BaseModel):
     """

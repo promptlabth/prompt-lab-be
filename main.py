@@ -17,7 +17,9 @@ origins = [
     "http://localhost:3000",
     "https://prompt.sutmeme.com",
     "https://promptlab.sutmeme.com",
-    "https://tao-isaman-studious-engine-pgqpqq7rvvq2r5rw-3000.preview.app.github.dev"
+    "https://tao-isaman-studious-engine-pgqpqq7rvvq2r5rw-3000.preview.app.github.dev",
+    "https://promptlab-fe-git-dev-login-promptlab.vercel.app",
+    "https://deploy-preview-5--comfy-cendol-1b50ad.netlify.app"
 ]
 app.add_middleware(
     CORSMiddleware,
