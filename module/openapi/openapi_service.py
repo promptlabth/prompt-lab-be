@@ -39,7 +39,7 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     this function to create proxy to openai
     
     """
-
+    openai.api_key = os.environ.get("OPENAI_KEY")
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
