@@ -24,7 +24,7 @@ class OpenAiRequest(BaseModel):
     model: str
 
 
-openai.api_key = os.environ.get("OPANAI_KEY")
+openai.api_key = os.environ.get("OPENAI_KEY")
 
 
 router = APIRouter(
