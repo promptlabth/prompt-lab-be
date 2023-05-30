@@ -34,6 +34,10 @@ router = APIRouter(
     responses={404: {"description": "Not found in"}},
 )
 
+@router.post("/test")
+def getdata():
+    return openai.api_key
+
 
 @router.post("/gennerate", status_code=200, response_model=str)
 def proxy_open_ai(prompt: OpenAiRequest) -> str:
@@ -41,7 +45,6 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     this function to create proxy to openai
     
     """
-    openai.api_key = os.environ.get("OPENAI_KEY")
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
