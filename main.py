@@ -36,10 +36,12 @@ def hello_word() -> dict :
   return {"hello" : "world"}
 
 app.include_router(openapi_service.router)
+app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
 
 
 app.include_router(userapi_service.router, prefix="/users")
+
 
 app.include_router(testapit_service.router, prefix="/test")
 
