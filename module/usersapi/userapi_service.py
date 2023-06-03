@@ -27,7 +27,8 @@ router = APIRouter(
     tags=["User Services"],
     responses={
         404:{"discription": "NOT FOUND!!"}
-    }
+    },
+    
 )
 
 # list all user (we should run a middleware for authentications)
