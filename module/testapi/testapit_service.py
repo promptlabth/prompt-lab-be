@@ -29,7 +29,7 @@ router = APIRouter(
         404:{"discription": "NOT FOUND!!"}
     },
     dependencies=[
-        Depends(authentication.auth())
+        Depends(authentication.authentication_middleware())
     ]
     
 )

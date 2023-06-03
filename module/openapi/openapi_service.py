@@ -24,6 +24,10 @@ class OpenAiRequest(BaseModel):
     """
     prompt: str
     model: str
+    product: str
+    tone: str
+    feature: str
+
 
 
 openai.api_key = os.environ.get("OPENAI_KEY")
