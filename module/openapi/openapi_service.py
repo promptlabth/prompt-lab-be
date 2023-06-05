@@ -71,7 +71,9 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     assistant_reply = result['choices'][0]['message']['content']
     return assistant_reply
 
-@router.post("/user/gennerate", status_code=200, response_model=str) # login require
+
+# TODO: 2. create a api with middleware in this app
+@router_with_dependency.post("/user/gennerate", status_code=200, response_model=str) # login require
 def proxy_open_ai(prompt: OpenAiRequest) -> str:
     """
     this function to create proxy to openai
@@ -87,7 +89,6 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     assistant_reply = result['choices'][0]['message']['content']
     return assistant_reply
 
-# TODO: 2. create a api with middleware in this app
-router_with_dependency.post("/gennerate", status_code=200, response_model=str)
-def proxy_open_ai_and_collect_data(prompt: OpenAiRequest) -> str:
-    pass
+# router_with_dependency.post("/gennerate", status_code=200, response_model=str)
+# def proxy_open_ai_and_collect_data(prompt: OpenAiRequest) -> str:
+#     pass
