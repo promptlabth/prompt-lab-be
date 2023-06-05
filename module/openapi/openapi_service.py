@@ -25,7 +25,7 @@ class OpenAiRequest(BaseModel):
     """
     prompt: str
     model: str
-    product: str
+    input_message: str
     tone: str
     feature: str
 
