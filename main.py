@@ -1,8 +1,9 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import openapi_service, predict_service
+from module.openapi import openapi_service, predict_service, tone_service
 from module.usersapi import userapi_service
 from module.testapi import testapit_service
+
 
 from firebase import init_firebase
 
@@ -44,6 +45,8 @@ app.include_router(userapi_service.router, prefix="/users")
 
 
 app.include_router(testapit_service.router, prefix="/test")
+
+app.include_router(tone_service.router)
 
 
 if __name__ == "__main__":
