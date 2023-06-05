@@ -8,4 +8,6 @@ class Promptmessages(SQLModel, table=True):
     user_id : Optional[int] = Field(default=None, foreign_key="users.id")
     tone_id : Optional[int] = Field(default=None, foreign_key="tones.id")
     date_time: datetime
+    feature_id : Optional[int] = Field(default=None, foreign_key="features.id")
+    input_message:str
     result_message: str
