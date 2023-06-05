@@ -44,7 +44,7 @@ app.include_router(predict_service.router)
 app.include_router(userapi_service.router, prefix="/users")
 
 
-app.include_router(testapit_service.router, prefix="/test")
+# app.include_router(testapit_service.router, prefix="/test")
 
 app.include_router(tone_service.router)
 

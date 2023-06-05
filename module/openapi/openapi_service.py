@@ -5,7 +5,7 @@ Router for openAI Service
 
 import os
 
-from fastapi import APIRouter, Depends, Header, HTTPException, status, Request, Response
+from fastapi import APIRouter, Depends, Header, status, Request, Response
 import openai
 from pydantic import BaseModel
 import dotenv
@@ -133,7 +133,6 @@ def proxy_open_ai_with_user(
     )
     assistant_reply = result['choices'][0]['message']['content']
 
-    # assistant_reply="Can Reply"
 
     # TODO: add a database zone for collect promptMessages
     with database.session_engine() as session:
@@ -201,7 +200,6 @@ def proxy_open_ai_with_user(
                     error="cannot create and save to db"
                 ).dict()
             )
-        # print(response.headers)
     
     try:
         response_data = JSONResponse(
@@ -219,7 +217,3 @@ def proxy_open_ai_with_user(
         )
         
     return response_data
-
-# router_with_dependency.post("/gennerate", status_code=200, response_model=str)
-# def proxy_open_ai_and_collect_data(prompt: OpenAiRequest) -> str:
-#     pass
