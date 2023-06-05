@@ -55,7 +55,7 @@ def getdata():
 # can be use all prompt in this url
 # TODO: 1. create a api for all feature in this app
 
-@router.post("/gennerate", status_code=200, response_model=str)
+@router.post("/gennerate", status_code=200, response_model=str) # No login require
 def proxy_open_ai(prompt: OpenAiRequest) -> str:
     """
     this function to create proxy to openai
@@ -71,7 +71,24 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     assistant_reply = result['choices'][0]['message']['content']
     return assistant_reply
 
+
 # TODO: 2. create a api with middleware in this app
-router_with_dependency.post("/gennerate", status_code=200, response_model=str)
-def proxy_open_ai_and_collect_data(prompt: OpenAiRequest) -> str:
-    pass
+@router_with_dependency.post("/user/gennerate", status_code=200, response_model=str) # login require
+def proxy_open_ai(prompt: OpenAiRequest) -> str:
+    """
+    this function to create proxy to openai
+    
+    """
+    result = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt.prompt},
+        ],
+    )
+
+    assistant_reply = result['choices'][0]['message']['content']
+    return assistant_reply
+
+# router_with_dependency.post("/gennerate", status_code=200, response_model=str)
+# def proxy_open_ai_and_collect_data(prompt: OpenAiRequest) -> str:
+#     pass
