@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import openapi_service, predict_service, tone_service
+from module.openapi import openapi_service, predict_service, tone_service,feature_storing_service
 from module.usersapi import userapi_service
 from module.testapi import testapit_service
 
@@ -47,6 +47,7 @@ app.include_router(userapi_service.router, prefix="/users")
 # app.include_router(testapit_service.router, prefix="/test")
 
 app.include_router(tone_service.router)
+app.include_router(feature_storing_service.router_with_dependency)
 
 
 if __name__ == "__main__":
