@@ -32,7 +32,7 @@ def authentication_middleware():
             # print("test")
         except:
             # if refresh token is have ??
-            refresh_token_with_bearer = request.headers.get("refresh-token")
+            refresh_token_with_bearer = request.headers.get("RefreshToken")
             if(not refresh_token_with_bearer):
                 raise HTTPException(status_code=401, detail="DON'T HAVE REFRESH TOKEN")
             
@@ -53,6 +53,7 @@ def authentication_middleware():
             # but if token is good 
             response.headers["access-token"] = firebase_response_json['access_token']
             response.headers["refresh-token"] = firebase_response_json['refresh_token']
+            # print(firebase_response_json)
 
     return auth_dependency
 
