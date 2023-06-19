@@ -95,8 +95,8 @@ def proxy_open_ai_with_user(
     request: Request,
     response: Response,
     userReq: OpenAiRequestWithUser, 
-    Authorization:str = Header(default=None), 
-    RefreshToken:str = Header(default=None),
+    # Authorization:str = Header(default=None), 
+    # RefreshToken:str = Header(default=None),
     # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
