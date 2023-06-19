@@ -37,8 +37,8 @@ class OpenAiRequest(BaseModel):
     prompt: str
     model: str
     input_message: str
-    tone: str
-    feature: str
+    tone_id: int
+    feature_id: int
 
 class OpenAiResDTO(BaseModel):
     reply:str
