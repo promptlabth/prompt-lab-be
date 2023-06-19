@@ -92,8 +92,8 @@ This function is for user to collect data
 # TODO: 2. create a api with middleware in this app
 @router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
 def proxy_open_ai_with_user(
-    request: Request,
-    response: Response,
+    # request: Request,
+    # response: Response,
     userReq: OpenAiRequestWithUser, 
     # Authorization:str = Header(default=None), 
     # RefreshToken:str = Header(default=None),
@@ -106,6 +106,8 @@ def proxy_open_ai_with_user(
     # ! We need to all user can be get everything prompt 
     # ! So if we can't be collect data of user must send prompt result only
     # ! don't worry if data of user is not collect.
+    
+    openai.api_key = os.environ.get("OPENAI_KEY")
     
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
