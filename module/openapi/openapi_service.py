@@ -62,7 +62,7 @@ openai.api_key = os.environ.get("OPENAI_KEY")
 
 
 router = APIRouter(
-    tags=["OpenAI Service-Free"],
+    tags=["OpenAI Service"],
     responses={404: {"description": "Not found in"}},
 )
 
@@ -82,25 +82,6 @@ def getdata():
 # can be use all prompt in this url
 # TODO: 1. create a api for all feature in this app
 
-@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # No login require
-def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
-    """
-    this function to create proxy to openai
-    
-    """
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt.prompt},
-        ],
-    )
-
-    assistant_reply = result['choices'][0]['message']['content']
-    return OpenAiResDTO(
-        reply=assistant_reply,
-        error=""
-    )
-
 
 """
 This function is for user to collect data
@@ -109,112 +90,117 @@ This function is for user to collect data
 
 
 # TODO: 2. create a api with middleware in this app
-# @router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
-# def proxy_open_ai_with_user(
-#     request: Request,
-#     response: Response,
-#     userReq: OpenAiRequestWithUser, 
-#     Authorization:str = Header(default=None), 
-#     RefreshToken:str = Header(default=None),
-#     # auth:str = Depends(authentication.authentication_middleware)
-#     ) -> OpenAiResDTO:
-#     """
-#     this function to create proxy to openai
+@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
+def proxy_open_ai_with_user(
+    request: Request,
+    response: Response,
+    userReq: OpenAiRequestWithUser, 
+    Authorization:str = Header(default=None), 
+    RefreshToken:str = Header(default=None),
+    # auth:str = Depends(authentication.authentication_middleware)
+    ) -> OpenAiResDTO:
+    """
+    this function to create proxy to openai
     
-#     """
-#     # ! We need to all user can be get everything prompt 
-#     # ! So if we can't be collect data of user must send prompt result only
-#     # ! don't worry if data of user is not collect.
+    """
+    # ! We need to all user can be get everything prompt 
+    # ! So if we can't be collect data of user must send prompt result only
+    # ! don't worry if data of user is not collect.
     
-#     result = openai.ChatCompletion.create(
-#         model="gpt-3.5-turbo",
-#         messages=[
-#             {"role": "user", "content": userReq.prompt},
-#         ],
-#     )
-#     assistant_reply = result['choices'][0]['message']['content']
+    result = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": userReq.prompt},
+        ],
+    )
+    assistant_reply = result['choices'][0]['message']['content']
+
+    return OpenAiResDTO(
+        reply=assistant_reply,
+        error=""
+    )
 
 
-#     # TODO: add a database zone for collect promptMessages
-#     with database.session_engine() as session:
-#         # * find user by firebase id if found will collect to user val 
-#         # ! but if not will return prompt result 
-#         try:
-#             statement_user = select(users_model.Users).where(users_model.Users.firebase_id == userReq.user_id)
-#             user = session.exec(statement=statement_user).one()
-#         except:
-#             return JSONResponse(
-#                 status_code=status.HTTP_404_NOT_FOUND,
-#                 content=OpenAiResDTO(
-#                     reply=assistant_reply,
-#                     error="Not Found Users"
-#                 ).dict()
-#             )
+    # # TODO: add a database zone for collect promptMessages
+    # with database.session_engine() as session:
+    #     # * find user by firebase id if found will collect to user val 
+    #     # ! but if not will return prompt result 
+    #     try:
+    #         statement_user = select(users_model.Users).where(users_model.Users.firebase_id == userReq.user_id)
+    #         user = session.exec(statement=statement_user).one()
+    #     except:
+    #         return JSONResponse(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             content=OpenAiResDTO(
+    #                 reply=assistant_reply,
+    #                 error="Not Found Users"
+    #             ).dict()
+    #         )
         
-#         # * find tone by tone id
-#         # ! but if not will return prompt result
-#         try:
-#             statement_tone = select(tone_model.Tones).where(tone_model.Tones.id == userReq.tone_id)
-#             tone = session.exec(statement=statement_tone).one()
-#         except:
-#             return JSONResponse(
-#                 status_code=status.HTTP_404_NOT_FOUND,
-#                 content=OpenAiResDTO(
-#                     reply=assistant_reply,
-#                     error="Not Found Tones"
-#                 ).dict()
-#             )
+    #     # * find tone by tone id
+    #     # ! but if not will return prompt result
+    #     try:
+    #         statement_tone = select(tone_model.Tones).where(tone_model.Tones.id == userReq.tone_id)
+    #         tone = session.exec(statement=statement_tone).one()
+    #     except:
+    #         return JSONResponse(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             content=OpenAiResDTO(
+    #                 reply=assistant_reply,
+    #                 error="Not Found Tones"
+    #             ).dict()
+    #         )
         
-#         # * find tone by feature id
-#         # ! but if not will return prompt result
-#         try:
-#             statement_feature = select(features_model.Features).where(features_model.Features.id == userReq.feature_id)
-#             feature = session.exec(statement=statement_feature).one()
-#         except:
-#             return JSONResponse(
-#                 status_code=status.HTTP_404_NOT_FOUND,
-#                 content=OpenAiResDTO(
-#                     reply=assistant_reply,
-#                     error="Not Found feature"
-#                 ).dict()
-#             )
+    #     # * find tone by feature id
+    #     # ! but if not will return prompt result
+    #     try:
+    #         statement_feature = select(features_model.Features).where(features_model.Features.id == userReq.feature_id)
+    #         feature = session.exec(statement=statement_feature).one()
+    #     except:
+    #         return JSONResponse(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             content=OpenAiResDTO(
+    #                 reply=assistant_reply,
+    #                 error="Not Found feature"
+    #             ).dict()
+    #         )
         
-#         # * save data to database
-#         # ! but if not work will return prompt result
-#         try:
-#             prompt_message_db = prompt_messages_model.Promptmessages(
-#                 input_message=userReq.input_message,
-#                 result_message=assistant_reply,
-#                 feature_id=feature.id,
-#                 tone_id=tone.id,
-#                 user_id=user.id,
-#                 date_time=datetime.now()
-#             )
-#             session.add(prompt_message_db)
-#             session.commit()
-#             session.refresh(prompt_message_db)
-#         except:
-#             return JSONResponse(
-#                 status_code=status.HTTP_404_NOT_FOUND,
-#                 content=OpenAiResDTO(
-#                     reply=assistant_reply,
-#                     error="cannot create and save to db"
-#                 ).dict()
-#             )
+    #     # * save data to database
+    #     # ! but if not work will return prompt result
+    #     try:
+    #         prompt_message_db = prompt_messages_model.Promptmessages(
+    #             input_message=userReq.input_message,
+    #             result_message=assistant_reply,
+    #             feature_id=feature.id,
+    #             tone_id=tone.id,
+    #             user_id=user.id,
+    #             date_time=datetime.now()
+    #         )
+    #         session.add(prompt_message_db)
+    #         session.commit()
+    #         session.refresh(prompt_message_db)
+    #     except:
+    #         return JSONResponse(
+    #             status_code=status.HTTP_404_NOT_FOUND,
+    #             content=OpenAiResDTO(
+    #                 reply=assistant_reply,
+    #                 error="cannot create and save to db"
+    #             ).dict()
+    #         )
     
-#     try:
-#         response_data = JSONResponse(
-#             status_code=status.HTTP_201_CREATED,
-#             content=OpenAiResDTO(reply=assistant_reply, error="").dict(),
-#             headers={
-#                 "AccessToken":response.headers["access-token"],
-#                 "RefreshToken":response.headers["refresh-token"]
-#             }
-#         )
-#     except:
-#         response_data=JSONResponse(
-#             status_code=status.HTTP_201_CREATED,
-#             content=OpenAiResDTO(reply=assistant_reply, error="").dict(),
-#         )
+    # try:
+    #     response_data = JSONResponse(
+    #         status_code=status.HTTP_201_CREATED,
+    #         content=OpenAiResDTO(reply=assistant_reply, error="").dict(),
+    #         # headers={
+    #         #     "AccessToken":response.headers["access-token"],
+    #         #     "RefreshToken":response.headers["refresh-token"]
+    #         # }
+    #     )
+    # except:
+    #     response_data=JSONResponse(
+    #         status_code=status.HTTP_201_CREATED,
+    #         content=OpenAiResDTO(reply=assistant_reply, error="").dict(),
+    #     )
         
-#     return response_data
+    # return response_data
