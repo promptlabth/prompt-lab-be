@@ -82,8 +82,8 @@ def getdata():
 # can be use all prompt in this url
 # TODO: 1. create a api for all feature in this app
 
-@router.post("/gennerate-with-user", status_code=200, response_model=str) # No login require
-def proxy_open_ai(prompt: OpenAiRequest) -> str:
+@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # No login require
+def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
     """
     this function to create proxy to openai
     
