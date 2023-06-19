@@ -66,13 +66,13 @@ router = APIRouter(
     responses={404: {"description": "Not found in"}},
 )
 
-# router_with_dependency = APIRouter(
-#     tags=["OpenAI Service-Login"],
-#     responses={404: {"description": "Not found in"}},
-#     dependencies=[
-#         Depends(authentication.authentication_middleware())
-#     ],
-# )
+router_with_dependency = APIRouter(
+    tags=["OpenAI Service-Login"],
+    responses={404: {"description": "Not found in"}},
+    dependencies=[
+        Depends(authentication.authentication_middleware())
+    ],
+)
 
 @router.post("/test")
 def getdata():
@@ -109,14 +109,13 @@ This function is for user to collect data
 
 
 # TODO: 2. create a api with middleware in this app
-@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
+@router_with_dependency.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
 def proxy_open_ai_with_user(
-    # request: Request,
-    # response: Response,
+    request: Request,
+    response: Response,
     userReq: OpenAiRequestWithUser, 
     Authorization:str = Header(default=None), 
     RefreshToken:str = Header(default=None),
-    # auth: str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
     this function to create proxy to openai
@@ -206,10 +205,10 @@ def proxy_open_ai_with_user(
         response_data = JSONResponse(
             status_code=status.HTTP_201_CREATED,
             content=OpenAiResDTO(reply=assistant_reply, error="").dict(),
-            # headers={
-            #     "AccessToken":response.headers["access-token"],
-            #     "RefreshToken":response.headers["refresh-token"]
-            # }
+            headers={
+                "AccessToken":response.headers["access-token"],
+                "RefreshToken":response.headers["refresh-token"]
+            }
         )
     except:
         response_data=JSONResponse(
