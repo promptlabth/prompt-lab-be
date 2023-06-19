@@ -66,13 +66,13 @@ router = APIRouter(
     responses={404: {"description": "Not found in"}},
 )
 
-router_with_dependency = APIRouter(
-    tags=["OpenAI Service-Login"],
-    responses={404: {"description": "Not found in"}},
-    dependencies=[
-        Depends(authentication.authentication_middleware())
-    ],
-)
+# router_with_dependency = APIRouter(
+#     tags=["OpenAI Service-Login"],
+#     responses={404: {"description": "Not found in"}},
+#     dependencies=[
+#         Depends(authentication.authentication_middleware())
+#     ],
+# )
 
 @router.post("/test")
 def getdata():
