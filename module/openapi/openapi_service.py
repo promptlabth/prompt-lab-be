@@ -95,8 +95,8 @@ def proxy_open_ai_with_user(
     # request: Request,
     # response: Response,
     userReq: OpenAiRequestWithUser, 
-    # Authorization:str = Header(default=None), 
-    # RefreshToken:str = Header(default=None),
+    Authorization:str = Header(default=None), 
+    RefreshToken:str = Header(default=None),
     # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
@@ -106,7 +106,7 @@ def proxy_open_ai_with_user(
     # ! We need to all user can be get everything prompt 
     # ! So if we can't be collect data of user must send prompt result only
     # ! don't worry if data of user is not collect.
-    
+
     openai.api_key = os.environ.get("OPENAI_KEY")
     
     result = openai.ChatCompletion.create(
