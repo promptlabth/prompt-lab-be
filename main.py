@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import openapi_service_free, predict_service, tone_service
+from module.openapi import openapi_service_free, openapi_service, predict_service, tone_service
 from module.usersapi import userapi_service
 from module.testapi import testapit_service
 
@@ -37,6 +37,7 @@ def hello_word() -> dict :
   return {"hello" : "world"}
 
 app.include_router(openapi_service_free.router)
+app.include_router(openapi_service.router)
 # app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
 
