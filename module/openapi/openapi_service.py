@@ -116,7 +116,7 @@ def proxy_open_ai_with_user(
     userReq: OpenAiRequestWithUser, 
     Authorization:str = Header(default=None), 
     RefreshToken:str = Header(default=None),
-    auth:str = Depends(authentication.authentication_middleware)
+    # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
     this function to create proxy to openai
