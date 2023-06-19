@@ -21,21 +21,23 @@ router = APIRouter(
     responses={404: {"description": "Not found in"}},
 )
 
-@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # No login require
-def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
+@router.post("/gennerate-with-user", status_code=200, response_model=str) # No login require
+def proxy_open_ai(prompt: OpenAiRequest) -> str:
     """
     this function to create proxy to openai
     
     """
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt.prompt},
-        ],
-    )
+    # result = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[
+    #         {"role": "user", "content": prompt.prompt},
+    #     ],
+    # )
 
-    assistant_reply = result['choices'][0]['message']['content']
-    return OpenAiResDTO(
-        reply=assistant_reply,
-        error=""
-    )
+    # assistant_reply = result['choices'][0]['message']['content']
+    # return OpenAiResDTO(
+    #     reply=assistant_reply,
+    #     error=""
+    # )
+
+    return "good"
