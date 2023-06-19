@@ -27,17 +27,17 @@ def proxy_open_ai(prompt: OpenAiRequest) -> str:
     this function to create proxy to openai
     
     """
-    # result = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo",
-    #     messages=[
-    #         {"role": "user", "content": prompt.prompt},
-    #     ],
-    # )
+    result = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt.prompt},
+        ],
+    )
 
-    # assistant_reply = result['choices'][0]['message']['content']
+    assistant_reply = result['choices'][0]['message']['content']
     # return OpenAiResDTO(
     #     reply=assistant_reply,
     #     error=""
     # )
 
-    return "good"
+    return assistant_reply
