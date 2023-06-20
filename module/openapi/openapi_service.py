@@ -90,7 +90,7 @@ This function is for user to collect data
 
 
 # TODO: 2. create a api with middleware in this app
-@router_with_dependency.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO, middleware=[]) # login require
+@router_with_dependency.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
 def proxy_open_ai_with_user(
     request: Request,
     response: Response,
