@@ -38,6 +38,7 @@ def hello_word() -> dict :
 
 app.include_router(openapi_service_free.router)
 app.include_router(openapi_service.router_with_dependency)
+app.include_router(openapi_service.router)
 # app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
 

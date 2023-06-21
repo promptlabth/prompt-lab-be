@@ -5,12 +5,15 @@ Router for openAI Service
 
 import os
 
-from fastapi import APIRouter, Depends, Header, status, Request, Response
+from fastapi import APIRouter, Depends, HTTPException, Header, status, Request, Response
 import openai
 from pydantic import BaseModel
 import dotenv
 from middlewares import authentication
 from fastapi.responses import JSONResponse
+
+from typing import Annotated
+
 
 from sqlmodel import select
 
@@ -74,9 +77,24 @@ router_with_dependency = APIRouter(
     ],
 )
 
+
+
+async def testDepen(
+        req: Request,
+        res: Response
+) -> str:  
+    print(req.headers.get("Authorization"))
+    res.headers["test"] = "tell"
+    # raise HTTPException(status_code=401, detail="Fail")
+
+    return "test"
+
+
 @router.post("/test")
-def getdata():
-    return openai.api_key
+def getdata(
+    data : Annotated[str, Depends(testDepen)]
+):
+    return data
 
 # general generate
 # can be use all prompt in this url
@@ -90,13 +108,15 @@ This function is for user to collect data
 
 
 # TODO: 2. create a api with middleware in this app
-@router_with_dependency.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
+@router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
 def proxy_open_ai_with_user(
     request: Request,
     response: Response,
     userReq: OpenAiRequestWithUser, 
+    userid: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization:str = Header(default=None), 
     RefreshToken:str = Header(default=None),
+
     # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
