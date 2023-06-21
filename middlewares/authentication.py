@@ -19,7 +19,10 @@ async def auth_depen_new(
     if(not token_with_bearer):
             raise HTTPException(status_code=401, detail="DON'T HAVE ACCESS TOKEN")
 
-    token = token_with_bearer.split(" ")[1]
+    try:
+        token = token_with_bearer.split(" ")[1]
+    except:
+        raise HTTPException(404, "Not have Bearer in Access Token")
     uid = ""
     # check access token is pass
     try:
