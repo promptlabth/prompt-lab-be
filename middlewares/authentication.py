@@ -41,7 +41,10 @@ async def auth_depen_new(
             raise HTTPException(status_code=401, detail="DON'T HAVE REFRESH TOKEN")
         
         # get a refresh token
-        refresh_token = refresh_token_with_bearer.split(" ")[1]
+        try:
+            refresh_token = refresh_token_with_bearer.split(" ")[1]
+        except:
+            raise HTTPException(404, "Refresh Token is not have Bearer")
         object = {
             'refresh_token':refresh_token,
             'grant_type':"refresh_token"
