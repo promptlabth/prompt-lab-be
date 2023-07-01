@@ -1,13 +1,16 @@
-from fastapi import Response, Request, HTTPException
-from firebase import init_firebase
-from firebase_admin import auth
-
-import requests
+"""
+middleware authentication
+"""
 import os
+import json
+import requests
 import dotenv
+
+from fastapi import Response, Request, HTTPException
+from firebase_admin import auth
+from firebase import init_firebase
 dotenv.load_dotenv()
 
-import json
 
 
 # fix auth to new dependency
@@ -15,14 +18,17 @@ async def auth_depen_new(
         req: Request,
         res: Response
 ) -> str:
+    """
+    a new dependency for authtication in function
+    """
     token_with_bearer = req.headers.get('Authorization')
-    if(not token_with_bearer):
-            raise HTTPException(status_code=401, detail="DON'T HAVE ACCESS TOKEN")
+    if not token_with_bearer:
+        raise HTTPException(status_code=401, detail="DON'T HAVE ACCESS TOKEN")
 
     try:
         token = token_with_bearer.split(" ")[1]
-    except:
-        raise HTTPException(404, "Not have Bearer in Access Token")
+    except Exception as exc:
+        raise HTTPException(404, "Not have Bearer in Access Token") from exc
     uid = ""
     # check access token is pass
     try:
@@ -40,9 +46,8 @@ async def auth_depen_new(
         firebase_app = init_firebase.firebase_app_module()
         # if refresh token is have ??
         refresh_token_with_bearer = req.headers.get("RefreshToken")
-        if(not refresh_token_with_bearer):
+        if not refresh_token_with_bearer :
             raise HTTPException(status_code=401, detail="DON'T HAVE REFRESH TOKEN")
-        
         # get a refresh token
         try:
             refresh_token = refresh_token_with_bearer.split(" ")[1]
