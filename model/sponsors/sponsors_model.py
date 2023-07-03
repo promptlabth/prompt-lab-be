@@ -8,3 +8,4 @@ class Sponsors(SQLModel, table=True):
     ads_start_date: datetime
     ads_end_date: datetime
     sponsor_type: Optional[int] = Field(default=None, foreign_key="sponsortypes.id")
+    
