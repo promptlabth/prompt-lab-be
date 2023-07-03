@@ -61,6 +61,8 @@ class OpenAiRequestWithUser(BaseModel):
     feature_id: int
 
 
+
+
 openai.api_key = os.environ.get("OPENAI_KEY")
 
 
@@ -106,6 +108,98 @@ This function is for user to collect data
 """
 
 
+class Message(BaseModel):
+    id:int
+    user_id:int
+    tone:str
+    date_time: datetime
+    feature:str
+    input_message:str
+    result_message: str
+
+@router.get("/get-caption/{userid}", status_code=200)
+def get_old_caption_by_user(
+    userid,
+    request: Request,
+    response: Response,
+    user: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
+):
+    """
+    In this function is will be return a old message of user by userid
+    """
+
+    messages = []
+
+    with database.session_engine() as session:
+        
+        try:
+            statement_user = select(users_model.Users).where(
+                users_model.Users.firebase_id == userid
+            ) 
+            user = session.exec(statement=statement_user).one()
+        except:
+            return JSONResponse(
+                content={
+                    {
+                        error: "Not found a suer by userid"
+                    }
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+
+
+
+        # find a prompt message with userid
+        try:
+            statement = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user_id == userid
+            )
+            prompts = session.exec(statement=statement).all()
+        except:
+            return JSONResponse(
+                content={
+                    error: "not found a prompt message in"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            for prompt in prompts:
+                tone = ""
+                feature = ""
+
+                with database.session_engine() as session:
+                    
+                    # Find a Tone in database from prompt result
+                    try:
+                        statement = select(tone_model.Tones).where(
+                            prompt.tone_id == tone_model.Tones.id
+                        )
+                        tone = session.exec(statement).one().tone_name
+                    except:
+                        tone = "ไม่มีโทนนี้อยู่ในระบบ หรือถูกลบไปแล้ว"
+                    
+                    # Find a Feature in database from prompt result
+                    
+
+                message = Message(
+                    id=prompt.id,
+                    user_id=prompt.user_id,
+                    tone: #หาเพิ่ม
+                    date_time=prompt.date_time,
+                    feature: #หาเพิ่ม
+                    input_message=prompt.input_message,
+                    result_message=prompt.result_message
+                )
+        except:
+
+
+
+    pass
+
+
 
 # TODO: 2. create a api with middleware in this app
 @router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
@@ -116,11 +210,10 @@ def proxy_open_ai_with_user(
     userid: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization:str = Header(default=None), 
     RefreshToken:str = Header(default=None),
-
     # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
-    this function to create proxy to openai
+    this function to create proxy to openai with userid
     
     """
     # ! We need to all user can be get everything prompt 
