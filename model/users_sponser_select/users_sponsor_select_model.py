@@ -11,7 +11,7 @@ class Usersponsorselects(SQLModel, table=True):
     date_time: datetime
 
     sponsor_id: Optional[int] = Field(default=None, foreign_key="sponsors.id")
-    sponsor: Optional[Sponsors] = Relationship(back_populates="usersponsorselects")
+    sponsor: Optional["Sponsors"] = Relationship(back_populates="usersponsorselects")
     
     user_id: Optional[int] = Field(default=None, foreign_key="users.id")
-    user: Optional[Users] = Relationship(back_populates="usersponsorselects")
+    user: Optional["Users"] = Relationship(back_populates="usersponsorselects")

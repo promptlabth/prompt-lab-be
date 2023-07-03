@@ -1,6 +1,8 @@
 from sqlmodel import Field, SQLModel, Relationship
-from typing import Optional,List
-from model.promptMessages import prompt_messages_model
+from typing import Optional,List, TYPE_CHECKING
+if TYPE_CHECKING:
+    from model.promptMessages import prompt_messages_model
+
 class Tones(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     tone_name: str
