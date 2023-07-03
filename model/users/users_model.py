@@ -11,7 +11,11 @@ class Users(SQLModel, table=True):
     name: Optional[str] = None
     email: str
     profilepic: str
+
+    # 1 User have many promptmessages
     promptmessages: List["Promptmessages"] = Relationship(back_populates="user")
+    # 1 USER have many feature usings
     featureusings: List["Featureusings"] = Relationship(back_populates="user")
     usersponsorselects: List["Usersponsorselects"] = Relationship(back_populates="user")
+
 
