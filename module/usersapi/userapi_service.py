@@ -34,6 +34,9 @@ router = APIRouter(
 # list all user (we should run a middleware for authentications)
 @router.get("/", status_code=200, response_model=list[users_model.Users])
 def list_users():
+    """
+    list all user in the table
+    """
     data = []
     with database.session_engine() as session:
         users_exec = select(users_model.Users)
@@ -47,6 +50,10 @@ def list_users():
 # POST login/register to collect data of user to database 
 @router.post("/login", status_code=200)
 def login_user(Authorization:str = Header(default=None)):
+
+    """
+    For Login to use a pro service
+    """
 
     # Check Have Authorization Token ?
     if(Authorization == None):

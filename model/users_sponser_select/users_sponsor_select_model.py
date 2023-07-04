@@ -10,8 +10,10 @@ class Usersponsorselects(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     date_time: datetime
 
+    # 1 sponsorselect have 1 sponsor
     sponsor_id: Optional[int] = Field(default=None, foreign_key="sponsors.id")
     sponsor: Optional["Sponsors"] = Relationship(back_populates="usersponsorselects")
     
+    # 1 sponsorselect have 1 user
     user_id: Optional[int] = Field(default=None, foreign_key="users.id")
     user: Optional["Users"] = Relationship(back_populates="usersponsorselects")

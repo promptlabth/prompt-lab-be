@@ -193,9 +193,9 @@ def proxy_open_ai_with_user(
             prompt_message_db = prompt_messages_model.Promptmessages(
                 input_message=userReq.input_message,
                 result_message=assistant_reply,
-                feature_id=feature.id,
-                tone_id=tone.id,
-                user_id=user.id,
+                feature=feature,
+                tone=tone,
+                user=user,
                 date_time=datetime.now()
             )
             session.add(prompt_message_db)

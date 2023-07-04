@@ -16,6 +16,7 @@ class Users(SQLModel, table=True):
     promptmessages: List["Promptmessages"] = Relationship(back_populates="user")
     # 1 USER have many feature usings
     featureusings: List["Featureusings"] = Relationship(back_populates="user")
+    # 1 User have many UserSponsorselects
     usersponsorselects: List["Usersponsorselects"] = Relationship(back_populates="user")
 
 

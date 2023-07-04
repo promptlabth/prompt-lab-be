@@ -12,7 +12,7 @@ class Features(SQLModel, table=True):
     url: str
 
     # 1 feature have many featureusings
-    featureusing: List["Featureusings"] = Relationship(back_populates="feature")
+    featureusings: List["Featureusings"] = Relationship(back_populates="feature")
 
     # 1 feature have many promptmessage
     promptmessages: List["Promptmessages"] = Relationship(back_populates="feature")
