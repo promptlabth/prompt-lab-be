@@ -38,17 +38,17 @@ def list_tones(language) -> list[Tone]:
     tones = []
     with database.session_engine() as session:
         
-        # find language by id
-        try:
-            statement = select(languages_model.Languages).where(languages_model.Languages.language_name == language)
-            result = session.exec(statement=statement)
-            lang = result.one()
-        except:
-            raise HTTPException(status_code=404, detail="Not found languages")
+        # # find language by id
+        # try:
+        #     statement = select(languages_model.Languages).where(languages_model.Languages.language_name == language)
+        #     result = session.exec(statement=statement)
+        #     lang = result.one()
+        # except:
+        #     raise HTTPException(status_code=404, detail="Not found languages")
         
         # find all tones
         try:
-            statement = select(tone_model.Tones).where(tone_model.Tones.language_id == lang.id)
+            statement = select(tone_model.Tones).where(tone_model.Tones.language.language_name == language)
             result = session.exec(statement)
             tones_exec = result.all()
         except:

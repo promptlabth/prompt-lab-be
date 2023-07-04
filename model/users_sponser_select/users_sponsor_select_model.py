@@ -1,8 +1,19 @@
-from typing import Optional
-from sqlmodel import Field, Session, SQLModel, create_engine
+from typing import Optional, List, TYPE_CHECKING
+from sqlmodel import Field, Session, SQLModel, Relationship
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from model.users.users_model import Users
+    from model.sponsors.sponsors_model import Sponsors
+
 class Usersponsorselects(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
-    sponsor_id: Optional[int] = Field(default=None, foreign_key="sponsors.id")
-    user_id: Optional[int] = Field(default=None, foreign_key="users.id")
     date_time: datetime
+
+    # 1 sponsorselect have 1 sponsor
+    sponsor_id: Optional[int] = Field(default=None, foreign_key="sponsors.id")
+    sponsor: Optional["Sponsors"] = Relationship(back_populates="usersponsorselects")
+    
+    # 1 sponsorselect have 1 user
+    user_id: Optional[int] = Field(default=None, foreign_key="users.id")
+    user: Optional["Users"] = Relationship(back_populates="usersponsorselects")
