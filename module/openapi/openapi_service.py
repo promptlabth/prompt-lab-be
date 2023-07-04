@@ -12,7 +12,7 @@ import dotenv
 from middlewares import authentication
 from fastapi.responses import JSONResponse
 
-from typing import Annotated
+from typing import Annotated, List
 
 
 from sqlmodel import select
@@ -134,70 +134,50 @@ def get_old_caption_by_user(
 
     with database.session_engine() as session:
         
+        # Find a all prompt by userid
         try:
-            statement_user = select(users_model.Users).where(
-                users_model.Users.firebase_id == userid
+            statement_prompt = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user.firebase_id == userid
             ) 
-            user = session.exec(statement=statement_user).one()
+            prompt_messages_by_firebase_id = session.exec(statement=statement_prompt).all()
         except:
             return JSONResponse(
                 content={
                     {
-                        error: "Not found a suer by userid"
+                        "error": "Not found a suer by userid"
                     }
-                },
-                status_code=status.HTTP_404_NOT_FOUND
-            )
-
-
-
-        # find a prompt message with userid
-        try:
-            statement = select(prompt_messages_model.Promptmessages).where(
-                prompt_messages_model.Promptmessages.user_id == userid
-            )
-            prompts = session.exec(statement=statement).all()
-        except:
-            return JSONResponse(
-                content={
-                    error: "not found a prompt message in"
                 },
                 status_code=status.HTTP_404_NOT_FOUND
             )
         
         try:
-            for prompt in prompts:
-                tone = ""
-                feature = ""
-
-                with database.session_engine() as session:
+            for prompt in prompt_messages_by_firebase_id:
                     
-                    # Find a Tone in database from prompt result
-                    try:
-                        statement = select(tone_model.Tones).where(
-                            prompt.tone_id == tone_model.Tones.id
-                        )
-                        tone = session.exec(statement).one().tone_name
-                    except:
-                        tone = "ไม่มีโทนนี้อยู่ในระบบ หรือถูกลบไปแล้ว"
-                    
-                    # Find a Feature in database from prompt result
-                    
-
-                message = Message(
+                message = prompt_messages_model.Promptmessages(
                     id=prompt.id,
-                    user_id=prompt.user_id,
-                    tone: #หาเพิ่ม
-                    date_time=prompt.date_time,
-                    feature: #หาเพิ่ม
                     input_message=prompt.input_message,
-                    result_message=prompt.result_message
+                    result_message=prompt.result_message,
+                    date_time=prompt.date_time,
+
+                    user_id=prompt.user_id,
+                    user=prompt.user,
+                    
+                    tone_id=prompt.tone_id,
+                    tone= prompt.tone,
+                    
+                    feature_id=prompt.feature_id,
+                    feature=prompt.feature
                 )
+                messages.append(message)
+
+            return messages
+        
         except:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Found a error // you not have a prompt message, get one?"
+            )
 
-
-
-    pass
 
 
 
