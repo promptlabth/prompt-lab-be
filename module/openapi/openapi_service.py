@@ -12,7 +12,7 @@ import dotenv
 from middlewares import authentication
 from fastapi.responses import JSONResponse
 
-from typing import Annotated
+from typing import Annotated, List
 
 
 from sqlmodel import select
@@ -61,6 +61,8 @@ class OpenAiRequestWithUser(BaseModel):
     feature_id: int
 
 
+
+
 openai.api_key = os.environ.get("OPENAI_KEY")
 
 
@@ -106,6 +108,78 @@ This function is for user to collect data
 """
 
 
+class Message(BaseModel):
+    id:int
+    user_id:int
+    tone:str
+    date_time: datetime
+    feature:str
+    input_message:str
+    result_message: str
+
+@router.get("/get-caption/{userid}", status_code=200)
+def get_old_caption_by_user(
+    userid,
+    request: Request,
+    response: Response,
+    user: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
+):
+    """
+    In this function is will be return a old message of user by userid
+    """
+
+    messages = []
+
+    with database.session_engine() as session:
+        
+        # Find a all prompt by userid
+        try:
+            statement_prompt = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user.firebase_id == userid
+            ) 
+            prompt_messages_by_firebase_id = session.exec(statement=statement_prompt).all()
+        except:
+            return JSONResponse(
+                content={
+                    {
+                        "error": "Not found a suer by userid"
+                    }
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            for prompt in prompt_messages_by_firebase_id:
+                    
+                message = prompt_messages_model.Promptmessages(
+                    id=prompt.id,
+                    input_message=prompt.input_message,
+                    result_message=prompt.result_message,
+                    date_time=prompt.date_time,
+
+                    user_id=prompt.user_id,
+                    user=prompt.user,
+                    
+                    tone_id=prompt.tone_id,
+                    tone= prompt.tone,
+                    
+                    feature_id=prompt.feature_id,
+                    feature=prompt.feature
+                )
+                messages.append(message)
+
+            return messages
+        
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Found a error // you not have a prompt message, get one?"
+            )
+
+
+
 
 # TODO: 2. create a api with middleware in this app
 @router.post("/gennerate-with-user", status_code=200, response_model=OpenAiResDTO) # login require
@@ -116,11 +190,10 @@ def proxy_open_ai_with_user(
     userid: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization:str = Header(default=None), 
     RefreshToken:str = Header(default=None),
-
     # auth:str = Depends(authentication.authentication_middleware)
     ) -> OpenAiResDTO:
     """
-    this function to create proxy to openai
+    this function to create proxy to openai with userid
     
     """
     # ! We need to all user can be get everything prompt 
