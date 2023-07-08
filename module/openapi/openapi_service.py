@@ -111,8 +111,10 @@ This function is for user to collect data
 class Message(BaseModel):
     id:int
     user_id:int
+    tone_id:int
     tone:str
     date_time: datetime
+    feature_id:str
     feature:str
     input_message:str
     result_message: str
@@ -125,51 +127,54 @@ def get_old_caption_by_user(
     user: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization: str = Header(default=None),
     RefreshToken: str = Header(default=None),
-):
+) -> list[prompt_messages_model.Promptmessages]:
     """
     In this function is will be return a old message of user by userid
     """
 
     messages = []
+    # print(userid)
 
     with database.session_engine() as session:
         
-        # Find a all prompt by userid
+        # Find id of user by firebase id
+        
         try:
-            statement_prompt = select(prompt_messages_model.Promptmessages).where(
-                prompt_messages_model.Promptmessages.user.firebase_id == userid
+            statement_prompt = select(users_model.Users).where(
+                users_model.Users.firebase_id == userid
             ) 
-            prompt_messages_by_firebase_id = session.exec(statement=statement_prompt).all()
+            user_exec = session.exec(statement=statement_prompt).one()
+            # print("userid = ", user_exec.id)
         except:
             return JSONResponse(
                 content={
-                    {
-                        "error": "Not found a suer by userid"
-                    }
+                        "error": "Not found a user by userid"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+
+
+        # Find a all prompt by userid
+        try:
+            statement_prompt = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user_id == user_exec.id
+
+            ) 
+            prompt_messages_by_id = session.exec(statement=statement_prompt).all()
+        except:
+            return JSONResponse(
+                content={
+                        "error": "Not found a Prompt by userid"
                 },
                 status_code=status.HTTP_404_NOT_FOUND
             )
         
         try:
-            for prompt in prompt_messages_by_firebase_id:
-                    
-                message = prompt_messages_model.Promptmessages(
-                    id=prompt.id,
-                    input_message=prompt.input_message,
-                    result_message=prompt.result_message,
-                    date_time=prompt.date_time,
+            for prompt in prompt_messages_by_id:
+                messages.append(prompt)
 
-                    user_id=prompt.user_id,
-                    user=prompt.user,
-                    
-                    tone_id=prompt.tone_id,
-                    tone= prompt.tone,
-                    
-                    feature_id=prompt.feature_id,
-                    feature=prompt.feature
-                )
-                messages.append(message)
-
+            
+            # print(messages)
             return messages
         
         except:
