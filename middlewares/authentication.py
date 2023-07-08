@@ -66,6 +66,7 @@ async def auth_depen_new(
 
         # if have some error will return refresh token is invalid
         if("error" in firebase_response_json):
+            print(firebase_response_json)
             raise HTTPException(status_code=401, detail="REFRESH TOKEN IS INVALID")
         
         # but if token is good 
