@@ -58,14 +58,18 @@ async def auth_depen_new(
             'grant_type':"refresh_token"
         }
         API_KEY = os.environ.get("FIREBASE_API_KEY")
-        firebase_response = requests.post(f"https://securetoken.googleapis.com/v1/token?key={API_KEY}", object)
-        firebase_response_json = json.loads(firebase_response.text)
+        try:
+            firebase_response = requests.post(f"https://securetoken.googleapis.com/v1/token?key={API_KEY}", object)
+            firebase_response_json = json.loads(firebase_response.text)
+        except:
+            raise HTTPException(status_code=401, detail="CANNOT GET NEW ACCESS TOKEN")
 
         # if have some error will return refresh token is invalid
         if("error" in firebase_response_json):
             raise HTTPException(status_code=401, detail="REFRESH TOKEN IS INVALID")
         
         # but if token is good 
+        token = firebase_response_json['access_token']
         res.headers["access-token"] = firebase_response_json['access_token']
         res.headers["refresh-token"] = firebase_response_json['refresh_token']
         # check access token is pass not error
