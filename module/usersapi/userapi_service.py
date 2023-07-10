@@ -97,6 +97,7 @@ def login_user(Authorization:str = Header(default=None)):
     # CHECK if have userid in database ?
     # if haven't in database
     if(not old_user):
+
         try:
             user = users_model.Users(
                 email=extract["email"], 
@@ -104,13 +105,17 @@ def login_user(Authorization:str = Header(default=None)):
                 profilepic=extract["picture"],
                 firebase_id=extract["uid"]
                 )
+        except:
+            raise HTTPException(status_code=403, detail="CREATE User model failed")
+
+        try:
             with database.session_engine() as session:
                 session.add(user)
                 session.commit()
                 session.refresh(user)
             return user
         except:
-            raise HTTPException(status_code=403, detail="CREATE FAILED")
+            raise HTTPException(status_code=403, detail="CREATE IN DATABASE FAILED")
     
     else:
         # if user have some change profile on facebook
