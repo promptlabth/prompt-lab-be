@@ -119,9 +119,9 @@ class Message(BaseModel):
     input_message:str
     result_message: str
 
-@router.get("/get-caption/{userid}", status_code=200)
+@router.get("/get-caption", status_code=200)
 def get_old_caption_by_user(
-    userid,
+    # userid,
     request: Request,
     response: Response,
     user: Annotated[str, Depends(authentication.auth_depen_new)],
@@ -141,7 +141,7 @@ def get_old_caption_by_user(
         
         try:
             statement_prompt = select(users_model.Users).where(
-                users_model.Users.firebase_id == userid
+                users_model.Users.firebase_id == user
             ) 
             user_exec = session.exec(statement=statement_prompt).one()
             # print("userid = ", user_exec.id)
