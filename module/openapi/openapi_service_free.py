@@ -37,7 +37,7 @@ def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
         ],
     )
 
-    if(os.environ.get("PRODUCT") == "DEV"):
+    if(os.environ.get("DEPLOY") == "DEV"):
         assistant_reply = result['choices'][0]['message']['content']
         return OpenAiResDTO(
             reply=assistant_reply,
