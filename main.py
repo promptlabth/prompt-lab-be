@@ -23,7 +23,7 @@ origins = [
     "https://tao-isaman-studious-engine-pgqpqq7rvvq2r5rw-3000.preview.app.github.dev",
     "https://promptlab-fe-git-dev-login-promptlab.vercel.app",
     "https://deploy-preview-10--comfy-cendol-1b50ad.netlify.app",
-    "https://e5c9-49-228-51-134.ngrok-free.app"
+    "https://8b60-49-228-51-134.ngrok-free.app"
 ]
 app.add_middleware(
     CORSMiddleware,
