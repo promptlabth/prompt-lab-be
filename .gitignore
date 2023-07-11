@@ -6,3 +6,5 @@ test.py
 
 prompt-lab-*.json
 firebase-credential.json
+
+.vscode/

@@ -1,1 +1,1 @@
-from . import features, featureusings, promptRows,database,promptMessages,languages,sponsors,sponsortypes,tones,users,users_sponser_select
+from . import features, featureusings, promptRows,database,promptMessages,languages,sponsors,sponsortypes,tones,users,users_sponser_select,setup

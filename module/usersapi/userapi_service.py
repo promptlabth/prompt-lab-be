@@ -27,12 +27,16 @@ router = APIRouter(
     tags=["User Services"],
     responses={
         404:{"discription": "NOT FOUND!!"}
-    }
+    },
+    
 )
 
 # list all user (we should run a middleware for authentications)
 @router.get("/", status_code=200, response_model=list[users_model.Users])
 def list_users():
+    """
+    list all user in the table
+    """
     data = []
     with database.session_engine() as session:
         users_exec = select(users_model.Users)
@@ -46,6 +50,10 @@ def list_users():
 # POST login/register to collect data of user to database 
 @router.post("/login", status_code=200)
 def login_user(Authorization:str = Header(default=None)):
+
+    """
+    For Login to use a pro service
+    """
 
     # Check Have Authorization Token ?
     if(Authorization == None):
@@ -79,7 +87,7 @@ def login_user(Authorization:str = Header(default=None)):
     
     with database.session_engine() as session:
         # Find a user in database is have user ? (by uid is mean firebase id)
-        statement = select(users_model.Users).where(users_model.Users.uid == uid)
+        statement = select(users_model.Users).where(users_model.Users.firebase_id == uid)
         results = session.exec(statement=statement)
         try:
             old_user = results.one()
@@ -87,21 +95,27 @@ def login_user(Authorization:str = Header(default=None)):
             old_user = {}
 
     # CHECK if have userid in database ?
-
+    # if haven't in database
     if(not old_user):
+
         try:
             user = users_model.Users(
                 email=extract["email"], 
                 name=extract["name"],
                 profilepic=extract["picture"],
-                uid=extract["uid"]
+                firebase_id=extract["uid"]
                 )
+        except:
+            raise HTTPException(status_code=403, detail="CREATE User model failed")
+
+        try:
             with database.session_engine() as session:
                 session.add(user)
                 session.commit()
                 session.refresh(user)
+            return user
         except:
-            raise HTTPException(status_code=403, detail="CREATE FAILED")
+            raise HTTPException(status_code=403, detail="CREATE IN DATABASE FAILED")
     
     else:
         # if user have some change profile on facebook
@@ -126,6 +140,5 @@ def login_user(Authorization:str = Header(default=None)):
             session.refresh(old_user)
         return old_user
 
-    return old_user
 
 
