@@ -21,8 +21,8 @@ router = APIRouter(
 )
 
 
-@router.post("/gennerate", status_code=200, response_model=OpenAiResDTO) # No login require
-def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
+@router.post("/gennerate", status_code=200) # No login require
+def proxy_open_ai(prompt: OpenAiRequest):
     """
     this function to create proxy to openai
     
