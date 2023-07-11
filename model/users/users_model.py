@@ -8,9 +8,9 @@ if TYPE_CHECKING:
 class Users(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     firebase_id : Optional[str] = Field(default=None, unique=True)
-    name: Optional[str] = None
-    email: str
-    profilepic: str
+    name: Optional[str] = Field(nullable=True)
+    email: Optional[str] = Field(nullable=True)
+    profilepic: Optional[str] = Field(nullable=True)
 
     # 1 User have many promptmessages
     promptmessages: List["Promptmessages"] = Relationship(back_populates="user")
