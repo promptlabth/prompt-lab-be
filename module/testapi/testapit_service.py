@@ -36,4 +36,4 @@ router = APIRouter(
 
 @router.get("/testPath")
 def testMiddleware(request: Request, response: Response):
-    return response.headers
+    return {"test":"test"}

@@ -42,8 +42,7 @@ app.include_router(openapi_service.router_with_dependency)
 app.include_router(openapi_service.router)
 # app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
-
-
+app.include_router(testapit_service.router, prefix="/testing")
 app.include_router(userapi_service.router, prefix="/users")
 
 
