@@ -14,8 +14,6 @@ class OpenAiRequest(BaseModel):
     prompt: str
     model: str
     input_message: str
-    tone_id: int
-    feature_id: int
 
 router = APIRouter(
     tags=["OpenAI Service"],
