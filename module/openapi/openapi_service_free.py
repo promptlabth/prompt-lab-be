@@ -13,17 +13,16 @@ class OpenAiRequest(BaseModel):
     """
     prompt: str
     model: str
-    input_message: str
-    tone_id: int
-    feature_id: int
+    
 
 router = APIRouter(
     tags=["OpenAI Service"],
     responses={404: {"description": "Not found in"}},
 )
 
-@router.post("/gennerate", status_code=200, response_model=OpenAiResDTO) # No login require
-def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
+
+@router.post("/gennerate", status_code=200) # No login require
+def proxy_open_ai(prompt: OpenAiRequest):
     """
     this function to create proxy to openai
     
@@ -39,9 +38,12 @@ def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
     )
 
     assistant_reply = result['choices'][0]['message']['content']
-    return OpenAiResDTO(
-        reply=assistant_reply,
-        error=""
-    )
+    if(os.environ.get("DEPLOY") == "DEV"):
+        return OpenAiResDTO(
+            reply=assistant_reply,
+            error=""
+        )
+    else:
+        return assistant_reply
 
     # return assistant_reply

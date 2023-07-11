@@ -28,12 +28,16 @@ router = APIRouter(
     responses={
         404:{"discription": "NOT FOUND!!"}
     },
-    dependencies=[
-        Depends(authentication.authentication_middleware())
-    ]
+    # dependencies=[
+    #     Depends(authentication.authentication_middleware())
+    # ]
     
 )
 
 @router.get("/testPath")
-def testMiddleware(request: Request, response: Response):
-    return response.headers
+def testMiddleware(
+    request: Request, 
+    response: Response,
+    firebase_id : Annotated[str, Depends(authentication.auth_depen_new)]
+    ):
+    return {"test":"test"}

@@ -72,12 +72,14 @@ def login_user(Authorization:str = Header(default=None)):
     # (should check a refresh token and send to frontend if token is expirat)
     # TODO set a system to use refresh token and send access token to frontend if token is expirate
     try:
+        # Use access token to authtication
         firebase_app = init_firebase.firebase_app_module()
         extract = auth.verify_id_token(
         id_token=token,
         app=firebase_app
         )
     except:
+        # Use Refresh Token ??
         raise HTTPException(status_code=401, detail="DON'T AUTH")
     
     # extract a uid(firebaseID) from main structure

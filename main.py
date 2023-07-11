@@ -42,8 +42,7 @@ app.include_router(openapi_service.router_with_dependency)
 app.include_router(openapi_service.router)
 # app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
-
-
+app.include_router(testapit_service.router, prefix="/testing")
 app.include_router(userapi_service.router, prefix="/users")
 
 
@@ -55,5 +54,8 @@ app.include_router(tone_service.router)
 if __name__ == "__main__":
     import uvicorn
     import os
+    from dotenv import load_dotenv
+
+    load_dotenv()
     port = int(os.environ.get("PORT", 8080))  # Read the PORT environment variable or default to 8080
     uvicorn.run(app, host="0.0.0.0", port=port)

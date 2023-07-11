@@ -8,3 +8,5 @@ prompt-lab-*.json
 firebase-credential.json
 
 .vscode/
+
+database.db
