@@ -20,6 +20,7 @@ router = APIRouter(
     responses={404: {"description": "Not found in"}},
 )
 
+
 @router.post("/gennerate", status_code=200, response_model=OpenAiResDTO) # No login require
 def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
     """
@@ -36,10 +37,13 @@ def proxy_open_ai(prompt: OpenAiRequest) -> OpenAiResDTO:
         ],
     )
 
-    assistant_reply = result['choices'][0]['message']['content']
-    return OpenAiResDTO(
-        reply=assistant_reply,
-        error=""
-    )
+    if(os.environ.get("PRODUCT") == "DEV"):
+        assistant_reply = result['choices'][0]['message']['content']
+        return OpenAiResDTO(
+            reply=assistant_reply,
+            error=""
+        )
+    else:
+        return assistant_reply
 
     # return assistant_reply
