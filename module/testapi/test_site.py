@@ -19,6 +19,8 @@ client = TestClient(app)
 @pytest.fixture(autouse=True)
 def run_before_and_after_tests():
     SQLModel.metadata.create_all(engine)
+    yield
+    SQLModel.metadata.drop_all(engine)
 
 
 def test_app():
