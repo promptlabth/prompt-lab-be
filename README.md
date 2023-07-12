@@ -5,7 +5,12 @@ step to run backend to local
 1. create environment use command `python -m venv env`
 
 2. activate a environment 
+
+
+
 - windows `./env/Scripts/activate`
+"NOTE" IF YOU RUN ON PYTHON version 3.11 upper you should run `Set-ExecutionPolicy -Scope CurrentUser -ExecutionPolicy Unrestricted` on Powershell And run `./env/bin/Activate.ps1`
+
 - Mac `source ./env/bin/activate`
 
 3. install library from requirements.txt use command `pip install -r requirements.txt`
