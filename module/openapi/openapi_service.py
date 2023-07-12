@@ -127,7 +127,7 @@ def get_old_caption_by_user(
     user: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization: str = Header(default=None),
     RefreshToken: str = Header(default=None),
-) -> list[prompt_messages_model.Promptmessages]:
+):
     """
     In this function is will be return a old message of user by userid
     """
@@ -171,7 +171,19 @@ def get_old_caption_by_user(
         
         try:
             for prompt in prompt_messages_by_id:
-                messages.append(prompt)
+                ms = Message(
+                    id=prompt.id,
+                    feature_id=prompt.feature_id,
+                    feature=prompt.feature.name,
+                    date_time=prompt.date_time,
+                    input_message=prompt.input_message,
+                    result_message=prompt.result_message,
+                    tone_id=prompt.tone_id,
+                    tone=prompt.tone.tone_name,
+                    user_id=prompt.user_id
+                )
+                # print(ms)
+                messages.append(ms)
 
             
             # print(messages)
