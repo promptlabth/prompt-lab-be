@@ -24,6 +24,7 @@ origins = [
     "https://promptlab-fe-git-dev-login-promptlab.vercel.app",
     "https://deploy-preview-10--comfy-cendol-1b50ad.netlify.app",
     "https://8b60-49-228-51-134.ngrok-free.app"
+    "https://8b60-49-228-51-134.ngrok-free.app"
     "https://ac9b-1-47-138-60.ngrok-free.app",
     "https://deploy-preview-11--comfy-cendol-1b50ad.netlify.app"
 ]
