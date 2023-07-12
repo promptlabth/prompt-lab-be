@@ -230,7 +230,7 @@ def proxy_open_ai_with_user(
             user = session.exec(statement=statement_user).one()
         except:
             return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=status.HTTP_200_OK,
                 content=OpenAiResDTO(
                     reply=assistant_reply,
                     error="Not Found Users"
@@ -244,7 +244,7 @@ def proxy_open_ai_with_user(
             tone = session.exec(statement=statement_tone).one()
         except:
             return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=status.HTTP_200_OK,
                 content=OpenAiResDTO(
                     reply=assistant_reply,
                     error="Not Found Tones"
@@ -258,7 +258,7 @@ def proxy_open_ai_with_user(
             feature = session.exec(statement=statement_feature).one()
         except:
             return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=status.HTTP_200_OK,
                 content=OpenAiResDTO(
                     reply=assistant_reply,
                     error="Not Found feature"
@@ -269,22 +269,32 @@ def proxy_open_ai_with_user(
         # ! but if not work will return prompt result
         try:
             prompt_message_db = prompt_messages_model.Promptmessages(
-                input_message=userReq.input_message,
-                result_message=assistant_reply,
-                feature=feature,
-                tone=tone,
-                user=user,
-                date_time=datetime.now()
+                    input_message=userReq.input_message,
+                    result_message=assistant_reply,
+                    feature=feature,
+                    tone=tone,
+                    user=user,
+                    date_time=datetime.now()
+                )
+        except:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=OpenAiResDTO(
+                    reply=assistant_reply,
+                    error="cannot create and save to db"
+                ).dict()
             )
+
+        try:
             session.add(prompt_message_db)
             session.commit()
             session.refresh(prompt_message_db)
         except:
             return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
+                status_code=status.HTTP_200_OK,
                 content=OpenAiResDTO(
                     reply=assistant_reply,
-                    error="cannot create and save to db"
+                    error="cannot save to db"
                 ).dict()
             )
     
