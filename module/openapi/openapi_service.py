@@ -122,7 +122,6 @@ class Message(BaseModel):
 @router.get("/get-caption", status_code=200)
 def get_old_caption_by_user(
     # userid,
-    request: Request,
     response: Response,
     user: Annotated[str, Depends(authentication.auth_depen_new)],
     Authorization: str = Header(default=None),
