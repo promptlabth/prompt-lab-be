@@ -29,7 +29,8 @@ origins = [
     "https://deploy-preview-11--comfy-cendol-1b50ad.netlify.app",
     "https://promptlabai.com",
     "https://deploy-preview-14--comfy-cendol-1b50ad.netlify.app",
-    "https://deploy-preview-15--comfy-cendol-1b50ad.netlify.app"
+    "https://deploy-preview-15--comfy-cendol-1b50ad.netlify.app",
+    "https://5ff1-49-228-48-246.ngrok-free.app"
 ]
 app.add_middleware(
     CORSMiddleware,
