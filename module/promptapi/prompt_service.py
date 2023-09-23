@@ -79,13 +79,12 @@ def generateTextReasult(
         "VERTEX"
     ]
     modelLanguage = random.choice(listModelLanguage)
-    modelLanguage="GPT"
     tone = getToneById(userReq.tone_id)
     language = getLanguageById(tone.language_id)
     feature = getFeaturById(userReq.feature_id)
     
     result = ""
-    if(modelLanguage == "GPT"):
+    if(modelLanguage == "GPT" or True):
         result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
     elif(modelLanguage == "VERTEX"):
         result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
