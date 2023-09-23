@@ -7,7 +7,7 @@ if TYPE_CHECKING:
     from model.tones.tone_model import Tones
     from model.features.features_model import Features
     from model.promptRows.prompt_row_model import Promptrows
-
+    from model.models.models_model import Models
 
 class Promptmessages(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -24,6 +24,9 @@ class Promptmessages(SQLModel, table=True):
     # 1 promptmessage have 1 tone
     tone: Optional["Tones"] = Relationship(back_populates="promptmessages")
 
+    model_id: Optional[int] = Field(default=None, foreign_key="models.id")
+    # 1 promptmessage have 1 model
+    model: Optional["Models"] = Relationship(back_populates="promptmessages")
 
     feature_id : Optional[int] = Field(default=None, foreign_key="features.id")
     # 1 promptmessage have 1 feature

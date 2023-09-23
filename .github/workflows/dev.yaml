@@ -24,12 +24,19 @@ jobs:
       run: |
         gcloud auth configure-docker
 
-    - name: create-cred-json
-      id: create-cred-json
+    - name: create-cred-firebase-json
+      id: create-cred-firebase-json
       uses: jsdaniell/create-json@v1.2.2
       with:
         name: "firebase-credential.json"
         json: ${{secrets.FIREBASE_KEY}}
+    
+    - name: create-cred-vertex-json
+      id: create-cred-vertex-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "gcp_sa_key.json"
+        json: ${{secrets.GCP_VERTEX_KEY}}
 
     - name: Build and push Docker image
       run: |
@@ -43,5 +50,6 @@ jobs:
         --region asia-southeast1 \
         --platform managed \
         --allow-unauthenticated \
-        --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME_DEV }},FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }},DEPLOY=DEV \
-        --max-instances=10
+        --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME_DEV }},FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }},DEPLOY=DEV,GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} \
+        --max-instances=10 \
+        --memory 1Gi
