@@ -22,6 +22,7 @@ from model.promptMessages import prompt_messages_model
 from model.users import users_model
 from model.tones import tone_model
 from model.features import features_model
+from model.models import models_model
 from datetime import datetime
 
 dotenv.load_dotenv()
@@ -226,11 +227,6 @@ def proxy_open_ai_with_user(
     )
     assistant_reply = result['choices'][0]['message']['content']
 
-    # return OpenAiResDTO(
-    #     reply=assistant_reply,
-    #     error=""
-    # )
-
 
     # # TODO: add a database zone for collect promptMessages
     with database.session_engine() as session:
@@ -276,6 +272,18 @@ def proxy_open_ai_with_user(
                 ).dict()
             )
         
+        try:
+            statement_model = select(models_model.Models).where(models_model.Models.model_name == "GPT")
+            modelGPT = session.exec(statement=statement_model).one()
+        except:
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=OpenAiResDTO(
+                    reply=assistant_reply,
+                    error="Not found Model GPT"
+                ).dict()
+            )
+        
         # * save data to database
         # ! but if not work will return prompt result
         try:
@@ -285,6 +293,7 @@ def proxy_open_ai_with_user(
                     feature=feature,
                     tone=tone,
                     user=user,
+                    model=modelGPT,
                     date_time=datetime.now()
                 )
         except:
