@@ -66,19 +66,10 @@ def generateTextReasult(
     In this function is will be return a old message of user by userid
     """
     
-    listModelLanguage = [
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "VERTEX",
-        "VERTEX",
-        "VERTEX"
-    ]
-    modelLanguage = random.choice(listModelLanguage)
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.7, 0.3]
+
+    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     tone = getToneById(userReq.tone_id)
     language = getLanguageById(tone.language_id)
     feature = getFeaturById(userReq.feature_id)
