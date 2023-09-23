@@ -84,7 +84,7 @@ def generateTextReasult(
     feature = getFeaturById(userReq.feature_id)
     
     result = ""
-    if(modelLanguage == "GPT" or True):
+    if(modelLanguage == "GPT"):
         result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
 
     else:
