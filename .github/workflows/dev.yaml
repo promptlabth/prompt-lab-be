@@ -30,6 +30,13 @@ jobs:
       with:
         name: "firebase-credential.json"
         json: ${{secrets.FIREBASE_KEY}}
+    
+    - name: create-cred-json
+      id: create-cred-json
+      uses: jsdaniell/create-json@v1.2.2
+      with:
+        name: "gcp_sa_key.json"
+        json: ${{secrets.GCP_VERTEX_KEY}}
 
     - name: Build and push Docker image
       run: |
