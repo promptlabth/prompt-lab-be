@@ -25,14 +25,14 @@ jobs:
         gcloud auth configure-docker
 
     - name: create-cred-firebase-json
-      id: create-cred-json
+      id: create-cred-firebase-json
       uses: jsdaniell/create-json@v1.2.2
       with:
         name: "firebase-credential.json"
         json: ${{secrets.FIREBASE_KEY}}
     
     - name: create-cred-vertex-json
-      id: create-cred-json
+      id: create-cred-vertex-json
       uses: jsdaniell/create-json@v1.2.2
       with:
         name: "gcp_sa_key.json"
