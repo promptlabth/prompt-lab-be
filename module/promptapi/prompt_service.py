@@ -27,6 +27,7 @@ from model.features import features_model
 from datetime import datetime
 
 from module.promptapi.prompt_utils.repository import get_tone_by_id, get_language_by_id, get_feature_by_id
+from module.promptapi.prompt_utils.open_ai import openAiGenerate
 
 dotenv.load_dotenv()
 
@@ -105,17 +106,14 @@ def generateTextReasult(
     language = get_language_by_id(tone.language_id)
     feature = get_feature_by_id(userReq.feature_id)
     
-    
+    result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+
 
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
-            "data" : {
-                "tone" : tone.tone_name,
-                "language" : language.language_name,
-                "feature" : feature.name
-            },
+            "data" : result,
             "model" : modelLanguage
         }
     )
