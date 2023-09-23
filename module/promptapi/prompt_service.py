@@ -58,7 +58,7 @@ router = APIRouter(
 openai.api_key = os.environ.get("OPENAI_KEY")
 
 
-@router.post("/generate/free")
+@router.post("/generate-free-test")
 def generateTextReasult(
     userReq: OpenAiRequest
 ):
