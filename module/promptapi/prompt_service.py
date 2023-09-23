@@ -81,8 +81,12 @@ def generateTextReasult(
     language = getLanguageById(tone.language_id)
     feature = getFeaturById(userReq.feature_id)
     
-    result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+    result = ""
+    if(modelLanguage == "GPT"):
+        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
 
+    else:
+        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
 
 
     return JSONResponse(

@@ -41,14 +41,12 @@ def openAiGenerate(language, feature, tone, input_message):
     )
     openai.api_key = os.environ.get("OPENAI_KEY")
     
-    # result = openai.ChatCompletion.create(
-    #     model="gpt-3.5-turbo",
-    #     messages=[
-    #         {"role": "user", "content": prompt},
-    #     ]
-    # )
-    # assistant_reply = result['choices'][0]['message']['content']
-    
-    assistant_reply = prompt
+    result = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt},
+        ]
+    )
+    assistant_reply = result['choices'][0]['message']['content']
 
     return assistant_reply
