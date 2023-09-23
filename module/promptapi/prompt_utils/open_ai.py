@@ -1,6 +1,7 @@
 import openai
 import os 
 
+openai.api_key = os.environ.get("OPENAI_KEY")
 
 def openAiGenerate(language, feature, tone, input_message):
     prompt_list = {
