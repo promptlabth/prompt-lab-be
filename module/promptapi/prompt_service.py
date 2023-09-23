@@ -28,6 +28,7 @@ from datetime import datetime
 
 from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getToneById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
+from module.promptapi.prompt_utils.vertex_parameter import vertexGenerator
 
 dotenv.load_dotenv()
 
@@ -76,37 +77,11 @@ def generateTextReasult(
         "VERTEX"
     ]
     modelLanguage = random.choice(listModelLanguage)
-
-    listPrompt = {
-        "th" : {
-            "เขียนแคปชั่นขายของ" : """Write a social media announcement about [{topic}] with hashtags and emojis The feeling of the message should be [{filling}]. [เป็นภาษาไทยเท่านั้น]""",
-            "ช่วยคิดคอนเทนต์" : """ """,
-            "เขียนบทความ": """ """,
-            "เขียนสคริปวิดีโอสั้น" : """ """,
-            "เขียนประโยคเปิดคลิป" : """ """
-        },
-        "en" : {
-            "เขียนแคปชั่นขายของ" : "",
-            "ช่วยคิดคอนเทนต์" : "",
-            "เขียนบทความ": "",
-            "เขียนสคริปวิดีโอสั้น" : "",
-            "เขียนประโยคเปิดคลิป" : ""
-        },
-        "in" : {
-            "เขียนแคปชั่นขายของ" : "",
-            "ช่วยคิดคอนเทนต์" : "",
-            "เขียนบทความ": "",
-            "เขียนสคริปวิดีโอสั้น" : "",
-            "เขียนประโยคเปิดคลิป" : ""
-        }
-    }
-    prompt = ""
-    
     tone = getToneById(userReq.tone_id)
     language = getLanguageById(tone.language_id)
     feature = getFeaturById(userReq.feature_id)
     
-    result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+    result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
 
 
 

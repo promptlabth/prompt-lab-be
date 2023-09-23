@@ -6,6 +6,8 @@ test.py
 
 prompt-lab-*.json
 firebase-credential.json
+gcp_sa_key.json
+temp
 
 .vscode/
 
