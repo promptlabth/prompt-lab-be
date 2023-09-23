@@ -5,7 +5,7 @@ from model.features import features_model
 from sqlmodel import select
 
 
-def get_tone_by_id (id) :
+def getToneById (id) :
     with database.session_engine() as session:
         try:
             statement_tone = select(tone_model.Tones).where(tone_model.Tones.id == id)
@@ -14,7 +14,7 @@ def get_tone_by_id (id) :
         except:
             return False
 
-def get_language_by_id (id):
+def getLanguageById (id):
     with database.session_engine() as session:
         try:
             statement = select(languages_model.Languages).where(languages_model.Languages.id == id)
@@ -23,7 +23,7 @@ def get_language_by_id (id):
         except:
             return False
 
-def get_feature_by_id(id):
+def getFeaturById(id):
     with database.session_engine() as session:
         try:
             statement = select(features_model.Features).where(features_model.Features.id == id)

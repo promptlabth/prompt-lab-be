@@ -15,7 +15,7 @@ def openAiGenerate(language, feature, tone, input_message):
             "เขียนสคริปวิดีโอสั้น" : """write full scripts for short video that talk about [ {input}] and the feeling of scripts is [ {type}] [เป็นภาษาไทยเท่านั้น]:""",
             "เขียนประโยคเปิดคลิป" : """Compose a Captivating Clickbait Sentence but not incloud 'Click' in Sentence for Openning a Short Video To Talk About [ {input}] And Look [ {type}] That Instantly Grabs the Viewer's Attention and Sets the Stage for an Unforgettable Experience [เป็นภาษาไทยเท่านั้น]"""
         },
-        "en" : {
+        "eng" : {
             "เขียนแคปชั่นขายของ" : "Write a social media announcement about [ {input}] and the feeling of message is [ {type}]:",
             "ช่วยคิดคอนเทนต์" : """Create list of idea content with short biref about [ {input}] that all content should make feeling like [ {type}] 
         show list of idea with short biref:""",
@@ -40,13 +40,15 @@ def openAiGenerate(language, feature, tone, input_message):
         type = tone
     )
     openai.api_key = os.environ.get("OPENAI_KEY")
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt},
-        ]
-    )
-    assistant_reply = result['choices'][0]['message']['content']
+    
+    # result = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[
+    #         {"role": "user", "content": prompt},
+    #     ]
+    # )
+    # assistant_reply = result['choices'][0]['message']['content']
+    
     assistant_reply = prompt
 
     return assistant_reply
