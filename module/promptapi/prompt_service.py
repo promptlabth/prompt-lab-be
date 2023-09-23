@@ -92,13 +92,13 @@ def generateTextReasult(
     feature = getFeaturById(userReq.feature_id)
     
     result = "test"
-    if(os.environ.get("DEPLOY") == "PROD"):
-        if(modelLanguage == "GPT"):
-            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-            model = getModelAIById("GPT")
-        elif(modelLanguage == "VERTEX"):
-            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-            model = getModelAIById("VERTEX")
+
+    if(modelLanguage == "GPT"):
+        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+        model = getModelAIById("GPT")
+    elif(modelLanguage == "VERTEX"):
+        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+        model = getModelAIById("VERTEX")
 
     try:
         prompt_message_db = prompt_messages_model.Promptmessages(
@@ -180,14 +180,14 @@ def generateTextReasult(
         model = getModelAIById("GPT")
     else:
         model = getModelAIById("VERTEX")
-        
-    if(os.environ.get("DEPLOY") == "PROD"):
-        if(modelLanguage == "GPT"):
-            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-            model = getModelAIById("GPT")
-        elif(modelLanguage == "VERTEX"):
-            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-            model = getModelAIById("VERTEX")
+
+
+    if(modelLanguage == "GPT"):
+        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+        model = getModelAIById("GPT")
+    elif(modelLanguage == "VERTEX"):
+        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+        model = getModelAIById("VERTEX")
 
     try:
         prompt_message_db = prompt_messages_model.Promptmessages(
