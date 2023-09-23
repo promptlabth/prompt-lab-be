@@ -19,6 +19,8 @@ class OpenAiResDTO(BaseModel):
     reply:str
     error:str
 
+openai.api_key = os.environ.get("OPENAI_KEY")
+
 class OpenAiRequest(BaseModel):
     """
     this class is model for Request on BaseModel
@@ -42,8 +44,6 @@ def proxy_open_ai(userReq: OpenAiRequest):
     this function to create proxy to openai
     
     """
-
-    openai.api_key = os.environ.get("OPENAI_KEY")
 
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

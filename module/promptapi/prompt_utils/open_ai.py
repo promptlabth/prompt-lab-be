@@ -2,7 +2,6 @@ import openai
 import os 
 
 
-
 def openAiGenerate(language, feature, tone, input_message):
     prompt_list = {
         "th" : {
@@ -38,8 +37,7 @@ def openAiGenerate(language, feature, tone, input_message):
     prompt = prompt.format(
         input = input_message,
         type = tone
-    )
-    openai.api_key = os.environ.get("OPENAI_KEY")
+    ) 
     
     result = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",

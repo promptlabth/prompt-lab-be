@@ -52,7 +52,10 @@ router = APIRouter(
     tags=["Language AI Service"],
     responses={404: {"description" : "Not Found"}}
 )
-router.counter = 0
+
+
+
+openai.api_key = os.environ.get("OPENAI_KEY")
 
 
 @router.post("/generate/free")
@@ -62,7 +65,6 @@ def generateTextReasult(
     """
     In this function is will be return a old message of user by userid
     """
-    openai.api_key = os.environ.get("OPENAI_KEY")
     
     listModelLanguage = [
         "GPT",
@@ -82,7 +84,7 @@ def generateTextReasult(
     feature = getFeaturById(userReq.feature_id)
     
     result = ""
-    if(modelLanguage == "GPT"):
+    if(modelLanguage == "GPT" or True):
         result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
 
     else:
