@@ -104,11 +104,11 @@ def generateTextReasult(
         prompt_message_db = prompt_messages_model.Promptmessages(
             input_message=userReq.input_message,
             result_message=result,
-                    feature=feature,
-                    tone=tone,
-                    user=user,
-                    model=model,
-                    date_time=datetime.now()
+            feature=feature,
+            tone=tone,
+            user=user,
+            model=model,
+            date_time=datetime.now()
         )
     except:
         return JSONResponse(
@@ -176,11 +176,6 @@ def generateTextReasult(
     
     result = "test"
     model = models_model.Models()
-    if(modelLanguage == "GPT"):
-        model = getModelAIById("GPT")
-    else:
-        model = getModelAIById("VERTEX")
-
 
     if(modelLanguage == "GPT"):
         result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
