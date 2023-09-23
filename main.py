@@ -4,6 +4,7 @@ from module.openapi import openapi_service_free, openapi_service, predict_servic
 from module.usersapi import userapi_service
 from module.testapi import testapit_service
 
+from module.promptapi import prompt_service
 
 from firebase import init_firebase
 
@@ -52,6 +53,7 @@ app.include_router(openapi_service.router)
 app.include_router(predict_service.router)
 app.include_router(testapit_service.router, prefix="/testing")
 app.include_router(userapi_service.router, prefix="/users")
+app.include_router(prompt_service.router, prefix="/test")
 
 
 # app.include_router(testapit_service.router, prefix="/test")

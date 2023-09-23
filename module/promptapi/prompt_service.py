@@ -26,6 +26,8 @@ from model.tones import tone_model
 from model.features import features_model
 from datetime import datetime
 
+from module.promptapi.prompt_utils.repository import get_tone_by_id, get_language_by_id, get_feature_by_id
+
 dotenv.load_dotenv()
 
 class OpenAiRequest(BaseModel):
@@ -68,11 +70,11 @@ def generateTextReasult(
         "GPT",
         "GPT",
         "GPT",
-        "VERTEX"
-        "VERTEX"
+        "VERTEX",
+        "VERTEX",
         "VERTEX"
     ]
-    modelLanguage = listModelLanguage[random.randint(1,10)]
+    modelLanguage = random.choice(listModelLanguage)
 
     listPrompt = {
         "th" : {
@@ -98,44 +100,22 @@ def generateTextReasult(
         }
     }
     prompt = ""
-    with database.session_engine() as session:
-        try:
-            statement_tone = select(tone_model.Tones).where(tone_model.Tones.id == userReq.tone_id)
-            tone = session.exec(statement=statement_tone).one()
-        except:
-            return JSONResponse(
-                status_code=status.HTTP_404_NOT_FOUND,
-                content={
-                    "data": "true"
-                }
-            )
     
-
-    model = ""
-
-    if(router.counter > 7):
-        model = "vertex"
-        if(router.counter >= 10):
-            router.counter = 0
-    else:
-        model = "gpt"
+    tone = get_tone_by_id(userReq.tone_id)
+    language = get_language_by_id(tone.language_id)
+    feature = get_feature_by_id(userReq.feature_id)
     
-    if(model == "gpt"):
-        result = openai.ChatCompletion.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {
-
-                }
-            ]
-        )
     
 
 
     return JSONResponse(
         status_code=status.HTTP_200_OK,
         content={
-            "data" : router.counter,
-            "model" : model
+            "data" : {
+                "tone" : tone.tone_name,
+                "language" : language.language_name,
+                "feature" : feature.name
+            },
+            "model" : modelLanguage
         }
     )
