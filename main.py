@@ -4,6 +4,7 @@ from module.openapi import openapi_service_free, openapi_service, predict_servic
 from module.usersapi import userapi_service
 from module.testapi import testapit_service
 
+from module.promptapi import prompt_service
 
 from firebase import init_firebase
 
@@ -28,7 +29,10 @@ origins = [
     "https://ac9b-1-47-138-60.ngrok-free.app",
     "https://deploy-preview-11--comfy-cendol-1b50ad.netlify.app",
     "https://promptlabai.com",
-    "https://deploy-preview-14--comfy-cendol-1b50ad.netlify.app"
+    "https://deploy-preview-14--comfy-cendol-1b50ad.netlify.app",
+    "https://deploy-preview-15--comfy-cendol-1b50ad.netlify.app",
+    "https://5ff1-49-228-48-246.ngrok-free.app",
+    "https://cac0-49-228-51-239.ngrok-free.app"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -49,6 +53,7 @@ app.include_router(openapi_service.router)
 app.include_router(predict_service.router)
 app.include_router(testapit_service.router, prefix="/testing")
 app.include_router(userapi_service.router, prefix="/users")
+app.include_router(prompt_service.router, prefix="/test")
 
 
 # app.include_router(testapit_service.router, prefix="/test")
