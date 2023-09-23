@@ -84,7 +84,7 @@ def vertexGenerator(language, feature, tone, input_message):
         },
     }
     credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
-    vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
+    vertexai.init(project=os.environ.get("GCP_VERTEX_PROJECT_NAME"), location="us-central1", credentials=credential)
     # vertexai.init(credentials=credential)
     vertex_model = TextGenerationModel.from_pretrained(model_list[feature]["model"])
     parametor = model_list[feature]["parametor"]
