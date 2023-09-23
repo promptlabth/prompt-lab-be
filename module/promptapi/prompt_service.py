@@ -94,6 +94,9 @@ def generateTextReasult(
         status_code=status.HTTP_200_OK,
         content={
             "data" : result,
-            "model" : modelLanguage
+            "model" : modelLanguage,
+            "lang": language.language_name,
+            "tone" : tone.tone_name,
+            "feature" : feature.name
         }
     )
