@@ -46,14 +46,14 @@ def proxy_open_ai(userReq: OpenAiRequest):
     
     """
 
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": userReq.prompt},
-        ],
-    )
+    # result = openai.ChatCompletion.create(
+    #     model="gpt-3.5-turbo",
+    #     messages=[
+    #         {"role": "user", "content": userReq.prompt},
+    #     ],
+    # )
 
-    assistant_reply = result['choices'][0]['message']['content']
+    assistant_reply = "Test"
     
     with database.session_engine() as session:
          # * find tone by tone id
