@@ -79,6 +79,7 @@ def generateTextReasult(
         "VERTEX"
     ]
     modelLanguage = random.choice(listModelLanguage)
+    modelLanguage="GPT"
     tone = getToneById(userReq.tone_id)
     language = getLanguageById(tone.language_id)
     feature = getFeaturById(userReq.feature_id)
