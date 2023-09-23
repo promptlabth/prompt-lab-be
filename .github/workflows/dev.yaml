@@ -52,4 +52,4 @@ jobs:
         --allow-unauthenticated \
         --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME_DEV }},FIREBASE_API_KEY=${{ secrets.FIREBASE_API_KEY }},DEPLOY=DEV,GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }} \
         --max-instances=10 \
-        --memory 1G
+        --memory 1Gi
