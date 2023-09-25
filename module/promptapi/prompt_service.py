@@ -87,11 +87,40 @@ def generateTextReasult(
     modelLanguage = random.choice(listModelLanguage)
 
     user = getUserByFirebaseId(firebaseId)
+    # get tone by id
     tone = getToneById(userReq.tone_id)
-    language = getLanguageById(tone.language_id)
-    feature = getFeaturById(userReq.feature_id)
+    if(tone == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
     
-    result = "test"
+    # get language by id
+    language = getLanguageById(tone.language_id)
+    if(language == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
+    
+    # get feature by id
+    feature = getFeaturById(userReq.feature_id)
+    if(feature == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
+    
+    result = "กรุณาลองใหม่ในภายหลัง"
 
     if(modelLanguage == "GPT"):
         result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
