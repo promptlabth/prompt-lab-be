@@ -72,19 +72,11 @@ def generateTextReasult(
     In this function is will be return a old message of user by userid
     """
     
-    listModelLanguage = [
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "VERTEX",
-        "VERTEX",
-        "VERTEX"
-    ]
-    modelLanguage = random.choice(listModelLanguage)
+
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.7, 0.3]
+
+    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
 
     user = getUserByFirebaseId(firebaseId)
     # get tone by id
@@ -185,19 +177,10 @@ def generateTextReasult(
     In this function is will be return a old message of user by userid
     """
     
-    listModelLanguage = [
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "GPT",
-        "VERTEX",
-        "VERTEX",
-        "VERTEX"
-    ]
-    modelLanguage = random.choice(listModelLanguage)
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.7, 0.3]
+
+    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
 
     # get tone by id
     tone = getToneById(userReq.tone_id)
@@ -241,6 +224,7 @@ def generateTextReasult(
     elif(modelLanguage == "VERTEX"):
         result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
         model = getModelAIById("VERTEX")
+
 
     try:
         prompt_message_db = prompt_messages_model.Promptmessages(
