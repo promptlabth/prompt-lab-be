@@ -199,9 +199,38 @@ def generateTextReasult(
     ]
     modelLanguage = random.choice(listModelLanguage)
 
+    # get tone by id
     tone = getToneById(userReq.tone_id)
+    if(tone == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
+    
+    # get language by id
     language = getLanguageById(tone.language_id)
+    if(language == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
+    
+    # get feature by id
     feature = getFeaturById(userReq.feature_id)
+    if(feature == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
     
     result = "test"
     model = models_model.Models()
