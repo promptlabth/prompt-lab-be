@@ -91,7 +91,6 @@ def vertexGenerator(language, feature, tone, input_message):
         input = input_message,
         type = tone
     )
-    print(prompt)
     resp = vertex_model.predict(prompt, **parametor)
 
     return resp.text
