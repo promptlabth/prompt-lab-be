@@ -1,6 +1,6 @@
 import json
 import vertexai
-from vertexai.language_models import TextGenerationModel
+from vertexai.preview.language_models import TextGenerationModel
 from google.oauth2 import service_account
 import os
 
@@ -28,7 +28,7 @@ def vertexGenerator(language, feature, tone, input_message):
                 }
         },
         "เขียนบทความ": {
-            "model": "text-bison@001",
+            "model": "text-bison-32k",
             "parametor":
                 {
                     "max_output_tokens": 5500,
@@ -38,7 +38,7 @@ def vertexGenerator(language, feature, tone, input_message):
                 }
         },
         "เขียนสคริปวิดีโอสั้น": {
-            "model": "text-bison@001",
+            "model": "text-bison-32k",
             "parametor":
                 {
                     "max_output_tokens": 6000,
@@ -51,9 +51,8 @@ def vertexGenerator(language, feature, tone, input_message):
             "model":"text-bison@001",
             "parametor":
                 {
-                    # "candidate_count": 1,
-                    "max_output_tokens": 60,
-                    "temperature": 0.6,
+                    "max_output_tokens": 1024,
+                    "temperature": 0.5,
                     "top_p": 0.8,
                     "top_k": 40
                 }
@@ -85,7 +84,6 @@ def vertexGenerator(language, feature, tone, input_message):
     }
     credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
     vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
-    # vertexai.init(credentials=credential)
     vertex_model = TextGenerationModel.from_pretrained(model_list[feature]["model"])
     parametor = model_list[feature]["parametor"]
     prompt = prompt_list[language][feature]
@@ -93,6 +91,7 @@ def vertexGenerator(language, feature, tone, input_message):
         input = input_message,
         type = tone
     )
+    print(prompt)
     resp = vertex_model.predict(prompt, **parametor)
 
     return resp.text
