@@ -132,7 +132,12 @@ def login_user(Authorization:str = Header(default=None)):
         # if user have some change profile on facebook
         change_pic = extract["picture"] != old_user.profilepic
         change_name = extract["name"] != old_user.name
-        change_email = extract["email"] != old_user.email
+        try:
+            email = extract["email"]
+        except:
+            email = None
+
+        change_email = email != old_user.email
         # if not change (will return the user on database)
         if(not (change_pic or change_name or change_email)):
             print("\n\n\n")
@@ -143,7 +148,7 @@ def login_user(Authorization:str = Header(default=None)):
         if(change_name):
             old_user.name = extract["name"]
         if(change_email):
-            old_user.email = extract["email"]
+            old_user.email = email
         # Update database if something is changed
         with database.session_engine() as session:
             session.add(old_user)
