@@ -32,18 +32,18 @@ router = APIRouter(
 )
 
 # list all user (we should run a middleware for authentications)
-@router.get("/", status_code=200, response_model=list[users_model.Users])
-def list_users():
-    """
-    list all user in the table
-    """
-    data = []
-    with database.session_engine() as session:
-        users_exec = select(users_model.Users)
-        users = session.exec(statement=users_exec)
-        for user in users:
-            data.append(user)
-    return data
+# @router.get("/", status_code=200, response_model=list[users_model.Users])
+# def list_users():
+#     """
+#     list all user in the table
+#     """
+#     data = []
+#     with database.session_engine() as session:
+#         users_exec = select(users_model.Users)
+#         users = session.exec(statement=users_exec)
+#         for user in users:
+#             data.append(user)
+#     return data
 
 # def login_user(user_agent: str = Header(default=None)):
 
