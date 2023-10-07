@@ -32,7 +32,7 @@ origins = [
     "https://deploy-preview-14--comfy-cendol-1b50ad.netlify.app",
     "https://deploy-preview-15--comfy-cendol-1b50ad.netlify.app",
     "https://5ff1-49-228-48-246.ngrok-free.app",
-    "https://aabd-49-228-48-254.ngrok-free.app"
+    "https://babe-1-46-25-216.ngrok-free.app"
 ]
 app.add_middleware(
     CORSMiddleware,
