@@ -101,9 +101,14 @@ def login_user(Authorization:str = Header(default=None)):
     if(not old_user):
 
         try:
+            email = extract["email"]
+        except:
+            email = None
+
+        try:
             print(extract)
             user = users_model.Users(
-                email=extract["email"], 
+                email=email, 
                 name=extract["name"],
                 profilepic=extract["picture"],
                 firebase_id=extract["uid"]
