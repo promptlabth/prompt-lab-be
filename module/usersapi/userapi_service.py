@@ -101,6 +101,7 @@ def login_user(Authorization:str = Header(default=None)):
     if(not old_user):
 
         try:
+            print(extract)
             user = users_model.Users(
                 email=extract["email"], 
                 name=extract["name"],
@@ -108,7 +109,10 @@ def login_user(Authorization:str = Header(default=None)):
                 firebase_id=extract["uid"]
                 )
         except:
-            raise HTTPException(status_code=403, detail="CREATE User model failed")
+            raise HTTPException(status_code=403, detail={
+                "err" : "CREATE User model failed",
+                "extract" : extract
+            })
 
         try:
             with database.session_engine() as session:
