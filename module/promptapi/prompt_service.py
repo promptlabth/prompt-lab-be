@@ -57,6 +57,17 @@ router = APIRouter(
 )
 
 
+class Message(BaseModel):
+    id:int
+    user_id:int
+    tone_id:int
+    tone:str
+    date_time: datetime
+    feature_id:str
+    feature:str
+    input_message:str
+    result_message: str
+
 openai.api_key = os.environ.get("OPENAI_KEY")
 
 
@@ -263,3 +274,79 @@ def generateTextReasult(
     )
         
     return response_data
+
+
+@router.get("/get-caption", status_code=200)
+def get_old_caption_by_user(
+    # userid,
+    response: Response,
+    user: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
+):
+    """
+    In this function is will be return a old message of user by userid
+    """
+
+    messages = []
+    # print(userid)
+
+    with database.session_engine() as session:
+        
+        # Find id of user by firebase id
+        
+        try:
+            statement_prompt = select(users_model.Users).where(
+                users_model.Users.firebase_id == user
+            ) 
+            user_exec = session.exec(statement=statement_prompt).one()
+            # print("userid = ", user_exec.id)
+        except:
+            return JSONResponse(
+                content={
+                        "error": "Not found a user by userid"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+
+
+        # Find a all prompt by userid
+        try:
+            statement_prompt = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user_id == user_exec.id
+
+            ) 
+            prompt_messages_by_id = session.exec(statement=statement_prompt).all()
+        except:
+            return JSONResponse(
+                content={
+                        "error": "Not found a Prompt by userid"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
+        
+        try:
+            for prompt in prompt_messages_by_id:
+                ms = Message(
+                    id=prompt.id,
+                    feature_id=prompt.feature_id,
+                    feature=prompt.feature.name,
+                    date_time=prompt.date_time,
+                    input_message=prompt.input_message,
+                    result_message=prompt.result_message,
+                    tone_id=prompt.tone_id,
+                    tone=prompt.tone.tone_name,
+                    user_id=prompt.user_id
+                )
+                # print(ms)
+                messages.append(ms)
+
+            
+            # print(messages)
+            return messages
+        
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Found a error // you not have a prompt message, get one?"
+            )
