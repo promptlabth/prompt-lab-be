@@ -1,8 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import openapi_service_free, openapi_service, predict_service, tone_service
+from module.openapi import predict_service, tone_service
 from module.usersapi import userapi_service
-from module.testapi import testapit_service
 
 from module.promptapi import prompt_service
 
@@ -32,7 +31,7 @@ origins = [
     "https://deploy-preview-14--comfy-cendol-1b50ad.netlify.app",
     "https://deploy-preview-15--comfy-cendol-1b50ad.netlify.app",
     "https://5ff1-49-228-48-246.ngrok-free.app",
-    "https://cac0-49-228-51-239.ngrok-free.app"
+    "https://babe-1-46-25-216.ngrok-free.app"
 ]
 app.add_middleware(
     CORSMiddleware,
@@ -46,12 +45,7 @@ app.add_middleware(
 def hello_word() -> dict :
   return {"hello" : "world"}
 
-app.include_router(openapi_service_free.router)
-app.include_router(openapi_service.router_with_dependency)
-app.include_router(openapi_service.router)
-# app.include_router(openapi_service.router_with_dependency)
 app.include_router(predict_service.router)
-app.include_router(testapit_service.router, prefix="/testing")
 app.include_router(userapi_service.router, prefix="/users")
 app.include_router(prompt_service.router)
 

@@ -1,6 +1,7 @@
 import json
 import vertexai
-from vertexai.preview.language_models import TextGenerationModel
+from vertexai.preview.language_models import TextGenerationModel as Preview_TextGenerationModel
+from vertexai.language_models import TextGenerationModel
 from google.oauth2 import service_account
 import os
 
@@ -84,7 +85,13 @@ def vertexGenerator(language, feature, tone, input_message):
     }
     credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
     vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
-    vertex_model = TextGenerationModel.from_pretrained(model_list[feature]["model"])
+    
+    # Choose model between Preview and Stable Version
+    if model_list[feature]["model"] == "text-bison-32k":
+        vertex_model = Preview_TextGenerationModel.from_pretrained(model_list[feature]["model"])
+    else:
+        vertex_model = TextGenerationModel.from_pretrained(model_list[feature]["model"])
+        
     parametor = model_list[feature]["parametor"]
     prompt = prompt_list[language][feature]
     prompt = prompt.format(

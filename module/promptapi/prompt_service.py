@@ -57,6 +57,17 @@ router = APIRouter(
 )
 
 
+class Message(BaseModel):
+    id:int
+    user_id:int
+    tone_id:int
+    tone:str
+    date_time: datetime
+    feature_id:str
+    feature:str
+    input_message:str
+    result_message: str
+
 openai.api_key = os.environ.get("OPENAI_KEY")
 
 
@@ -73,11 +84,11 @@ def generateTextReasult(
     """
     
 
-    model_language_choices = ["GPT", "VERTEX"]
-    weights = [0.2, 0.8]
+    # model_language_choices = ["GPT", "VERTEX"]
+    # weights = [0.2, 0.8]
 
-    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
-
+    # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    modelLanguage = "VERTEX"
     user = getUserByFirebaseId(firebaseId)
     # get tone by id
     tone = getToneById(userReq.tone_id)
@@ -177,10 +188,11 @@ def generateTextReasult(
     In this function is will be return a old message of user by userid
     """
     
-    model_language_choices = ["GPT", "VERTEX"]
-    weights = [0.2, 0.8]
+    # model_language_choices = ["GPT", "VERTEX"]
+    # weights = [0.2, 0.8]
 
-    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    modelLanguage = "VERTEX"
 
     # get tone by id
     tone = getToneById(userReq.tone_id)
