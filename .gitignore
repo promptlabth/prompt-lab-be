@@ -12,3 +12,5 @@ temp
 .vscode/
 
 database.db
+
+.DS_Store
