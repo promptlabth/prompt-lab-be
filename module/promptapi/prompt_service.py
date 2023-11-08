@@ -125,11 +125,19 @@ def generateTextReasult(
     result = "กรุณาลองใหม่ในภายหลัง"
 
     if(modelLanguage == "GPT"):
-        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("GPT")
+        try:
+            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("GPT")
+        except:
+            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("VERTEX")
     elif(modelLanguage == "VERTEX"):
-        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("VERTEX")
+        try:
+            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("VERTEX")
+        except:
+            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("GPT")
 
     try:
         prompt_message_db = prompt_messages_model.Promptmessages(
@@ -178,101 +186,6 @@ def generateTextReasult(
         )
         
     return response_data
-
-@router.post("/generate-random-free")
-def generateTextReasult(
-    userReq: OpenAiRequest,
-):
-    """
-    In this function is will be return a old message of user by userid
-    """
-    
-    model_language_choices = ["GPT", "VERTEX"]
-    weights = [0.8, 0.2]
-    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
-
-    # get tone by id
-    tone = getToneById(userReq.tone_id)
-    if(tone == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    # get language by id
-    language = getLanguageById(tone.language_id)
-    if(language == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    # get feature by id
-    feature = getFeaturById(userReq.feature_id)
-    if(feature == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    result = "test"
-    model = models_model.Models()
-
-    if(modelLanguage == "GPT"):
-        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("GPT")
-    elif(modelLanguage == "VERTEX"):
-        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("VERTEX")
-
-
-    try:
-        prompt_message_db = prompt_messages_model.Promptmessages(
-            input_message=userReq.input_message,
-            result_message=result,
-            feature=feature,
-            tone=tone,
-            user=None,
-            model=model,
-            date_time=datetime.now()
-        )
-    except:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content=ResponseHttp(
-                reply=result,
-                error="cannot create and save to db"
-            ).dict()
-        )
-    with database.session_engine() as session:
-        try:
-            session.add(prompt_message_db)
-            session.commit()
-            session.refresh(prompt_message_db)
-        except:
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content=ResponseHttp(
-                    reply=result,
-                    error="cannot save to db"
-                ).dict()
-            )
-    response_data=JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content=ResponseHttp(reply=result, error="").dict(),
-    )
-        
-    return response_data
-
 
 @router.get("/get-caption", status_code=200)
 def get_old_caption_by_user(
