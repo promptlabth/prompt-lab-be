@@ -84,8 +84,11 @@ def generateTextReasult(
     """
     
 
-    # model_language_choices = ["GPT", "VERTEX"]
-    # weights = [0.2, 0.8]
+
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.8, 0.2]
+    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+
 
     # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     modelLanguage = "VERTEX"
@@ -126,11 +129,19 @@ def generateTextReasult(
     result = "กรุณาลองใหม่ในภายหลัง"
 
     if(modelLanguage == "GPT"):
-        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("GPT")
+        try:
+            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("GPT")
+        except:
+            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("VERTEX")
     elif(modelLanguage == "VERTEX"):
-        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("VERTEX")
+        try:
+            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("VERTEX")
+        except:
+            result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("GPT")
 
     try:
         prompt_message_db = prompt_messages_model.Promptmessages(
@@ -180,98 +191,78 @@ def generateTextReasult(
         
     return response_data
 
-@router.post("/generate-random-free")
-def generateTextReasult(
-    userReq: OpenAiRequest,
+@router.get("/get-caption", status_code=200)
+def get_old_caption_by_user(
+    # userid,
+    response: Response,
+    user: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
 ):
     """
     In this function is will be return a old message of user by userid
     """
-    
-    # model_language_choices = ["GPT", "VERTEX"]
-    # weights = [0.2, 0.8]
 
-    # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
-    modelLanguage = "VERTEX"
-
-    # get tone by id
-    tone = getToneById(userReq.tone_id)
-    if(tone == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    # get language by id
-    language = getLanguageById(tone.language_id)
-    if(language == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    # get feature by id
-    feature = getFeaturById(userReq.feature_id)
-    if(feature == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
-    result = "test"
-    model = models_model.Models()
-
-    if(modelLanguage == "GPT"):
-        result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("GPT")
-    elif(modelLanguage == "VERTEX"):
-        result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
-        model = getModelAIById("VERTEX")
+    messages = []
+    # print(userid)
 
 
-    try:
-        prompt_message_db = prompt_messages_model.Promptmessages(
-            input_message=userReq.input_message,
-            result_message=result,
-            feature=feature,
-            tone=tone,
-            user=None,
-            model=model,
-            date_time=datetime.now()
-        )
-    except:
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content=ResponseHttp(
-                reply=result,
-                error="cannot create and save to db"
-            ).dict()
-        )
     with database.session_engine() as session:
+        
+        # Find id of user by firebase id
+        
         try:
-            session.add(prompt_message_db)
-            session.commit()
-            session.refresh(prompt_message_db)
+            statement_prompt = select(users_model.Users).where(
+                users_model.Users.firebase_id == user
+            ) 
+            user_exec = session.exec(statement=statement_prompt).one()
+            # print("userid = ", user_exec.id)
         except:
             return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content=ResponseHttp(
-                    reply=result,
-                    error="cannot save to db"
-                ).dict()
+                content={
+                        "error": "Not found a user by userid"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
             )
-    response_data=JSONResponse(
-        status_code=status.HTTP_201_CREATED,
-        content=ResponseHttp(reply=result, error="").dict(),
-    )
+
+
+        # Find a all prompt by userid
+        try:
+            statement_prompt = select(prompt_messages_model.Promptmessages).where(
+                prompt_messages_model.Promptmessages.user_id == user_exec.id
+
+            ) 
+            prompt_messages_by_id = session.exec(statement=statement_prompt).all()
+        except:
+            return JSONResponse(
+                content={
+                        "error": "Not found a Prompt by userid"
+                },
+                status_code=status.HTTP_404_NOT_FOUND
+            )
         
-    return response_data
+        try:
+            for prompt in prompt_messages_by_id:
+                ms = Message(
+                    id=prompt.id,
+                    feature_id=prompt.feature_id,
+                    feature=prompt.feature.name,
+                    date_time=prompt.date_time,
+                    input_message=prompt.input_message,
+                    result_message=prompt.result_message,
+                    tone_id=prompt.tone_id,
+                    tone=prompt.tone.tone_name,
+                    user_id=prompt.user_id
+                )
+                # print(ms)
+                messages.append(ms)
+
+            
+            # print(messages)
+            return messages
+        
+        except:
+            raise HTTPException(
+                status_code=status.HTTP_404_NOT_FOUND, 
+                detail="Found a error // you not have a prompt message, get one?"
+            )

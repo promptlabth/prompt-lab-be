@@ -32,18 +32,18 @@ router = APIRouter(
 )
 
 # list all user (we should run a middleware for authentications)
-@router.get("/", status_code=200, response_model=list[users_model.Users])
-def list_users():
-    """
-    list all user in the table
-    """
-    data = []
-    with database.session_engine() as session:
-        users_exec = select(users_model.Users)
-        users = session.exec(statement=users_exec)
-        for user in users:
-            data.append(user)
-    return data
+# @router.get("/", status_code=200, response_model=list[users_model.Users])
+# def list_users():
+#     """
+#     list all user in the table
+#     """
+#     data = []
+#     with database.session_engine() as session:
+#         users_exec = select(users_model.Users)
+#         users = session.exec(statement=users_exec)
+#         for user in users:
+#             data.append(user)
+#     return data
 
 # def login_user(user_agent: str = Header(default=None)):
 
@@ -101,14 +101,23 @@ def login_user(Authorization:str = Header(default=None)):
     if(not old_user):
 
         try:
+            email = extract["email"]
+        except:
+            email = None
+
+        try:
+            print(extract)
             user = users_model.Users(
-                email=extract["email"], 
+                email=email, 
                 name=extract["name"],
                 profilepic=extract["picture"],
                 firebase_id=extract["uid"]
                 )
         except:
-            raise HTTPException(status_code=403, detail="CREATE User model failed")
+            raise HTTPException(status_code=403, detail={
+                "err" : "CREATE User model failed",
+                "extract" : extract
+            })
 
         try:
             with database.session_engine() as session:
@@ -123,7 +132,12 @@ def login_user(Authorization:str = Header(default=None)):
         # if user have some change profile on facebook
         change_pic = extract["picture"] != old_user.profilepic
         change_name = extract["name"] != old_user.name
-        change_email = extract["email"] != old_user.email
+        try:
+            email = extract["email"]
+        except:
+            email = None
+
+        change_email = email != old_user.email
         # if not change (will return the user on database)
         if(not (change_pic or change_name or change_email)):
             print("\n\n\n")
@@ -134,7 +148,7 @@ def login_user(Authorization:str = Header(default=None)):
         if(change_name):
             old_user.name = extract["name"]
         if(change_email):
-            old_user.email = extract["email"]
+            old_user.email = email
         # Update database if something is changed
         with database.session_engine() as session:
             session.add(old_user)
