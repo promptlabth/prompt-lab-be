@@ -84,10 +84,14 @@ def generateTextReasult(
     """
     
 
+
     model_language_choices = ["GPT", "VERTEX"]
     weights = [0.8, 0.2]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
 
+
+    # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    modelLanguage = "VERTEX"
     user = getUserByFirebaseId(firebaseId)
     # get tone by id
     tone = getToneById(userReq.tone_id)
@@ -201,6 +205,7 @@ def get_old_caption_by_user(
 
     messages = []
     # print(userid)
+
 
     with database.session_engine() as session:
         

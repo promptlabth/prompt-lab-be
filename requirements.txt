@@ -33,3 +33,4 @@ python-dotenv==1.0.0
 httpx==0.24.1
 pytest==7.4.0
 google-cloud-aiplatform==1.33.1
+vertexai==0.0.1
