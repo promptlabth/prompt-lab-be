@@ -10,6 +10,7 @@ from model.languages import languages_model
 from model.features import features_model
 from model.users import users_model
 from model.models import models_model
+from model.coins import coins_model
 from sqlmodel import select
 
 
@@ -107,4 +108,13 @@ def getMaxMessageByUserId(user):
 
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
+            return False
+        
+def getCoinBalanceByUserId(id):
+    with database.session_engine() as session:
+        try:
+            statement = select(coins_model.Coins).where(users_model.Users.id == id)
+            coin = session.exec(statement=statement).one()
+            return coin
+        except:
             return False
