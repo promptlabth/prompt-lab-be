@@ -1,10 +1,16 @@
 from datetime import datetime
 from sqlmodel import Session, select
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Request, Response, Depends, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Any, Annotated, Optional
+from module.promptapi.prompt_utils.repository import (
+    getUserByFirebaseId,
+    getCoinBalanceByUserId,
+)
+from middlewares import authentication
 
-# 
+# import firebase 
 from firebase import init_firebase
 from firebase_admin import auth
 
@@ -156,5 +162,37 @@ def login_user(Authorization:str = Header(default=None)):
             session.refresh(old_user)
         return old_user
 
+@router.get("/coin-balance")
+def generateTextReasult(
+    response: Response,
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
+):
+    """
+    In this function is will be return a balance coin of user search by userid
+    """
+    # get user id
+    user = getUserByFirebaseId(firebaseId)
+
+    # default coin value
+    coin = False
+    # get coin data
+    if user.id:
+        coin = getCoinBalanceByUserId(user.id)
+
+    # check if user have balance coin
+    if coin == False:
+        response_data = JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=0,
+        )
+    else:
+        response_data = JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=coin.total,
+        )
+
+    return response_data
 
 
