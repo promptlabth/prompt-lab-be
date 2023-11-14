@@ -1,4 +1,8 @@
+from datetime import datetime
+
+from sqlalchemy import and_, func
 from model import database
+from model.promptMessages import prompt_messages_model
 from model.tones import tone_model
 from model.languages import languages_model
 from model.features import features_model
@@ -50,4 +54,27 @@ def getModelAIById(model:str):
             modelResult = session.exec(statement=statement).one()
             return modelResult
         except:
+            return False
+
+
+def getMessagesToDay(user):
+    with database.session_engine() as session:
+        try:
+            # Current date in YYYY-MM-DD format
+            current_date = datetime.utcnow().date()
+
+            # Modify the query to count messages for the current day
+            statement_prompt = select([func.count()]).where(
+                and_(
+                    prompt_messages_model.Promptmessages.user_id == user.id,
+                    func.date(prompt_messages_model.Promptmessages.date_time) == current_date
+                )
+            )
+
+            # Execute the query and get the count
+            total_messages_today = session.execute(statement_prompt).scalar()
+
+            return total_messages_today
+        except Exception as e:
+            print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return False

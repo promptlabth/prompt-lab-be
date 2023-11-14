@@ -26,7 +26,7 @@ from model.tones import tone_model
 from model.features import features_model
 from datetime import datetime
 
-from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getToneById, getUserByFirebaseId, getModelAIById
+from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMessagesToDay, getToneById, getUserByFirebaseId, getModelAIById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
 from module.promptapi.prompt_utils.vertex_parameter import vertexGenerator
 from model.models import models_model
@@ -266,3 +266,15 @@ def get_old_caption_by_user(
                 status_code=status.HTTP_404_NOT_FOUND, 
                 detail="Found a error // you not have a prompt message, get one?"
             )
+            
+@router.get("/get-count-message", status_code=200)
+def get_count_message(
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+):
+    user = getUserByFirebaseId(firebaseId)
+    total_messages_today = getMessagesToDay(user)
+    
+    return total_messages_today
+    
+    
+    
