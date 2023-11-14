@@ -26,7 +26,7 @@ from model.tones import tone_model
 from model.features import features_model
 from datetime import datetime
 
-from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMessagesToDay, getToneById, getUserByFirebaseId, getModelAIById
+from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMaxMessageByUserId, getMessagesToDay, getToneById, getUserByFirebaseId, getModelAIById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
 from module.promptapi.prompt_utils.vertex_parameter import vertexGenerator
 from model.models import models_model
@@ -82,8 +82,6 @@ def generateTextReasult(
     """
     In this function is will be return a old message of user by userid
     """
-    
-
 
     model_language_choices = ["GPT", "VERTEX"]
     weights = [0.8, 0.2]
@@ -93,6 +91,22 @@ def generateTextReasult(
     # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     modelLanguage = "VERTEX"
     user = getUserByFirebaseId(firebaseId)
+    
+    # handle when user limit message per day
+    enableLimitMessage = False
+    if(enableLimitMessage):
+        total_messages_today = getMessagesToDay(user)
+        mexMessage = getMaxMessageByUserId(user)
+        if(total_messages_today >= mexMessage):
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=ResponseHttp(
+                    reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในวันถัดไป",
+                    error="limit message"
+                ).dict()
+        )
+    
+    
     # get tone by id
     tone = getToneById(userReq.tone_id)
     if(tone == False):
@@ -273,8 +287,19 @@ def get_count_message(
 ):
     user = getUserByFirebaseId(firebaseId)
     total_messages_today = getMessagesToDay(user)
+    mexMessage = getMaxMessageByUserId(user)
     
-    return total_messages_today
+    return {total_messages_today, mexMessage}
+
     
+@router.get("/max-message", status_code=200)
+def get_max_message(
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+):
+    user = getUserByFirebaseId(firebaseId)
+    mexMessage = getMaxMessageByUserId(user)
+    
+    return mexMessage
+
     
     

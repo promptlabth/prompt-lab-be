@@ -2,7 +2,9 @@ from datetime import datetime
 
 from sqlalchemy import and_, func
 from model import database
+from model.plans.plans_model import Plans
 from model.promptMessages import prompt_messages_model
+from model.subscriptsPayments import subscripts_payment_model
 from model.tones import tone_model
 from model.languages import languages_model
 from model.features import features_model
@@ -75,6 +77,34 @@ def getMessagesToDay(user):
             total_messages_today = session.execute(statement_prompt).scalar()
 
             return total_messages_today
+        except Exception as e:
+            print(f"An error occurred: {e}")  # It's a good practice to log the exception
+            return False
+
+def getMaxMessageByUserId(user):
+    with database.session_engine() as session:
+        try:
+            # Query to check for active subscription and get maxMessages
+            query = select(Plans.maxMessages).join(
+                subscripts_payment_model.SubscriptionsPayments, subscripts_payment_model.SubscriptionsPayments.plan_id == Plans.id
+            ).where(
+                subscripts_payment_model.SubscriptionsPayments.user_id == user.id,
+                subscripts_payment_model.SubscriptionsPayments.subscription_status == 'active'
+            )
+
+            # Execute the query and fetch the result
+            result = session.execute(query).first()
+
+            # If an active subscription is found, return its maxMessages
+            if result:
+                return result[0]
+
+            # If no active subscription, query for the free plan's maxMessages
+            free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'free')
+            free_plan_result = session.execute(free_plan_query).first()
+
+            return free_plan_result[0] if free_plan_result else None
+
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return False
