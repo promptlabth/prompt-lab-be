@@ -287,9 +287,8 @@ def get_count_message(
 ):
     user = getUserByFirebaseId(firebaseId)
     total_messages_today = getMessagesToDay(user)
-    mexMessage = getMaxMessageByUserId(user)
     
-    return {total_messages_today, mexMessage}
+    return total_messages_today
 
     
 @router.get("/max-message", status_code=200)
