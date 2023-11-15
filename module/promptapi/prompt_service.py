@@ -299,6 +299,16 @@ def get_max_message(
     mexMessage = getMaxMessageByUserId(user)
     
     return mexMessage
+    
+@router.get("/remaining-message", status_code=200)
+def get_max_message(
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+):
+    user = getUserByFirebaseId(firebaseId)
+    mexMessage = getMaxMessageByUserId(user)
+    total_messages_today = getMessagesToDay(user)
+    
+    return mexMessage - total_messages_today
 
     
     
