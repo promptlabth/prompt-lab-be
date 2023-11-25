@@ -19,6 +19,8 @@ from model import database
 
 # Import model of user model for dto, execute user table  
 from model.users import users_model
+from model.subscriptions_payments import subscriptions_payments_model
+from model.plans import plans_model
 
 # users_model.Users()
 # dto for CRUD data (response user data)
@@ -90,7 +92,6 @@ def login_user(Authorization:str = Header(default=None)):
     
     # extract a uid(firebaseID) from main structure
     uid = extract["uid"]
-    
     # GET A USER FOR CHECK IT HAVE USER??
     
     with database.session_engine() as session:
@@ -102,22 +103,23 @@ def login_user(Authorization:str = Header(default=None)):
         except:
             old_user = {}
 
+    
     # CHECK if have userid in database ?
     # if haven't in database
     if(not old_user):
-
+        print("test")
         try:
             email = extract["email"]
         except:
             email = None
 
         try:
-            print(extract)
+            # print(extract)
             user = users_model.Users(
                 email=email, 
                 name=extract["name"],
                 profilepic=extract["picture"],
-                firebase_id=extract["uid"]
+                firebase_id=extract["uid"],
                 )
         except:
             raise HTTPException(status_code=403, detail={
@@ -130,7 +132,7 @@ def login_user(Authorization:str = Header(default=None)):
                 session.add(user)
                 session.commit()
                 session.refresh(user)
-            return user
+            old_user = user
         except:
             raise HTTPException(status_code=403, detail="CREATE IN DATABASE FAILED")
     
@@ -147,7 +149,7 @@ def login_user(Authorization:str = Header(default=None)):
         # if not change (will return the user on database)
         if(not (change_pic or change_name or change_email)):
             print("\n\n\n")
-            return old_user
+            old_user = old_user
         
         if(change_pic):
             old_user.profilepic = extract["picture"]
@@ -155,12 +157,52 @@ def login_user(Authorization:str = Header(default=None)):
             old_user.name = extract["name"]
         if(change_email):
             old_user.email = email
+       
         # Update database if something is changed
         with database.session_engine() as session:
             session.add(old_user)
             session.commit()
             session.refresh(old_user)
-        return old_user
+    
+    # get a user subscription plan
+    plan = plans_model.Plans()
+    with database.session_engine() as session:
+        # select a last subscription data from subscription payment
+        try:
+            subscription_payment = select(subscriptions_payments_model.Subscriptions_Payments).where(
+            subscriptions_payments_model.Subscriptions_Payments.user_id == old_user.id
+            ).order_by(subscriptions_payments_model.Subscriptions_Payments.id.desc())
+            subscription = session.exec(subscription_payment)
+            data_subscription = subscription.first()
+            
+            # check a subscription is active?
+            if (data_subscription.subscription_status != "active"):
+                # if subscription is not active
+                plan = plans_model.Plans(
+                    planType="free",
+                    maxMessages=3,
+                )
+                return {
+                    "user": old_user,
+                    "plan": plan
+                }
+            
+            # incase found a subscription and is active
+            plan = select(plans_model.Plans).where(
+                plans_model.Plans.id == data_subscription.plan_id
+            )
+            plan = session.exec(plan)
+            plan = plan.first()
+            
+            
+            
+        except Exception as error :
+            # when subscription is not found
+            print("=>", error)
+    return {
+            "user": old_user,
+            "plan": plan
+        }
 
 @router.get("/coin-balance")
 def generateTextReasult(
