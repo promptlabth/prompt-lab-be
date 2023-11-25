@@ -178,14 +178,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             session.refresh(old_user)
     
     # get a user subscription plan
-    plan = plans_model.Plans(
-        planType="free",
-        maxMessages=3,
-    )
-    result = { 
-        "user": old_user,
-        "plan": plan 
-    }
+    plan = plans_model.Plans()
     with database.session_engine() as session:
         # select a last subscription data from subscription payment
         try:
@@ -202,8 +195,10 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
                     planType="free",
                     maxMessages=3,
                 )
-                result["plan"] = plan
-                return result
+                return {
+                    "user": old_user,
+                    "plan": plan
+                }
             
             # incase found a subscription and is active
             plan = select(plans_model.Plans).where(
@@ -211,14 +206,16 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             )
             plan = session.exec(plan)
             plan = plan.first()
-            result["plan"] = plan
-            result["start_date"] = data_subscription.start_datetime
-            result["end_date"] = data_subscription.end_datetime
+            
+            
             
         except Exception as error :
             # when subscription is not found
             print("=>", error)
-    return result
+    return {
+            "user": old_user,
+            "plan": plan
+        }
 
 @router.get("/coin-balance")
 def generateTextReasult(
