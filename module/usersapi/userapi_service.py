@@ -19,6 +19,7 @@ from model import database
 
 # Import model of user model for dto, execute user table  
 from model.users import users_model
+from model.subscriptions_payments import subscriptions_payments_model
 
 # users_model.Users()
 # dto for CRUD data (response user data)
@@ -90,7 +91,7 @@ def login_user(Authorization:str = Header(default=None)):
     
     # extract a uid(firebaseID) from main structure
     uid = extract["uid"]
-    
+    print("============header==================")
     # GET A USER FOR CHECK IT HAVE USER??
     
     with database.session_engine() as session:
@@ -112,12 +113,12 @@ def login_user(Authorization:str = Header(default=None)):
             email = None
 
         try:
-            print(extract)
+            # print(extract)
             user = users_model.Users(
                 email=email, 
                 name=extract["name"],
                 profilepic=extract["picture"],
-                firebase_id=extract["uid"]
+                firebase_id=extract["uid"],
                 )
         except:
             raise HTTPException(status_code=403, detail={
@@ -130,7 +131,7 @@ def login_user(Authorization:str = Header(default=None)):
                 session.add(user)
                 session.commit()
                 session.refresh(user)
-            return user
+            old_user = user
         except:
             raise HTTPException(status_code=403, detail="CREATE IN DATABASE FAILED")
     
@@ -160,7 +161,21 @@ def login_user(Authorization:str = Header(default=None)):
             session.add(old_user)
             session.commit()
             session.refresh(old_user)
-        return old_user
+    
+    print(old_user)
+    # get a user subscription plan
+    with database.session_engine() as session:
+        try:
+            subscription_payment = select(subscriptions_payments_model.SubscriptionsPayments).where(
+                subscriptions_payments_model.SubscriptionsPayments.id == old_user["id"]
+            ).order_by(subscriptions_payments_model.Subscriptions_Payments.id.desc())
+            subscription = session.exec(subscription_payment)
+            subscription = subscription.first()
+        except:
+            pass
+    
+    print(subscription)
+    return old_user
 
 @router.get("/coin-balance")
 def generateTextReasult(
