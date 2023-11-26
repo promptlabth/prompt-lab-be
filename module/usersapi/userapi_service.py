@@ -192,7 +192,7 @@ def login_user(Authorization:str = Header(default=None)):
             )
             plan = session.exec(plan)
             plan = plan.first()
-            
+            result["plan"] = plan
             result["start_date"] = data_subscription.start_datetime
             result["end_date"] = data_subscription.end_datetime
             
