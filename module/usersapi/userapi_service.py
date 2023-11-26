@@ -169,7 +169,10 @@ def login_user(Authorization:str = Header(default=None)):
         planType="free",
         maxMessages=3,
     )
-    result = { "user": old_user }
+    result = { 
+        "user": old_user,
+        "plan": plan 
+    }
     with database.session_engine() as session:
         # select a last subscription data from subscription payment
         try:
