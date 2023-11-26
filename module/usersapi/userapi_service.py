@@ -177,7 +177,7 @@ def login_user(Authorization:str = Header(default=None)):
             data_subscription = subscription.first()
             
             # check a subscription is active?
-            if (data_subscription.subscription_status != "active"):
+            if (data_subscription.subscription_status != "active" or data_subscription is None):
                 # if subscription is not active
                 plan = plans_model.Plans(
                     planType="free",
