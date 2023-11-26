@@ -165,7 +165,10 @@ def login_user(Authorization:str = Header(default=None)):
             session.refresh(old_user)
     
     # get a user subscription plan
-    plan = plans_model.Plans()
+    plan = plans_model.Plans(
+        planType="free",
+        maxMessages=3,
+    )
     result = { "user": old_user }
     with database.session_engine() as session:
         # select a last subscription data from subscription payment
@@ -177,7 +180,7 @@ def login_user(Authorization:str = Header(default=None)):
             data_subscription = subscription.first()
             
             # check a subscription is active?
-            if (data_subscription.subscription_status != "active" or data_subscription is None):
+            if (data_subscription.subscription_status != "active"):
                 # if subscription is not active
                 plan = plans_model.Plans(
                     planType="free",
