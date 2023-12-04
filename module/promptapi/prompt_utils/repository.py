@@ -4,7 +4,7 @@ from sqlalchemy import and_, func
 from model import database
 from model.plans.plans_model import Plans
 from model.promptMessages import prompt_messages_model
-from model.subscriptsPayments import subscripts_payment_model
+from model.subscriptions_payments import subscriptions_payments_model
 from model.tones import tone_model
 from model.languages import languages_model
 from model.features import features_model
@@ -87,10 +87,10 @@ def getMaxMessageByUserId(user):
         try:
             # Query to check for active subscription and get maxMessages
             query = select(Plans.maxMessages).join(
-                subscripts_payment_model.SubscriptionsPayments, subscripts_payment_model.SubscriptionsPayments.plan_id == Plans.id
+                subscriptions_payments_model.Subscriptions_Payments, subscriptions_payments_model.Subscriptions_Payments.plan_id == Plans.id
             ).where(
-                subscripts_payment_model.SubscriptionsPayments.user_id == user.id,
-                subscripts_payment_model.SubscriptionsPayments.subscription_status == 'active'
+                subscriptions_payments_model.Subscriptions_Payments.user_id == user.id,
+                subscriptions_payments_model.Subscriptions_Payments.subscription_status == 'active'
             )
 
             # Execute the query and fetch the result
