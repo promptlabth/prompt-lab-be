@@ -301,7 +301,7 @@ def get_max_message(
     return mexMessage
     
 @router.get("/remaining-message", status_code=200)
-def get_max_message(
+def get_remaining_message(
     firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
 ):
     user = getUserByFirebaseId(firebaseId)
