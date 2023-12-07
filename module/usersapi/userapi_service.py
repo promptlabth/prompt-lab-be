@@ -101,6 +101,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
         try:
             old_user = results.one()
             old_user.access_token = request.access_token
+            old_user.platform = request.platform
             session.add(old_user)
             session.commit()
             session.refresh(old_user)
