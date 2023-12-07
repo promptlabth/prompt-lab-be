@@ -13,6 +13,8 @@ class Users(SQLModel, table=True):
     name: Optional[str] = Field(nullable=True)
     email: Optional[str] = Field(nullable=True)
     profilepic: Optional[str] = Field(nullable=True)
+    platform: Optional[str] = Field(nullable=True)
+    access_token: Optional[str] = Field(nullable=True)
 
     # 1 User have many promptmessages
     promptmessages: List["Promptmessages"] = Relationship(back_populates="user")
