@@ -21,6 +21,11 @@ class User(BaseModel):
     email : str
     profilepic : str
     id : str
+    
+# request model for get access token
+class RequestAccessToken(BaseModel):
+    platform : str
+    access_token : str
 
 
 router = APIRouter(
@@ -49,7 +54,7 @@ router = APIRouter(
 
 # POST login/register to collect data of user to database 
 @router.post("/login", status_code=200)
-def login_user(Authorization:str = Header(default=None)):
+def login_user(request: RequestAccessToken, Authorization:str = Header(default=None)):
 
     """
     For Login to use a pro service
@@ -89,10 +94,16 @@ def login_user(Authorization:str = Header(default=None)):
     
     with database.session_engine() as session:
         # Find a user in database is have user ? (by uid is mean firebase id)
+        # Add upldate a access token
+        
         statement = select(users_model.Users).where(users_model.Users.firebase_id == uid)
         results = session.exec(statement=statement)
         try:
             old_user = results.one()
+            old_user.access_token = request.access_token
+            session.add(old_user)
+            session.commit()
+            session.refresh(old_user)
         except:
             old_user = {}
 
@@ -111,7 +122,9 @@ def login_user(Authorization:str = Header(default=None)):
                 email=email, 
                 name=extract["name"],
                 profilepic=extract["picture"],
-                firebase_id=extract["uid"]
+                firebase_id=extract["uid"],
+                platform=request.platform,
+                access_token=request.access_token,
                 )
         except:
             raise HTTPException(status_code=403, detail={
