@@ -11,7 +11,7 @@ from model.features import features_model
 from model.users import users_model
 from model.models import models_model
 from model.coins import coins_model
-from sqlmodel import select
+from sqlmodel import select, col
 
 
 def getToneById (id) :
@@ -91,7 +91,7 @@ def getMaxMessageByUserId(user):
             ).where(
                 subscriptions_payments_model.Subscriptions_Payments.user_id == user.id,
                 subscriptions_payments_model.Subscriptions_Payments.subscription_status == 'active'
-            )
+            ).order_by(col(subscriptions_payments_model.Subscriptions_Payments.id).desc())
 
             # Execute the query and fetch the result
             result = session.execute(query).first()
