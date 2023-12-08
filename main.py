@@ -7,10 +7,6 @@ from module.promptapi import prompt_service
 
 from firebase import init_firebase
 
-# this code for create table in database is will be execute whne you run a api server....
-import model
-from model.database import create_database
-create_database()
 
 
 app = FastAPI()
