@@ -1,0 +1,6 @@
+version: "3.9"
+services:
+  k6:
+    image: grafana/k6:0.45.0
+    volumes:
+      - ./k6-scripts:/scripts
