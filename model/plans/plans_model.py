@@ -3,7 +3,7 @@ from typing import Optional, List, TYPE_CHECKING
 from datetime import datetime
 
 if TYPE_CHECKING:
-    from model.subscriptions_payments.subscriptions_payments_model import Subscriptions_Payments
+    from model.users.users_model import Users
 
 class Plans(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -11,5 +11,5 @@ class Plans(SQLModel, table=True):
     maxMessages: int
     product_id: str
 
-    # 1 Plan have many subscriptions payments
-    subscriptions_payments: List["Subscriptions_Payments"] = Relationship(back_populates="plan")
+    # 1 Plan have mamy Users
+    users: List["Users"] = Relationship(back_populates="plan")

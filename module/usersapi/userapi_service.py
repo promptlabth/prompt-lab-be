@@ -21,7 +21,6 @@ from model import database
 
 # Import model of user model for dto, execute user table  
 from model.users import users_model
-from model.subscriptions_payments import subscriptions_payments_model
 from model.plans import plans_model
 
 logger = logging.getLogger(__name__)

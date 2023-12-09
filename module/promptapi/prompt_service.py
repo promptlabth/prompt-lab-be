@@ -100,12 +100,12 @@ def generateTextReasult(
             status_code=status.HTTP_404_NOT_FOUND,
             content=ResponseHttp(
                 reply="การเข้าสู่ระบบมีปัญหา กรุณา Login ใหม่อีกครั้ง",
-                error="cannot create and save to db"
+                error="Firebase Login is Exp"
             ).dict()
         )
     
     # handle when user limit message per day
-    enableLimitMessage = False
+    enableLimitMessage = True
     if(enableLimitMessage):
         total_messages_this_month = getMessagesThisMonth(user)
         mexMessage = getMaxMessageByUserId(user)
