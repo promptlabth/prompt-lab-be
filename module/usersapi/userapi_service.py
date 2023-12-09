@@ -209,6 +209,13 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             plan = session.exec(plan)
             plan = plan.first()
             
+            if (plan is None):
+                plan = plans_model.Plans(
+                    planType="free",
+                    maxMessages=3,
+                )
+            print("=>", plan)
+            
             result["plan"] = plan
             result["start_date"] = data_subscription.start_datetime
             result["end_date"] = data_subscription.end_datetime
