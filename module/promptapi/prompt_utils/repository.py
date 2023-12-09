@@ -153,5 +153,11 @@ def getPlanByUserId(id):
             }
 
         except Exception as e:
-            print(e, id)
-            return False
+            statement = select(Plans).where(Plans.planType == "Free")
+            plan = session.execute(statement).first()
+            return {
+                    "product": plan[0],
+                    "start_date" : 0,
+                    "end_date" : 0,
+                    "error": e
+                }
