@@ -142,7 +142,7 @@ def getPlanByUserId(id):
                 statement = select(Plans).where(Plans.id == planId)
                 plan = session.execute(statement).first()
             
-            return {**plan[0], "start_date":start_date, "end_date":end_date}
+            return plan[0]
 
         except:
             return False
