@@ -184,7 +184,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             session.refresh(old_user)
      
     plan = getPlanByUserId(old_user.id)
-    result = { "user": old_user , "plan": plan}
+    result = { "user": old_user, "plan": plan }
 
     return result
 

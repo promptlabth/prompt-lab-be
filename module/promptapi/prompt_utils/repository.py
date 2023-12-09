@@ -133,7 +133,8 @@ def getPlanByUserId(id):
                 # query free plan
                 statement = select(Plans).where(Plans.planType == "Free")
                 plan = session.execute(statement).first()
-                return plan
+
+                return plan[0]
 
             return subscription
         except:
