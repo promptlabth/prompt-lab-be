@@ -120,3 +120,21 @@ def getCoinBalanceByUserId(id):
             return coin
         except:
             return False
+
+def getPlanByUserId(id):
+    with database.session_engine() as session:
+        # get plan id from subscription payment
+        try:
+            statement = select(subscriptions_payments_model.Subscriptions_Payments).where(subscriptions_payments_model.Subscriptions_Payments.user_id == id)
+            subscription = session.execute(statement).first()
+
+            # if subscription is not found
+            if (subscription is None):
+                # query free plan
+                statement = select(Plans).where(Plans.planType == "Free")
+                plan = session.execute(statement).first()
+                return plan
+
+            return subscription
+        except:
+            return False

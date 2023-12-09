@@ -1,3 +1,4 @@
+import logging
 from datetime import datetime
 from sqlmodel import Session, select
 from fastapi import APIRouter, Header, HTTPException, Request, Response, Depends, status
@@ -7,6 +8,7 @@ from typing import List, Any, Annotated, Optional
 from module.promptapi.prompt_utils.repository import (
     getUserByFirebaseId,
     getCoinBalanceByUserId,
+    getPlanByUserId,
 )
 from middlewares import authentication
 
@@ -21,6 +23,8 @@ from model import database
 from model.users import users_model
 from model.subscriptions_payments import subscriptions_payments_model
 from model.plans import plans_model
+
+logger = logging.getLogger(__name__)
 
 # users_model.Users()
 # dto for CRUD data (response user data)
@@ -67,6 +71,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
     """
     For Login to use a pro service
     """
+
 
     # Check Have Authorization Token ?
     if(Authorization == None):
@@ -177,52 +182,10 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             session.add(old_user)
             session.commit()
             session.refresh(old_user)
-    
-    # get a user subscription plan
-    plan = plans_model.Plans()
-    result = { "user": old_user }
-    with database.session_engine() as session:
-        # select a last subscription data from subscription payment
-        try:
-            subscription_payment = select(subscriptions_payments_model.Subscriptions_Payments).where(
-                subscriptions_payments_model.Subscriptions_Payments.user_id == old_user.id
-            ).order_by(subscriptions_payments_model.Subscriptions_Payments.id.desc())
-            subscription = session.exec(subscription_payment)
-            data_subscription = subscription.first()
-            
-            # check a subscription is active?
-            if (data_subscription.subscription_status != "active"):
-                # if subscription is not active
-                plan = plans_model.Plans(
-                    planType="free",
-                    maxMessages=3,
-                )
-                return {
-                    "user": old_user,
-                    "plan": plan
-                }
-            
-            # incase found a subscription and is active
-            plan = select(plans_model.Plans).where(
-                plans_model.Plans.id == data_subscription.plan_id
-            )
-            plan = session.exec(plan)
-            plan = plan.first()
-            
-            if (plan is None):
-                plan = plans_model.Plans(
-                    planType="free",
-                    maxMessages=3,
-                )
-            print("=>", plan)
-            
-            result["plan"] = plan
-            result["start_date"] = data_subscription.start_datetime
-            result["end_date"] = data_subscription.end_datetime
-            
-        except Exception as error :
-            # when subscription is not found
-            print("=>", error)
+     
+    plan = getPlanByUserId(old_user.id)
+    result = { "user": old_user , "plan": plan}
+
     return result
 
 @router.get("/coin-balance")
