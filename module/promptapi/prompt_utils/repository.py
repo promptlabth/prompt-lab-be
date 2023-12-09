@@ -127,20 +127,22 @@ def getPlanByUserId(id):
         try:
             statement = select(subscriptions_payments_model.Subscriptions_Payments).where(subscriptions_payments_model.Subscriptions_Payments.user_id == id)
             subscription = session.execute(statement).first()
+            start_date = subscription.start_date
+            end_date = subscription.end_date
 
             # # if subscription is not found
             if (subscription is None):
                 # query free plan
                 statement = select(Plans).where(Plans.planType == "Free")
                 plan = session.execute(statement).first()
-                return plan[0]
             
             # if subscription is found return plan
             else:
                 planId = subscription[0].plan_id
                 statement = select(Plans).where(Plans.id == planId)
                 plan = session.execute(statement).first()
-                return plan[0]
+            
+            return {plan[0], "start_date":start_date, "end_date":end_date}
 
         except:
             return False
