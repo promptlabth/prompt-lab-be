@@ -107,9 +107,9 @@ def generateTextReasult(
     # handle when user limit message per day
     enableLimitMessage = False
     if(enableLimitMessage):
-        total_messages_today = getMessagesToDay(user)
+        total_messages_this_month = getMessagesThisMonth(user)
         mexMessage = getMaxMessageByUserId(user)
-        if(total_messages_today >= mexMessage):
+        if(total_messages_this_month >= mexMessage):
             return JSONResponse(
                 status_code=status.HTTP_200_OK,
                 content=ResponseHttp(
@@ -300,9 +300,9 @@ def get_count_message(
     firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
 ):
     user = getUserByFirebaseId(firebaseId)
-    total_messages_today = getMessagesToDay(user)
+    total_messages_this_month = getMessagesThisMonth(user)
     
-    return total_messages_today
+    return total_messages_this_month
 
     
 @router.get("/max-message", status_code=200)
