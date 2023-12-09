@@ -102,13 +102,11 @@ def getMaxMessageByUserId(user):
             if result:
                 return result[0]
 
-            # # If no active subscription, query for the free plan's maxMessages
-            # free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'free')
-            # free_plan_result = session.execute(free_plan_query).first()
-            
-            free_plan_max_message = 3
-            return free_plan_max_message
-            # return free_plan_result[0] if free_plan_result else None
+            # If no active subscription, query for the free plan's maxMessages
+            free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'Free')
+            free_plan_result = session.execute(free_plan_query).first()
+
+            return free_plan_result[0] if free_plan_result else None
 
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
