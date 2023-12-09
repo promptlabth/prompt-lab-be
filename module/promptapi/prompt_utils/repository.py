@@ -11,6 +11,7 @@ from model.users import users_model
 from model.models import models_model
 from model.coins import coins_model
 from sqlmodel import select, col
+import logging
 
 from module.promptapi.prompt_utils.stripe_service import GetSubscriptionByCusId
 
@@ -80,7 +81,7 @@ def getMessagesThisMonth(user):
 
             # Execute the query and get the count
             total_messages_this_month = session.execute(statement_prompt).scalar()
-
+            print("==> Total message this month:",total_messages_this_month)
             return total_messages_this_month
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
@@ -104,7 +105,7 @@ def getMaxMessageByUserId(user):
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return False
-        
+
 def getCoinBalanceByUserId(id):
     with database.session_engine() as session:
         try:
@@ -131,7 +132,6 @@ def getPlanByUserId(id):
                 }
             subscription = GetSubscriptionByCusId(user.stripe_id)
             plan = subscription["items"]["data"][0]["plan"]
-
             product_id = plan["product"]
 
             # find a product in plan table
@@ -146,7 +146,6 @@ def getPlanByUserId(id):
                     "start_date" : 0,
                     "end_date" : 0
                 }
-            print(subscription["items"]["data"][0])
             return {
                 "product": product,
                 "start_date" : datetime.fromtimestamp(subscription["current_period_start"]),

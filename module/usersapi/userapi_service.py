@@ -130,7 +130,6 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             email = None
 
         try:
-            # print(extract)
             user = users_model.Users(
                 email=email, 
                 name=extract["name"],
@@ -138,7 +137,8 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
                 firebase_id=extract["uid"],
                 platform=request.platform,
                 access_token=request.access_token,
-                )
+                plan_id=4
+            )
         except:
             raise HTTPException(status_code=403, detail={
                 "err" : "CREATE User model failed",
