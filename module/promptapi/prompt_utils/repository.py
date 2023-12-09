@@ -102,7 +102,7 @@ def getMaxMessageByUserId(user):
                 return result[0]
 
             # If no active subscription, query for the free plan's maxMessages
-            free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'free')
+            free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'Free')
             free_plan_result = session.execute(free_plan_query).first()
 
             return free_plan_result[0] if free_plan_result else None
