@@ -185,7 +185,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
         # select a last subscription data from subscription payment
         try:
             subscription_payment = select(subscriptions_payments_model.Subscriptions_Payments).where(
-            subscriptions_payments_model.Subscriptions_Payments.user_id == old_user.id
+                subscriptions_payments_model.Subscriptions_Payments.user_id == old_user.id
             ).order_by(subscriptions_payments_model.Subscriptions_Payments.id.desc())
             subscription = session.exec(subscription_payment)
             data_subscription = subscription.first()
@@ -209,6 +209,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             plan = session.exec(plan)
             plan = plan.first()
             
+            result["plan"] = plan
             result["start_date"] = data_subscription.start_datetime
             result["end_date"] = data_subscription.end_datetime
             
