@@ -26,7 +26,7 @@ from model.tones import tone_model
 from model.features import features_model
 from datetime import datetime
 
-from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMaxMessageByUserId, getMessagesToDay, getToneById, getUserByFirebaseId, getModelAIById
+from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMaxMessageByUserId, getMessagesThisMonth, getToneById, getUserByFirebaseId, getModelAIById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
 from module.promptapi.prompt_utils.vertex_parameter import vertexGenerator
 from model.models import models_model
@@ -296,19 +296,19 @@ def get_max_message(
     firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
 ):
     user = getUserByFirebaseId(firebaseId)
-    mexMessage = getMaxMessageByUserId(user)
+    maxMessage = getMaxMessageByUserId(user)
     
-    return mexMessage
+    return maxMessage
     
 @router.get("/remaining-message", status_code=200)
 def get_remaining_message(
     firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
 ):
     user = getUserByFirebaseId(firebaseId)
-    mexMessage = getMaxMessageByUserId(user)
-    total_messages_today = getMessagesToDay(user)
+    maxMessage = getMaxMessageByUserId(user)
+    total_messages_this_month = getMessagesThisMonth(user)
     
-    return mexMessage - total_messages_today
+    return maxMessage - total_messages_this_month
 
     
     

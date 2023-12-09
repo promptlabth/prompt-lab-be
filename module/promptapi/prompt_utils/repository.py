@@ -59,24 +59,26 @@ def getModelAIById(model:str):
             return False
 
 
-def getMessagesToDay(user):
+def getMessagesThisMonth(user):
     with database.session_engine() as session:
         try:
-            # Current date in YYYY-MM-DD format
-            current_date = datetime.utcnow().date()
+            # Get the current year and month
+            current_year = datetime.utcnow().year
+            current_month = datetime.utcnow().month
 
-            # Modify the query to count messages for the current day
+            # Modify the query to count messages for the current month
             statement_prompt = select([func.count()]).where(
                 and_(
                     prompt_messages_model.Promptmessages.user_id == user.id,
-                    func.date(prompt_messages_model.Promptmessages.date_time) == current_date
+                    func.extract('year', prompt_messages_model.Promptmessages.date_time) == current_year,
+                    func.extract('month', prompt_messages_model.Promptmessages.date_time) == current_month
                 )
             )
 
             # Execute the query and get the count
-            total_messages_today = session.execute(statement_prompt).scalar()
+            total_messages_this_month = session.execute(statement_prompt).scalar()
 
-            return total_messages_today
+            return total_messages_this_month
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return False
