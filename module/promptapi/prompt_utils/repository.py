@@ -130,11 +130,10 @@ def getPlanByUserId(id):
                     "end_date" : 0
                 }
             subscription = GetSubscriptionByCusId(user.stripe_id)
-            plan = subscription["items"]["data"][0]["plan"]
-            product_id = plan["product"]
-
+            subscriptionPlan = subscription["items"]["data"][0]["plan"]
+            product_id = subscriptionPlan["product"]
             # find a product in plan table
-            statement = select(Plans).where(Plans.product_id == product_id)
+            statement = select(Plans).where(Plans.product_id == user.plan_id)
             product = session.exec(statement).one()
             if (product is None):
                 # if not found a product
