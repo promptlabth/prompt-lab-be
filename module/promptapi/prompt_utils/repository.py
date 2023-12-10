@@ -81,7 +81,6 @@ def getMessagesThisMonth(user):
 
             # Execute the query and get the count
             total_messages_this_month = session.execute(statement_prompt).scalar()
-            print("==> Total message this month:",total_messages_this_month)
             return total_messages_this_month
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
