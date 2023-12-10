@@ -50,10 +50,7 @@ def include_object(object, name, type_, reflected, compare_to):
     """
 
     # if table start with directus_ then ignore it
-    if name.startswith("directus_"):
-        return False
-    # if table name is plans, subscriptions_payments, payment_methods then ignore it
-    elif name in ("plans", "subscriptions_payments", "payment_methods"):
+    if name is not None and name.startswith("directus_"):
         return False
 
     return True

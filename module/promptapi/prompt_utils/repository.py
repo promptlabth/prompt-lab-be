@@ -4,13 +4,16 @@ from sqlalchemy import and_, func
 from model import database
 from model.plans.plans_model import Plans
 from model.promptMessages import prompt_messages_model
-from model.subscriptsPayments import subscripts_payment_model
 from model.tones import tone_model
 from model.languages import languages_model
 from model.features import features_model
 from model.users import users_model
 from model.models import models_model
-from sqlmodel import select
+from model.coins import coins_model
+from sqlmodel import select, col
+import logging
+
+from module.promptapi.prompt_utils.stripe_service import GetSubscriptionByCusId
 
 
 def getToneById (id) :
@@ -46,7 +49,8 @@ def getUserByFirebaseId(firebase_id):
             statement = select(users_model.Users).where(users_model.Users.firebase_id == firebase_id)
             user = session.exec(statement=statement).one()
             return user
-        except:
+        except Exception as e:
+            print(e)
             return False
         
 def getModelAIById(model:str):
@@ -77,7 +81,6 @@ def getMessagesThisMonth(user):
 
             # Execute the query and get the count
             total_messages_this_month = session.execute(statement_prompt).scalar()
-
             return total_messages_this_month
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
@@ -87,11 +90,8 @@ def getMaxMessageByUserId(user):
     with database.session_engine() as session:
         try:
             # Query to check for active subscription and get maxMessages
-            query = select(Plans.maxMessages).join(
-                subscripts_payment_model.SubscriptionsPayments, subscripts_payment_model.SubscriptionsPayments.plan_id == Plans.id
-            ).where(
-                subscripts_payment_model.SubscriptionsPayments.user_id == user.id,
-                subscripts_payment_model.SubscriptionsPayments.subscription_status == 'active'
+            query = select(Plans.maxMessages).where(
+                Plans.id == user.plan_id
             )
 
             # Execute the query and fetch the result
@@ -101,12 +101,62 @@ def getMaxMessageByUserId(user):
             if result:
                 return result[0]
 
-            # If no active subscription, query for the free plan's maxMessages
-            free_plan_query = select(Plans.maxMessages).where(Plans.planType == 'Free')
-            free_plan_result = session.execute(free_plan_query).first()
-
-            return free_plan_result[0] if free_plan_result else None
-
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return False
+
+def getCoinBalanceByUserId(id):
+    with database.session_engine() as session:
+        try:
+            statement = select(coins_model.Coins).where(users_model.Users.id == id)
+            coin = session.exec(statement=statement).one()
+            return coin
+        except:
+            return False
+
+def getPlanByUserId(id):
+    with database.session_engine() as session:
+        # get plan id from subscription payment
+        try:
+            statement = select(users_model.Users).where(users_model.Users.id == id)
+            user = session.exec(statement).one()
+            # if not found a stripe id in users
+            if(user.stripe_id is None):
+                statement = select(Plans).where(Plans.planType == "Free")
+                plan = session.execute(statement).first()
+                return {
+                    "product": plan[0],
+                    "start_date" : 0,
+                    "end_date" : 0
+                }
+            subscription = GetSubscriptionByCusId(user.stripe_id)
+            plan = subscription["items"]["data"][0]["plan"]
+            product_id = plan["product"]
+
+            # find a product in plan table
+            statement = select(Plans).where(Plans.product_id == product_id)
+            product = session.exec(statement).one()
+            if (product is None):
+                # if not found a product
+                statement = select(Plans).where(Plans.planType == "Free")
+                plan = session.execute(statement).first()
+                return {
+                    "product": plan[0],
+                    "start_date" : 0,
+                    "end_date" : 0
+                }
+            return {
+                "product": product,
+                "start_date" : datetime.fromtimestamp(subscription["current_period_start"]),
+                "end_date" : datetime.fromtimestamp(subscription["current_period_end"])
+            }
+
+        except Exception as e:
+            statement = select(Plans).where(Plans.planType == "Free")
+            plan = session.execute(statement).first()
+            return {
+                    "product": plan[0],
+                    "start_date" : 0,
+                    "end_date" : 0,
+                    "error": e
+                }

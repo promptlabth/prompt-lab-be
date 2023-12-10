@@ -1,10 +1,18 @@
+import logging
 from datetime import datetime
 from sqlmodel import Session, select
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter, Header, HTTPException, Request, Response, Depends, status
+from fastapi.responses import JSONResponse
 from pydantic import BaseModel
 from typing import List, Any, Annotated, Optional
+from module.promptapi.prompt_utils.repository import (
+    getUserByFirebaseId,
+    getCoinBalanceByUserId,
+    getPlanByUserId,
+)
+from middlewares import authentication
 
-# 
+# import firebase 
 from firebase import init_firebase
 from firebase_admin import auth
 
@@ -13,6 +21,9 @@ from model import database
 
 # Import model of user model for dto, execute user table  
 from model.users import users_model
+from model.plans import plans_model
+
+logger = logging.getLogger(__name__)
 
 # users_model.Users()
 # dto for CRUD data (response user data)
@@ -60,6 +71,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
     For Login to use a pro service
     """
 
+
     # Check Have Authorization Token ?
     if(Authorization == None):
         print("no Access Token")
@@ -89,7 +101,6 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
     
     # extract a uid(firebaseID) from main structure
     uid = extract["uid"]
-    
     # GET A USER FOR CHECK IT HAVE USER??
     
     with database.session_engine() as session:
@@ -108,17 +119,17 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
         except:
             old_user = {}
 
+    
     # CHECK if have userid in database ?
     # if haven't in database
     if(not old_user):
-
+        print("test")
         try:
             email = extract["email"]
         except:
             email = None
 
         try:
-            print(extract)
             user = users_model.Users(
                 email=email, 
                 name=extract["name"],
@@ -126,7 +137,8 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
                 firebase_id=extract["uid"],
                 platform=request.platform,
                 access_token=request.access_token,
-                )
+                plan_id=4
+            )
         except:
             raise HTTPException(status_code=403, detail={
                 "err" : "CREATE User model failed",
@@ -138,7 +150,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
                 session.add(user)
                 session.commit()
                 session.refresh(user)
-            return user
+            old_user = user
         except:
             raise HTTPException(status_code=403, detail="CREATE IN DATABASE FAILED")
     
@@ -155,7 +167,7 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
         # if not change (will return the user on database)
         if(not (change_pic or change_name or change_email)):
             print("\n\n\n")
-            return old_user
+            old_user = old_user
         
         if(change_pic):
             old_user.profilepic = extract["picture"]
@@ -163,12 +175,49 @@ def login_user(request: RequestAccessToken, Authorization:str = Header(default=N
             old_user.name = extract["name"]
         if(change_email):
             old_user.email = email
+       
         # Update database if something is changed
         with database.session_engine() as session:
             session.add(old_user)
             session.commit()
             session.refresh(old_user)
-        return old_user
+     
+    plan = getPlanByUserId(old_user.id)
+    result = { "user": old_user, "plan": plan }
 
+    return result
+
+@router.get("/coin-balance")
+def generateTextReasult(
+    response: Response,
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization: str = Header(default=None),
+    RefreshToken: str = Header(default=None),
+):
+    """
+    In this function is will be return a balance coin of user search by userid
+    """
+    # get user id
+    user = getUserByFirebaseId(firebaseId)
+
+    # default coin value
+    coin = False
+    # get coin data
+    if user.id:
+        coin = getCoinBalanceByUserId(user.id)
+
+    # check if user have balance coin
+    if coin == False:
+        response_data = JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=0,
+        )
+    else:
+        response_data = JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=coin.total,
+        )
+
+    return response_data
 
 

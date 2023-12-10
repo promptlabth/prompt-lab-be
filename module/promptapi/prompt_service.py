@@ -89,15 +89,27 @@ def generateTextReasult(
 
 
     # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
-    modelLanguage = "VERTEX"
+    
+    # if / else check a env is deploy yep?
+    if os.environ.get("DEPLOY") == "DEV":
+        modelLanguage = "VERTEX"
+    print(firebaseId)
     user = getUserByFirebaseId(firebaseId)
+    if(user == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="การเข้าสู่ระบบมีปัญหา กรุณา Login ใหม่อีกครั้ง",
+                error="Firebase Login is Exp"
+            ).dict()
+        )
     
     # handle when user limit message per day
-    enableLimitMessage = False
+    enableLimitMessage = True
     if(enableLimitMessage):
-        total_messages_today = getMessagesToDay(user)
+        total_messages_this_month = getMessagesThisMonth(user)
         mexMessage = getMaxMessageByUserId(user)
-        if(total_messages_today >= mexMessage):
+        if(total_messages_this_month >= mexMessage):
             return JSONResponse(
                 status_code=status.HTTP_200_OK,
                 content=ResponseHttp(
@@ -167,12 +179,13 @@ def generateTextReasult(
             model=model,
             date_time=datetime.now()
         )
-    except:
+    except Exception as e:
+        print("Error MSG", user)
         return JSONResponse(
             status_code=status.HTTP_200_OK,
             content=ResponseHttp(
                 reply=result,
-                error="cannot create and save to db"
+                error="cannot create and save to db",
             ).dict()
         )
     with database.session_engine() as session:
@@ -180,12 +193,13 @@ def generateTextReasult(
             session.add(prompt_message_db)
             session.commit()
             session.refresh(prompt_message_db)
-        except:
+        except Exception as e:
             return JSONResponse(
                 status_code=status.HTTP_200_OK,
                 content=ResponseHttp(
                     reply=result,
-                    error="cannot save to db"
+                    error="cannot save to db",
+                    msgError=e
                 ).dict()
             )
     try:
@@ -286,9 +300,9 @@ def get_count_message(
     firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
 ):
     user = getUserByFirebaseId(firebaseId)
-    total_messages_today = getMessagesToDay(user)
+    total_messages_this_month = getMessagesThisMonth(user)
     
-    return total_messages_today
+    return total_messages_this_month
 
     
 @router.get("/max-message", status_code=200)
