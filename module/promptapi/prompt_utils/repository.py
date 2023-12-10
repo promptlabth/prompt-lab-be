@@ -81,7 +81,9 @@ def getMessagesThisMonth(user):
 
             # Execute the query and get the count
             total_messages_this_month = session.execute(statement_prompt).scalar()
-            return total_messages_this_month
+            if(total_messages_this_month is None):
+                return 0
+            return total_messages_this_month 
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
             return 0
@@ -99,11 +101,14 @@ def getMaxMessageByUserId(user):
 
             # If an active subscription is found, return its maxMessages
             if result:
+                if result[0] is None:
+                    return 60
                 return result[0]
+            return 60
 
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
-            return False
+            return 60
 
 def getCoinBalanceByUserId(id):
     with database.session_engine() as session:
