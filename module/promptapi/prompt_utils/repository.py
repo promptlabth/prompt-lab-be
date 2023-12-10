@@ -84,7 +84,7 @@ def getMessagesThisMonth(user):
             return total_messages_this_month
         except Exception as e:
             print(f"An error occurred: {e}")  # It's a good practice to log the exception
-            return False
+            return 0
 
 def getMaxMessageByUserId(user):
     with database.session_engine() as session:
@@ -133,7 +133,7 @@ def getPlanByUserId(id):
             subscriptionPlan = subscription["items"]["data"][0]["plan"]
             product_id = subscriptionPlan["product"]
             # find a product in plan table
-            statement = select(Plans).where(Plans.product_id == user.plan_id)
+            statement = select(Plans).where(Plans.id == user.plan_id)
             product = session.exec(statement).one()
             if (product is None):
                 # if not found a product
