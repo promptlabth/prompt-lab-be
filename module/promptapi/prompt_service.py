@@ -17,7 +17,7 @@ from fastapi.responses import JSONResponse
 from typing import Annotated, List
 
 
-from sqlmodel import select
+from sqlmodel import select, col
 
 from model import database
 from model.promptMessages import prompt_messages_model
@@ -258,8 +258,7 @@ def get_old_caption_by_user(
         try:
             statement_prompt = select(prompt_messages_model.Promptmessages).where(
                 prompt_messages_model.Promptmessages.user_id == user_exec.id
-
-            ) 
+            ).order_by(col(prompt_messages_model.Promptmessages.id).desc())
             prompt_messages_by_id = session.exec(statement=statement_prompt).all()
         except:
             return JSONResponse(
