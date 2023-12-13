@@ -8,6 +8,7 @@ import os
 import random
 
 from fastapi import APIRouter, Depends, HTTPException, Header, status, Request, Response
+from fastapi.encoders import jsonable_encoder
 import openai
 from pydantic import BaseModel
 import dotenv
@@ -288,15 +289,16 @@ def get_old_caption_by_user(
             # print(messages)
             return JSONResponse(
                 content={
-                    "data" : messages
+                    "data" : jsonable_encoder(messages)
                 },
                 status_code=200
             )
         
-        except:
+        except Exception as e:
             raise HTTPException(
                 status_code=status.HTTP_404_NOT_FOUND, 
-                detail="Found a error // you not have a prompt message, get one?"
+                detail= f"{e}"
+                
             )
             
 @router.get("/get-count-message", status_code=200)
