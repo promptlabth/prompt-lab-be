@@ -286,7 +286,12 @@ def get_old_caption_by_user(
 
             
             # print(messages)
-            return messages
+            return JSONResponse(
+                content={
+                    "data" : messages
+                },
+                status_code=200
+            )
         
         except:
             raise HTTPException(
