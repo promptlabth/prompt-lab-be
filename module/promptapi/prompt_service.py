@@ -270,26 +270,10 @@ def get_old_caption_by_user(
             )
         
         try:
-            for prompt in prompt_messages_by_id:
-                ms = Message(
-                    id=prompt.id,
-                    feature_id=prompt.feature_id,
-                    feature=prompt.feature.name,
-                    date_time=prompt.date_time,
-                    input_message=prompt.input_message,
-                    result_message=prompt.result_message,
-                    tone_id=prompt.tone_id,
-                    tone=prompt.tone.tone_name,
-                    user_id=prompt.user_id
-                )
-                # print(ms)
-                messages.append(ms)
-
-            
             # print(messages)
             return JSONResponse(
                 content={
-                    "data" : jsonable_encoder(messages)
+                    "data" : jsonable_encoder(prompt_messages_by_id)
                 },
                 status_code=200
             )

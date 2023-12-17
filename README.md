@@ -17,7 +17,7 @@ step to run backend to local
 
 4. create a file `.env` in ./ folder and add OPENAI_KEY
 
-5. use command `uvicorn main:app --reload` to run fastapi in your local
+5. use command `uvicorn main:app --reload --env-file .env` to run fastapi in your local
 
 ## run docker
 
