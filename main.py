@@ -5,7 +5,9 @@ from module.usersapi import userapi_service
 
 from module.promptapi import prompt_service
 
-from firebase import init_firebase
+
+from controllers.v1.users import userRouter
+from controllers.v1.login_controller import loginRouter
 
 
 
@@ -47,10 +49,14 @@ app.include_router(predict_service.router)
 app.include_router(userapi_service.router, prefix="/users")
 app.include_router(prompt_service.router)
 
+app.include_router(loginRouter)
+
 
 # app.include_router(testapit_service.router, prefix="/test")
 
 app.include_router(tone_service.router)
+
+app.include_router(userRouter)
 
 
 if __name__ == "__main__":
