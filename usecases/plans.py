@@ -1,3 +1,4 @@
+from typing import Annotated
 from repositories.plans import PlanRepository
 
 from model.plans.plans_model import Plans
@@ -9,7 +10,7 @@ class PlanUsecases:
 
     def __init__(
             self,
-            planRepostiory: PlanRepository = Depends()
+            planRepostiory: Annotated[PlanRepository, Depends()]
     ) -> None:
         self.planRepository = planRepostiory
 

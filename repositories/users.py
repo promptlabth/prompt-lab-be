@@ -1,9 +1,9 @@
+from typing import List, Annotated
 from sqlmodel import Session, select, col
 
 from model.database import get_session
 from model.users.users_model import Users
 
-from typing import List, Optional
 
 from fastapi import Depends
 
@@ -16,7 +16,7 @@ from pydantic import BaseModel
 class UsersRepository:
     session : Session
 
-    def __init__(self, session:Session = Depends(get_session)) -> None:
+    def __init__(self, session:Annotated[Session, Depends(get_session)]) -> None:
         self.session = session
 
     def list(self) -> List[Users]:

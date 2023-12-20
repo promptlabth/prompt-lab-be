@@ -1,3 +1,4 @@
+from typing import Annotated
 
 from fastapi import (
     Depends, 
@@ -21,6 +22,8 @@ from services.firebase_service import (
 )
 from services.stripe_service import StripeService
 
+from middlewares.authentication import get_current_user
+
 from usecases.users import UsersUsecase
 from usecases.plans import PlanUsecases
 
@@ -39,33 +42,18 @@ loginRouter = APIRouter(
 @loginRouter.post("/", status_code=200, response_model=LoginResponse)
 def login(
     request: LoginRequest,
-    Authorization: str = Header(default=None),
-    userUsecases: UsersUsecase = Depends(),
-    planUsecases: PlanUsecases = Depends()
+    userUsecases: Annotated[UsersUsecase, Depends()] ,
+    planUsecases: Annotated[PlanUsecases, Depends()] ,
+    firebase_user: Annotated[dict, Depends(get_current_user)]
 ) -> LoginResponse:
     """
     For Login to a website service
     """
 
     # initial Service Class
-    firebase_service = FirebaseService()
     stripe_service = StripeService()
 
-    # Check Have Authorization Token ?
-    if(Authorization == None):
-        print("no Access Token")
-        raise HTTPException(status_code=401, detail="DON'T HAVE ACCESS TOKEN")
     
-    # bearer extract
-    bearer = Authorization.split(" ")
-    if(len(bearer) != 2 and bearer[1] != "Bearer"):
-        raise HTTPException(status_code=401, detail="INCORRECT TOKEN")
-
-    # Extract a token from bearer
-    token = bearer[1]
-
-    # use a validate service from firebase to get UID
-    firebase_user = firebase_service.validate(token)
     if firebase_user is None:
         raise HTTPException(status_code=401, detail="DON'T AUTH OR TOKEN IS Expire")
     firebase_user_id = firebase_user["uid"]

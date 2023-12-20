@@ -19,7 +19,8 @@ userRouter = APIRouter(
     },
 )
 
-@userRouter.get("/", status_code=200, response_model=ListUserResponse)
+# * endpoint to list a user data please disable in product
+# @userRouter.get("/", status_code=200, response_model=ListUserResponse)
 def list_user(
     usersUsecase: UsersUsecase = Depends()
 ) -> ListUserResponse:
@@ -29,7 +30,8 @@ def list_user(
     return result
 
 
-@userRouter.patch("/", status_code=200, response_model=UserUpdateresponse)
+# * patch a user data please disable in production
+# @userRouter.patch("/", status_code=200, response_model=UserUpdateresponse)
 def update_user(
         user: UserUpdateRequest,
         usersUsecase: UsersUsecase = Depends()

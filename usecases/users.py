@@ -1,9 +1,8 @@
 
+from typing import List, Annotated
 from repositories.users import UsersRepository
 
 from fastapi import Depends
-
-from typing import List
 
 from model.users.users_model import Users
 
@@ -14,7 +13,7 @@ class UsersUsecase:
 
     def __init__(
             self,
-            userRepository: UsersRepository = Depends()
+            userRepository: Annotated[UsersRepository, Depends()]
     ) -> None:
         self.usersRepository = userRepository
 

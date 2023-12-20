@@ -1,3 +1,4 @@
+from typing import Annotated
 from sqlmodel import Session, select, col
 
 from model.database import get_session
@@ -9,7 +10,7 @@ class PlanRepository:
 
     def __init__(
             self,
-            session: Session = Depends(get_session)
+            session: Annotated[Session, Depends(get_session)]
     ) -> None:
         self.session = session
 
