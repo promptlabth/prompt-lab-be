@@ -135,7 +135,6 @@ def generate_message_api(
         while len(model_language_choices) > 0:
             # if model in choice is have will loop
             model_language = random.choices(model_language_choices, weights, k=1)[0] # random model
-            print("Model Using : ", model_language)
             if(model_language == "GPT"):
                 # if choice is a GPT
                 try:
@@ -162,9 +161,6 @@ def generate_message_api(
                 # if select model is a vertex model
                 try:
                     model = modelUsecase.get_by_name("VERTEX")
-                    print("model", model.id)
-                    print("feature", feature.id)
-                    print("language", language.id)
                     db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
                         feature.id, model.id, language.id
                     )
