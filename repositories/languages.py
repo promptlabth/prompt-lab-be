@@ -1,4 +1,4 @@
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from sqlmodel import Session, select, col
 
 from fastapi import Depends
@@ -20,7 +20,7 @@ class LanguageRepository:
         result = self.session.exec(statement)
         return result.all()
     
-    def get_by_id(self, id: int) -> Languages | None:
+    def get_by_id(self, id: int) -> Optional[Languages]:
         statement = select(Languages).where(Languages.id == id)
         result = self.session.exec(statement)
         return result.first()

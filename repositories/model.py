@@ -1,4 +1,4 @@
-from typing import Annotated, List
+from typing import Annotated, List, Optional
 from sqlmodel import Session, select, col
 
 from fastapi import Depends
@@ -21,12 +21,12 @@ class ModelRepository:
         result = self.session.exec(statment)
         return result.all()
     
-    def get_by_id(self, id: int) -> Models | None:
+    def get_by_id(self, id: int) -> Optional[Models]:
         statement = select(Models).where(Models.id == id)
         result = self.session.exec(statement)
         return result.first()
     
-    def get_by_name(self, name: str) -> Models | None:
+    def get_by_name(self, name: str) -> Optional[Models]:
         statement = select(Models).where(Models.model_name == name)
         result = self.session.exec(statement)
         return result.first()

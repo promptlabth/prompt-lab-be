@@ -1,7 +1,7 @@
 
 from pydantic import BaseModel
 
-from typing import List
+from typing import List, Optional
 
 from model.users.users_model import Users
 
@@ -13,14 +13,14 @@ class UserUpdateresponse(BaseModel):
 
 
 class UserUpdateRequest(BaseModel):
-    id: int | None
-    firebase_id: str | None = None
-    name: str | None = None
-    email: str | None = None
-    profilepic: str | None = None
-    platform: str | None = None
-    access_token: str | None = None
-    stripe_id: str | None = None
+    id: Optional[int] = None
+    firebase_id: Optional[str] = None
+    name: Optional[str] = None
+    email: Optional[str] = None
+    profilepic: Optional[str] = None
+    platform: Optional[str] = None
+    access_token: Optional[str] = None
+    stripe_id: Optional[str] = None
 
-    plan_id: int | None = None
+    plan_id: Optional[int] = None
 

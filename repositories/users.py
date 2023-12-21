@@ -1,4 +1,4 @@
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from sqlmodel import Session, select, col
 
 from model.database import get_session
@@ -24,17 +24,17 @@ class UsersRepository:
         result = self.session.exec(statement=statement)
         return result.all()
     
-    def get_by_firebase_id(self, firebase_id: str) -> Users | None:
+    def get_by_firebase_id(self, firebase_id: str) -> Optional[Users]:
         statement = select(Users).where(Users.firebase_id == firebase_id)
         result = self.session.exec(statement=statement)
         return result.first()
     
-    def get_by_stripe_id(self, stripe_id: str) -> Users | None:
+    def get_by_stripe_id(self, stripe_id: str) -> Optional[Users] :
         statement = select(Users).where(Users.stripe_id == stripe_id)
         result = self.session.exec(statement=statement)
         return result.first()
 
-    def get(self, id: int) -> Users | None:
+    def get(self, id: int) -> Optional[Users]:
         statement = select(Users).where(Users.id == id)
         result = self.session.exec(statement=statement)
         return result.first()
@@ -46,7 +46,7 @@ class UsersRepository:
         return user
 
     
-    def update(self, id:int, user: UserUpdateRequest) -> Users | None:
+    def update(self, id:int, user: UserUpdateRequest) -> Optional[Users]:
         db_user = self.session.get(Users, id)
         if not db_user:
             return None

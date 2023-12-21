@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends
 
@@ -14,7 +14,7 @@ class FeatureUsecase:
     ) -> None:
         self.featureRepository = featureRepository
 
-    def get_by_id(self, id: int) -> Features | None:
+    def get_by_id(self, id: int) -> Optional[Features]:
         return self.featureRepository.get_by_id(id)
     
     

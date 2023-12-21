@@ -1,5 +1,5 @@
 
-from typing import List, Annotated
+from typing import List, Annotated, Optional
 from repositories.users import UsersRepository
 
 from fastapi import Depends
@@ -25,19 +25,19 @@ class UsersUsecase:
     def get(
             self,
             id: int
-    ) -> Users | None:
+    ) -> Optional[Users] :
         return self.usersRepository.get(id)
     
     def get_by_firebase_id(
             self,
             firebase_id: str
-    ) -> Users | None:
+    ) -> Optional[Users]:
         return self.usersRepository.get_by_firebase_id(firebase_id)
     
     def get_by_stripe_id(
             self,
             stripe_id: str
-    ) -> Users | None:
+    ) -> Optional[Users]:
         return self.usersRepository.get_by_stripe_id(stripe_id)
     
     def create(

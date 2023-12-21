@@ -1,4 +1,4 @@
-name: Build and Deploy to Cloud Run For Dev
+name: Build and Deploy to Cloud Run For Refactor
 
 on:
   push:

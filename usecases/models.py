@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from repositories.model import ModelRepository
 
@@ -16,5 +16,5 @@ class ModelUsecase:
         self.modelRepository = modelRepository
         return None
     
-    def get_by_name(self, name:str) -> Models | None:
+    def get_by_name(self, name:str) -> Optional[Models]:
         return self.modelRepository.get_by_name(name)

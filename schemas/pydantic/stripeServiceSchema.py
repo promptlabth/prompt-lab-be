@@ -1,7 +1,9 @@
+from typing import Optional
+
 from pydantic import BaseModel
 
 from datetime import datetime
 
 class StartEndPlan(BaseModel):
-    start_date: datetime | None
-    end_date: datetime | None
+    start_date: Optional[datetime]
+    end_date: Optional[datetime]

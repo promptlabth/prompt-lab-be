@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from model.languages.languages_model import Languages
 
@@ -16,6 +16,6 @@ class LanguageUsecase:
     ) -> None:
         self.languageRepository = languageRepository
 
-    def get_by_id(self, id:int) -> Languages | None:
+    def get_by_id(self, id:int) -> Optional[Languages]:
         return self.languageRepository.get_by_id(id)
     

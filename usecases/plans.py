@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from repositories.plans import PlanRepository
 
 from model.plans.plans_model import Plans
@@ -14,12 +14,12 @@ class PlanUsecases:
     ) -> None:
         self.planRepository = planRepostiory
 
-    def get_by_id(self, id: int) -> Plans | None:
+    def get_by_id(self, id: int) -> Optional[Plans]:
         return self.planRepository.get_by_id(id)
     
-    def get_by_plan_type(self, plan_type: str) -> Plans | None:
+    def get_by_plan_type(self, plan_type: str) -> Optional[Plans]:
         return self.planRepository.get_by_plan_type(plan_type)
     
-    def get_by_product_id(self, product_id: str) -> Plans | None:
+    def get_by_product_id(self, product_id: str) -> Optional[Plans]:
         return self.planRepository.get_by_product_id(product_id)
     

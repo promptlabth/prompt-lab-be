@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from sqlmodel import Session, select, and_
 from fastapi import Depends
@@ -17,12 +17,12 @@ class InputPromptRepository:
         self.session = session
         return None
     
-    def get_by_id(self, id: int) -> InputPrompts | None:
+    def get_by_id(self, id: int) -> Optional[InputPrompts]:
         statement = select(InputPrompts).where(InputPrompts.id == id)
         result = self.session.exec(statement).first()
         return result.first()
     
-    def get_by_feature_id_and_model_id(self, feature_id: int, model_id: int, language_id: int) -> InputPrompts | None:
+    def get_by_feature_id_and_model_id(self, feature_id: int, model_id: int, language_id: int) -> Optional[InputPrompts]:
         statement = select(InputPrompts).where(
             and_(
                 InputPrompts.feature_id == feature_id,

@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from sqlmodel import Session, select, col
 
 from model.database import get_session
@@ -14,17 +14,17 @@ class PlanRepository:
     ) -> None:
         self.session = session
 
-    def get_by_id(self, id: int) -> Plans | None:
+    def get_by_id(self, id: int) -> Optional[Plans]:
         statement = select(Plans).where(Plans.id == id)
         result = self.session.exec(statement=statement)
         return result.first()
     
-    def get_by_plan_type(self, plan_type: str) -> Plans | None:
+    def get_by_plan_type(self, plan_type: str) -> Optional[Plans]:
         statement = select(Plans).where(Plans.planType == plan_type)
         result = self.session.exec(statement)
         return result.first()
     
-    def get_by_product_id(self, product_id: str) -> Plans | None:
+    def get_by_product_id(self, product_id: str) -> Optional[Plans]:
         statement = select(Plans).where(Plans.product_id == product_id)
         result = self.session.exec(statement)
         return result.first()

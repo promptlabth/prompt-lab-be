@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 from repositories.tones import ToneRepository
 
 from model.tones.tone_model import Tones
@@ -14,5 +14,5 @@ class ToneUsecase:
     ) -> None:
         self.toneRepository = toneRepository
 
-    def get_by_id(self, id: int) -> Tones | None:
+    def get_by_id(self, id: int) -> Optional[Tones]:
         return self.toneRepository.get_by_id(id)

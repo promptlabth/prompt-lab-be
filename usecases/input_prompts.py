@@ -1,4 +1,4 @@
-from typing import Annotated
+from typing import Annotated, Optional
 
 from fastapi import Depends
 
@@ -17,8 +17,8 @@ class InputPromptUsecase:
     ) -> None:
         self.inputPromptRepository = inputPromptRepository
 
-    def get_by_id(self, id: int) -> InputPrompts | None:
+    def get_by_id(self, id: int) -> Optional[InputPrompts]:
         return self.inputPromptRepository.get_by_id(id)
 
-    def get_by_feature_id_and_model_id(self, feature_id: int, model_id : int, language_id: int) -> InputPrompts | None:
+    def get_by_feature_id_and_model_id(self, feature_id: int, model_id : int, language_id: int) -> Optional[InputPrompts]:
         return self.inputPromptRepository.get_by_feature_id_and_model_id(feature_id, model_id, language_id)
