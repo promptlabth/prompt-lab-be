@@ -20,6 +20,11 @@ class LanguageRepository:
         result = self.session.exec(statement)
         return result.all()
     
+    def get_by_language(self, language: str) -> Optional[Languages]:
+        statement = select(Languages).where(Languages.language_name == language)
+        result = self.session.exec(statement)
+        return result.first()
+    
     def get_by_id(self, id: int) -> Optional[Languages]:
         statement = select(Languages).where(Languages.id == id)
         result = self.session.exec(statement)

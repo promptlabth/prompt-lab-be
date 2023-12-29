@@ -16,6 +16,9 @@ class LanguageUsecase:
     ) -> None:
         self.languageRepository = languageRepository
 
+    def get_by_language(self, language: str) -> Optional[Languages]:
+        return self.languageRepository.get_by_language(language)
+
     def get_by_id(self, id:int) -> Optional[Languages]:
         return self.languageRepository.get_by_id(id)
     

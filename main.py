@@ -11,6 +11,8 @@ from controllers.v1.login_controller import loginRouter
 
 from controllers.v1.prompt_generate_controller import prompt_routers
 
+from controllers.v1.tone_controller import tone_routers
+
 app = FastAPI()
 
 origins = [
@@ -59,6 +61,8 @@ app.include_router(tone_service.router)
 app.include_router(userRouter)
 
 app.include_router(prompt_routers)
+
+app.include_router(tone_routers)
 
 if __name__ == "__main__":
     import uvicorn

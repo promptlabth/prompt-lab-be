@@ -28,7 +28,7 @@ from usecases.models import ModelUsecase
 
 
 prompt_routers = APIRouter(
-    tags=["Generate AI Service \"Can't run in page\""],
+    tags=["Generate AI Service \"Can't run in page\"", "v1"],
     prefix="/v1/generate",
     responses={
         404:{"description": "Generate API Error or Not Found"}

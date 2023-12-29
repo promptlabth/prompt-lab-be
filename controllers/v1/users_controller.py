@@ -12,7 +12,7 @@ from schemas.pydantic.userSchema import (
 )
 
 userRouter = APIRouter(
-    tags=["User Services"],
+    tags=["User Services", "v1"],
     prefix="/v1/user",
     responses={
         404:{"discription": "NOT FOUND!!"}

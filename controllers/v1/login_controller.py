@@ -32,14 +32,14 @@ from model.users.users_model import Users
 
 
 loginRouter = APIRouter(
-    tags=["User Services"],
+    tags=["User Services", "v1"],
     prefix="/v1/login",
     responses={
         404:{"discription": "Not Found a URL or this URL is invalid"}
     },
 )
 
-@loginRouter.post("/", status_code=200, response_model=LoginResponse)
+@loginRouter.post("", status_code=200, response_model=LoginResponse)
 def login(
     request: LoginRequest,
     userUsecases: Annotated[UsersUsecase, Depends()] ,
