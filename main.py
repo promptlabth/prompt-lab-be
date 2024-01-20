@@ -2,6 +2,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from module.openapi import predict_service, tone_service
 from module.usersapi import userapi_service
+from module.facebook.controller import facebook_services
 
 from module.promptapi import prompt_service
 
@@ -46,6 +47,7 @@ def hello_word() -> dict :
 app.include_router(predict_service.router)
 app.include_router(userapi_service.router, prefix="/users")
 app.include_router(prompt_service.router)
+app.include_router(facebook_services.router, prefix="/facebook")
 
 
 # app.include_router(testapit_service.router, prefix="/test")
