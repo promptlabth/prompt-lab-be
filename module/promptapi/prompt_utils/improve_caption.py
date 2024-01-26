@@ -12,11 +12,15 @@ openai.api_key = os.environ.get("OPENAI_KEY")
 prompt_format ={
     "th": """ Improve a social media announcement from this [{input}]
             to have more information that relavent about this topic and then add some words, hashtags, and emojis to it. give more expression, information
-            **all information must be real** **you must keep same feeling of text**[เป็นภาษาไทยเท่านั้น]""",
+            **all information must be real** **you must keep same feeling of text** [เป็นภาษาไทยเท่านั้น]""",
             
     "eng":""" Improve a social media announcement from this [{input}]
             to have more information that relavent about this topic and then add some words, hashtags, and emojis to it. give more expression, information
-            **all information must be real** **you must keep same feeling of text**"""
+            **all information must be real** **you must keep same feeling of text** [In English only]""",
+            
+    "id": """ Improve a social media announcement from this [{input}]
+            to have more information that relavent about this topic and then add some words, hashtags, and emojis to it. give more expression, information
+            **all information must be real** **you must keep same feeling of text** [in Bahasa Indonesia Only]""",
 }
 
 def openAiImproveCaption(input_message, language):
