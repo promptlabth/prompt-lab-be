@@ -23,14 +23,12 @@ from sqlmodel import select, col
 from model import database
 from model.promptMessages import prompt_messages_model
 from model.users import users_model
-from model.tones import tone_model
-from model.features import features_model
 from datetime import datetime
 
 from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMaxMessageByUserId, getMessagesThisMonth, getToneById, getUserByFirebaseId, getModelAIById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
 from module.promptapi.prompt_utils.vertex_parameter import vertexGenerator
-from model.models import models_model
+from module.promptapi.prompt_utils.improve_caption import openAiImproveCaption, vertexAiImproveCaption 
 
 
 
@@ -43,6 +41,13 @@ class OpenAiRequest(BaseModel):
     input_message: str
     tone_id: int
     feature_id: int
+
+class ImproveCaptionsRequest(BaseModel):
+    """
+    this class is model for Request to improve cantions in API
+    """
+    input_message: str
+    language_id: int
 
 class ResponseHttp(BaseModel):
     """
@@ -316,3 +321,87 @@ def get_remaining_message(
 
     
     
+@router.get("/generate-improve-message")
+def generateImproveCaption(
+    response: Response,
+    userReq: ImproveCaptionsRequest,
+    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+    Authorization:str = Header(default=None), 
+    RefreshToken:str = Header(default=None),
+):
+    """
+    In this function is will be return a improve of caption
+    """
+
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.8, 0.2]
+    modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    
+    # if / else check a env is deploy yep?
+    if os.environ.get("DEPLOY") == "DEV":
+        modelLanguage = "VERTEX"
+
+    user = getUserByFirebaseId(firebaseId)
+    if(user == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="การเข้าสู่ระบบมีปัญหา กรุณา Login ใหม่อีกครั้ง",
+                error="Firebase Login is Exp"
+            ).dict()
+        )
+    
+    # handle when user limit message per day
+    enableLimitMessage = True
+    if(enableLimitMessage):
+        total_messages_this_month = getMessagesThisMonth(user)
+        mexMessage = getMaxMessageByUserId(user)
+        if(total_messages_this_month >= mexMessage):
+            return JSONResponse(
+                status_code=status.HTTP_200_OK,
+                content=ResponseHttp(
+                    reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในวันถัดไป",
+                    error="limit message"
+                ).dict()
+        )
+    
+    # get language by id
+    language = getLanguageById(userReq.language_id)
+    if(language == False):
+        return JSONResponse(
+            status_code=status.HTTP_404_NOT_FOUND,
+            content=ResponseHttp(
+                reply="กรุณาลองใหม่ในภายหลัง",
+                error="cannot create and save to db"
+            ).dict()
+        )
+    
+    result = "กรุณาลองใหม่ในภายหลัง"
+
+    if(modelLanguage == "GPT"):
+        try:
+            result = openAiImproveCaption(userReq.input_message, language.language_name)
+        except:
+            result = vertexAiImproveCaption(userReq.input_message, language.language_name)
+    elif(modelLanguage == "VERTEX"):
+        try:
+            result = vertexAiImproveCaption(userReq.input_message, language.language_name)
+        except:
+            result = openAiImproveCaption(userReq.input_message, language.language_name)
+        
+    try:
+        response_data = JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=ResponseHttp(reply=result, error="").dict(),
+            headers={
+                "AccessToken":response.headers["access-token"],
+                "RefreshToken":response.headers["refresh-token"]
+            }
+        )
+    except:
+        response_data=JSONResponse(
+            status_code=status.HTTP_200_OK,
+            content=ResponseHttp(reply=result, error="").dict(),
+        )
+        
+    return response_data
