@@ -321,7 +321,7 @@ def get_remaining_message(
 
     
     
-@router.post("/generate-improve-message")
+@router.post("/generate-improve-caption")
 def generateImproveCaption(
     response: Response,
     userReq: ImproveCaptionsRequest,
