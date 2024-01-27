@@ -52,6 +52,7 @@ def include_object(object, name, type_, reflected, compare_to):
     # if table start with directus_ then ignore it
     if name is not None and name.startswith("directus_"):
         return False
+    
 
     return True
 
