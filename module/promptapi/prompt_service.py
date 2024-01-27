@@ -95,7 +95,7 @@ def generateTextReasult(
 
     
     # if / else check a env is deploy yep?
-    if os.environ.get("DEPLOY") == "DEV":
+    if os.environ.get("ENV") == "DEV":
         modelLanguage = "VERTEX"
     print(firebaseId)
     user = getUserByFirebaseId(firebaseId)
@@ -336,7 +336,7 @@ def generateImproveCaption(
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     
     # if / else check a env is deploy yep?
-    if os.environ.get("DEPLOY") == "DEV":
+    if os.environ.get("ENV") == "DEV":
         modelLanguage = "VERTEX"
 
     user = getUserByFirebaseId(firebaseId)
