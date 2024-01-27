@@ -15,4 +15,3 @@ class Tones(SQLModel, table=True):
     
     # 1 Tone have many PromptMessages
     promptmessages: List["Promptmessages"] = Relationship(back_populates="tone")
-

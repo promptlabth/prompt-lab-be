@@ -93,8 +93,6 @@ def generateTextReasult(
     weights = [0.8, 0.2]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
 
-
-    # modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     
     # if / else check a env is deploy yep?
     if os.environ.get("DEPLOY") == "DEV":
