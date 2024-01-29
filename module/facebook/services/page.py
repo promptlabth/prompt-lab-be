@@ -7,7 +7,7 @@ url_profile_image = "https://graph.facebook.com/v18.0/366157134100453/picture"
 
 # Parameters including the access token
 params = {
-    "access_token": "EAA1oWnQsH3kBOZBeyfjhbmaNYMHluHqmdDtr9KprGIHoNvZAEKzoycB56IT2GH51qLCgMWcAR4stvVAmkPBCa5ZBagk0mlZBpwLiDWzJZBZAwd3vIz7bMUTmxkQ566gDMxVaDMOkZBThNZA7aVom51LsKPglqlb86z9mpqYzDxqHxWNZBVxELhrfgzZAwxN0TsAqQrw23ZClVQMPyZAH4lQCBviduULUwDKt4EOaauZCbe94ZD"
+    "access_token": "EAA1oWnQsH3kBOZCwAhn1AxcxvC797Lliy4zh8YEmm9fh8UDCLT84WftOlGT8JyBXZALYllUXLiVuZCvIXJPIixqC4yLxiX2nB3WNhI8fjt2XfZAlNhLxZC8JZCQw8fum6QAfvpPz41Rd56ZCZC79G6EHgQRhGoBa0ZCpTaw9608AXW3qa27K0vYY0mokiDziRAfAB4UCMaPnmBafcmIeAFdAWw5o66lFbBomSZAwZDZD"
 }
 def get_facebook_page_data():
 
@@ -16,6 +16,7 @@ def get_facebook_page_data():
 
     # Decoding the Unicode escape sequences
     decoded_data = json.loads(response.text)
+    print(decoded_data)
     page_data = decoded_data['data']
     final_data = []
     for data in page_data:

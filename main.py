@@ -9,6 +9,7 @@ from module.promptapi import prompt_service
 
 from controllers.v1.users_controller import userRouter
 from controllers.v1.login_controller import loginRouter
+from controllers.v1.facebook_controller import facebook_router
 
 from controllers.v1.prompt_generate_controller import prompt_routers
 
@@ -65,6 +66,8 @@ app.include_router(userRouter)
 app.include_router(prompt_routers)
 
 app.include_router(tone_routers)
+
+app.include_router(facebook_router)
 
 if __name__ == "__main__":
     import uvicorn
