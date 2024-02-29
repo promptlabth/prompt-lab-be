@@ -52,9 +52,10 @@ jobs:
         --allow-unauthenticated \
         --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME}},FIREBASE_API_KEY=${{secrets.FIREBASE_API_KEY}},ENV=DEV,GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},STRIPE_KEY=${{ secrets.STRIPE_KEY }} \
         --max-instances=10 \
+        --tag=dev \
         --memory 1Gi
-    - name: Update tags to dev
-      run: |
-        gcloud run services update-traffic prompt-lab-be \
-        --update-tags=dev=$(gcloud run revisions list --service=prompt-lab-be --format="value(metadata.name)" --sort-by="metadata.creationTimestamp" --region=asia-southeast1 | tail -n 1) \
-        --region=asia-southeast1
+    # - name: Update tags to dev
+    #   run: |
+    #     gcloud run services update-traffic prompt-lab-be \
+    #     --update-tags=dev=$(gcloud run revisions list --service=prompt-lab-be --format="value(metadata.name)" --sort-by="metadata.creationTimestamp" --region=asia-southeast1 | tail -n 1) \
+    #     --region=asia-southeast1
