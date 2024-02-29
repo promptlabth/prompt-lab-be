@@ -2,7 +2,7 @@ name: Build and Deploy to Cloud Run For Production
 
 on:
   release:
-    [published]
+    types: [published]
 
 jobs:
   build-and-deploy:
