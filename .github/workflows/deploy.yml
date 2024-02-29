@@ -1,5 +1,4 @@
-name: Build and Deploy to Cloud Run For Production
-
+name: Release a prod to stating
 on:
   release:
     types: [published]
