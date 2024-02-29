@@ -54,5 +54,5 @@ jobs:
     - name: update tags stating
       run: |
         gcloud run services update-traffic prompt-lab-be \
-        --update-tags=staging=${gcloud run revisions list --service=prompt-lab-be --format="value(metadata.name)" --sort-by="metadata.creationTimestamp" --region=asia-southeast1 | tail -n 1} \
+        --update-tags=staging=$(gcloud run revisions list --service=prompt-lab-be --format="value(metadata.name)" --sort-by="metadata.creationTimestamp" --region=asia-southeast1 | tail -n 1) \
         --region=asia-southeast1
