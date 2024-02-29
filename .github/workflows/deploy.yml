@@ -54,5 +54,5 @@ jobs:
     - name: update tags stating
       run: |
         gcloud run services update-traffic prompt-lab-be \
-        --set-tags=staging=LATEST \
+        --update-tags=staging=LATEST \
         --region=asia-southeast1
