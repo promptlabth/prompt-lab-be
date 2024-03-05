@@ -36,7 +36,7 @@ origins = [
     "https://1b8fg7zk-3000.asse.devtunnels.ms"
     "https://663b-1-46-153-144.ngrok-free.app",
     "https://babe-1-46-25-216.ngrok-free.app",
-    "https://c6a9-2001-fb1-c0-31f4-14c8-4671-6802-6d99.ngrok-free.app"
+    "https://deploy-preview-38--comfy-cendol-1b50ad.netlify.app"
 ]
 app.add_middleware(
     CORSMiddleware,
