@@ -9,7 +9,7 @@ class Plans(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
     planType: str
     maxMessages: int
-    product_id: str
+    product_id: Optional[str] = Field()
 
     # 1 Plan have mamy Users
     users: List["Users"] = Relationship(back_populates="plan")
