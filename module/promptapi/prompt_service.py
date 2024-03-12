@@ -81,9 +81,9 @@ openai.api_key = os.environ.get("OPENAI_KEY")
 def generateTextReasult(
     response: Response,
     userReq: OpenAiRequest,
-    firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
-    Authorization:str = Header(default=None), 
-    RefreshToken:str = Header(default=None),
+    # firebaseId: Annotated[str, Depends(authentication.auth_depen_new)],
+    # Authorization:str = Header(default=None), 
+    # RefreshToken:str = Header(default=None),
 ):
     """
     In this function is will be return a old message of user by userid
