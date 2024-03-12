@@ -50,7 +50,7 @@ jobs:
         --region asia-southeast1 \
         --platform managed \
         --allow-unauthenticated \
-        --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME}},FIREBASE_API_KEY=${{secrets.FIREBASE_API_KEY}},ENV=DEV,GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},STRIPE_KEY=${{ secrets.STRIPE_KEY }} \
+        --set-env-vars OPENAI_KEY=${{ secrets.OPENAI_KEY }},DB_USER=${{ secrets.DB_USER_DEV }},DB_PASSWORD=${{ secrets.DB_PASSWORD_DEV }},DB_HOST=${{ secrets.DB_HOST }},DB_PORT=${{ secrets.DB_PORT_DEV }},DB_NAME=${{ secrets.DB_NAME}},FIREBASE_API_KEY=${{secrets.FIREBASE_API_KEY}},ENV=DEV,GCP_PROJECT_ID=${{ secrets.GCP_PROJECT_ID }},STRIPE_KEY=${{ secrets.STRIPE_KEY }},ANTHROPIC_API_KEY=${{ secrets.ANTHROPIC_API_KEY }} \
         --max-instances=10 \
         --tag=dev \
         --memory 1Gi
