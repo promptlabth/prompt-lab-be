@@ -123,8 +123,8 @@ def generate_message_api(
     generate_service = GenerateService()
 
     # random a model choices 
-    model_language_choices = ["GPT", "VERTEX"]
-    weights = [0.8, 0.2]
+    model_language_choices = ["GPT", "CLAUDE", "VERTEX"]
+    weights = [0.5, 0.3, 0.2]
     # if os.environ.get("ENV") == "DEV":
     #     # ! in dev state will random to VERTEX only
     #     weights = [0, 1]
@@ -177,6 +177,28 @@ def generate_message_api(
                     break
                 except:
                     # WHEN VERTEX AI IS DOWN!!
+                    index = model_language_choices.index(model_language)
+                    data = weights.pop(index)
+                    weights[0] += data
+                    model_language_choices.remove(model_language)
+                    continue
+            elif(model_language == "CLAUDE"):
+                # if select model is a CLAUDE model
+                try:
+                    model = modelUsecase.get_by_name(model_language)
+                    db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
+                        feature.id, model.id, language.id
+                    )
+                    if db_prompt is None:
+                        raise Exception('not found prompt')
+                    input_prompt = db_prompt.prompt_input.format(
+                        input = generateMessageRequest.input_message,
+                        type = tone.tone_name
+                    )
+                    result = generate_service.claudeGennertor(input_prompt)
+                    break
+                except:
+                    # when CLAUDE Model is DOWN !!
                     index = model_language_choices.index(model_language)
                     data = weights.pop(index)
                     weights[0] += data

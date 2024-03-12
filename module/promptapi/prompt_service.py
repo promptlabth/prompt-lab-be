@@ -24,6 +24,7 @@ from model import database
 from model.promptMessages import prompt_messages_model
 from model.users import users_model
 from datetime import datetime
+from module.promptapi.prompt_utils.claude_parameter import claudeGennertor
 
 from module.promptapi.prompt_utils.repository import getFeaturById, getLanguageById, getMaxMessageByUserId, getMessagesThisMonth, getToneById, getUserByFirebaseId, getModelAIById
 from module.promptapi.prompt_utils.open_ai import openAiGenerate
@@ -92,70 +93,88 @@ def generateTextReasult(
     model_language_choices = ["GPT", "VERTEX", "CLAUDE"]
     weights = [0.0, 0.0, 1]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
+    modelLanguage = "CLAUDE"
 
     
     # if / else check a env is deploy yep?
-    if os.environ.get("ENV") == "DEV":
-        modelLanguage = "VERTEX"
-    print(firebaseId)
-    user = getUserByFirebaseId(firebaseId)
-    if(user == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="การเข้าสู่ระบบมีปัญหา กรุณา Login ใหม่อีกครั้ง",
-                error="Firebase Login is Exp"
-            ).dict()
-        )
+    # if os.environ.get("ENV") == "DEV":
+    #     modelLanguage = "VERTEX"
+    # print(firebaseId)
+    # user = getUserByFirebaseId(firebaseId)
+    # if(user == False):
+    #     return JSONResponse(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         content=ResponseHttp(
+    #             reply="การเข้าสู่ระบบมีปัญหา กรุณา Login ใหม่อีกครั้ง",
+    #             error="Firebase Login is Exp"
+    #         ).dict()
+    #     )
     
     # handle when user limit message per day
-    enableLimitMessage = True
-    if(enableLimitMessage):
-        total_messages_this_month = getMessagesThisMonth(user)
-        mexMessage = getMaxMessageByUserId(user)
-        if(total_messages_this_month >= mexMessage):
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content=ResponseHttp(
-                    reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในวันถัดไป",
-                    error="limit message"
-                ).dict()
-        )
+    # enableLimitMessage = True
+    # if(enableLimitMessage):
+    #     total_messages_this_month = getMessagesThisMonth(user)
+    #     mexMessage = getMaxMessageByUserId(user)
+    #     if(total_messages_this_month >= mexMessage):
+    #         return JSONResponse(
+    #             status_code=status.HTTP_200_OK,
+    #             content=ResponseHttp(
+    #                 reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในวันถัดไป",
+    #                 error="limit message"
+    #             ).dict()
+    #     )
     
     
     # get tone by id
-    tone = getToneById(userReq.tone_id)
-    if(tone == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
+    # tone = getToneById(userReq.tone_id)
+    # if(tone == False):
+    #     return JSONResponse(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         content=ResponseHttp(
+    #             reply="กรุณาลองใหม่ในภายหลัง",
+    #             error="cannot create and save to db"
+    #         ).dict()
+    #     )
     
     # get language by id
-    language = getLanguageById(tone.language_id)
-    if(language == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
+    # language = getLanguageById(tone.language_id)
+    # if(language == False):
+    #     return JSONResponse(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         content=ResponseHttp(
+    #             reply="กรุณาลองใหม่ในภายหลัง",
+    #             error="cannot create and save to db"
+    #         ).dict()
+    #     )
     
     # get feature by id
-    feature = getFeaturById(userReq.feature_id)
-    if(feature == False):
-        return JSONResponse(
-            status_code=status.HTTP_404_NOT_FOUND,
-            content=ResponseHttp(
-                reply="กรุณาลองใหม่ในภายหลัง",
-                error="cannot create and save to db"
-            ).dict()
-        )
-    
+    # feature = getFeaturById(userReq.feature_id)
+    # if(feature == False):
+    #     return JSONResponse(
+    #         status_code=status.HTTP_404_NOT_FOUND,
+    #         content=ResponseHttp(
+    #             reply="กรุณาลองใหม่ในภายหลัง",
+    #             error="cannot create and save to db"
+    #         ).dict()
+    #     )
+
+    class Language:
+        def __init__(self, language_name):
+            self.language_name = language_name
+
+    class Feature:
+        def __init__(self, name):
+            self.name = name
+
+    class Tone:
+        def __init__(self, tone_name):
+            self.tone_name = tone_name
+
+    # Creating objects
+    language = Language('th')
+    feature = Feature('เขียนแคปชั่นขายของ')
+    tone = Tone('สนุกสนาน')
+
     result = "กรุณาลองใหม่ในภายหลัง"
 
     if(modelLanguage == "GPT"):
@@ -172,56 +191,63 @@ def generateTextReasult(
         except:
             result = openAiGenerate(language.language_name, feature.name, tone.tone_name, userReq.input_message)
             model = getModelAIById("GPT")
-
-    try:
-        prompt_message_db = prompt_messages_model.Promptmessages(
-            input_message=userReq.input_message,
-            result_message=result,
-            feature=feature,
-            tone=tone,
-            user=user,
-            model=model,
-            date_time=datetime.now()
-        )
-    except Exception as e:
-        print("Error MSG", user)
-        return JSONResponse(
-            status_code=status.HTTP_200_OK,
-            content=ResponseHttp(
-                reply=result,
-                error="cannot create and save to db",
-            ).dict()
-        )
-    with database.session_engine() as session:
+    elif(modelLanguage == "CLAUDE"):
         try:
-            session.add(prompt_message_db)
-            session.commit()
-            session.refresh(prompt_message_db)
-        except Exception as e:
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content=ResponseHttp(
-                    reply=result,
-                    error="cannot save to db",
-                    msgError=e
-                ).dict()
-            )
-    try:
-        response_data = JSONResponse(
-            status_code=status.HTTP_201_CREATED,
-            content=ResponseHttp(reply=result, error="").dict(),
-            headers={
-                "AccessToken":response.headers["access-token"],
-                "RefreshToken":response.headers["refresh-token"]
-            }
-        )
-    except:
-        response_data=JSONResponse(
-            status_code=status.HTTP_201_CREATED,
-            content=ResponseHttp(reply=result, error="").dict(),
-        )
+            result = claudeGennertor(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("CLAUDE")
+        except:
+            result = vertexGenerator(language.language_name, feature.name, tone.tone_name, userReq.input_message)
+            model = getModelAIById("VERTEX")
+
+    # try:
+    #     prompt_message_db = prompt_messages_model.Promptmessages(
+    #         input_message=userReq.input_message,
+    #         result_message=result,
+    #         feature=feature,
+    #         tone=tone,
+    #         user=user,
+    #         model=model,
+    #         date_time=datetime.now()
+    #     )
+    # except Exception as e:
+    #     print("Error MSG", user)
+    #     return JSONResponse(
+    #         status_code=status.HTTP_200_OK,
+    #         content=ResponseHttp(
+    #             reply=result,
+    #             error="cannot create and save to db",
+    #         ).dict()
+    #     )
+    # with database.session_engine() as session:
+    #     try:
+    #         session.add(prompt_message_db)
+    #         session.commit()
+    #         session.refresh(prompt_message_db)
+    #     except Exception as e:
+    #         return JSONResponse(
+    #             status_code=status.HTTP_200_OK,
+    #             content=ResponseHttp(
+    #                 reply=result,
+    #                 error="cannot save to db",
+    #                 msgError=e
+    #             ).dict()
+    #         )
+    # try:
+    #     response_data = JSONResponse(
+    #         status_code=status.HTTP_201_CREATED,
+    #         content=ResponseHttp(reply=result, error="").dict(),
+    #         headers={
+    #             "AccessToken":response.headers["access-token"],
+    #             "RefreshToken":response.headers["refresh-token"]
+    #         }
+    #     )
+    # except:
+    #     response_data=JSONResponse(
+    #         status_code=status.HTTP_201_CREATED,
+    #         content=ResponseHttp(reply=result, error="").dict(),
+    #     )
         
-    return response_data
+    return result
 
 @router.get("/get-caption", status_code=200)
 def get_old_caption_by_user(

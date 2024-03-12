@@ -5,6 +5,7 @@ import json
 import vertexai
 from vertexai.preview.language_models import TextGenerationModel as Preview_TextGenerationModel
 from vertexai.language_models import TextGenerationModel
+import anthropic
 from google.oauth2 import service_account
 
 class GenerateService:
@@ -13,6 +14,8 @@ class GenerateService:
         openai.api_key = os.environ.get("OPENAI_KEY")
         credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
         vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
+        anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")
+)
 
     def generateMessageOpenAI(self, input_prompt: str):
         result = openai.ChatCompletion.create(
@@ -101,5 +104,28 @@ class GenerateService:
         
         result = vertex_model.predict(input_prompt, **model_parameter)
         return result.text
+    
+    def claudeGennertor(self, input_prompt: str):
+            message = self.anthropic_client.messages.create(
+            model="claude-3-opus-20240229",
+            max_tokens=4000,
+            temperature=0.5,
+            system="",
+            messages=[
+                {
+                    "role": "user",
+                    "content": [
+                        {
+                            "type": "text",
+                            "text": f"{input_prompt}"
+                        }
+                    ]
+                }
+                ]
+            )
+            print(message.content)
+            return message.content
+    
+
 
 
