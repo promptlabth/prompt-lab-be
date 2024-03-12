@@ -1,15 +1,18 @@
-import openai
-import os 
+import os
+import anthropic
 
-openai.api_key = os.environ.get("OPENAI_KEY")
+client = anthropic.Anthropic(
+    # defaults to os.environ.get("ANTHROPIC_API_KEY")
+    api_key=os.environ.get("ANTHROPIC_API_KEY"),
+)
 
-def openAiGenerate(language, feature, tone, input_message):
+def claudeGennertor(language, feature, tone, input_message):
     prompt_list = {
         "th" : {
             "เขียนแคปชั่นขายของ" : """Write a social media announcement about [{input}] with hashtags and emojis The feeling of the message should be [{type}]. [เป็นภาษาไทยเท่านั้น]""",
             "ช่วยคิดคอนเทนต์" : """Create list of idea content with short biref about [ {input}] that all content should make feeling like [ {type}] 
         show list of idea with short biref [เป็นภาษาไทยเท่านั้น]:""",
-            "เขียนบทความ": """Write a blog post with high demand SEO keyword that talks about [main topic of article] that article should feel like [emotion of message] [เป็นภาษาไทย]:
+            "เขียนบทความ": """Write a blog post with high demand SED keyword that talks about [main topic of article] that article should feel like [emotion of message] [เป็นภาษาไทย]:
         main topic of article:  {input}
         emotion of message:  {type}""",
             "เขียนสคริปวิดีโอสั้น" : """write full scripts for short video that talk about [ {input}] and the feeling of scripts is [ {type}] [เป็นภาษาไทยเท่านั้น]:""",
@@ -19,7 +22,7 @@ def openAiGenerate(language, feature, tone, input_message):
             "เขียนแคปชั่นขายของ" : "Write a social media announcement about [ {input}] and the feeling of message is [ {type}]:",
             "ช่วยคิดคอนเทนต์" : """Create list of idea content with short biref about [ {input}] that all content should make feeling like [ {type}] 
         show list of idea with short biref:""",
-            "เขียนบทความ": "Write a blog post with high demand SEO keyword that talks about [ {input}] that article should feel like [ {type}]:",
+            "เขียนบทความ": "Write a blog post with high demand SED keyword that talks about [ {input}] that article should feel like [ {type}]:",
             "เขียนสคริปวิดีโอสั้น" : "write full scripts for short video that talk about [ {input}] and the feeling of scripts is [ {type}]:",
             "เขียนประโยคเปิดคลิป" : """Compose a Captivating CClickbait Sentence but not incloud 'Click' in Sentence for Openning a Short Video To Talk About [ {input}] And Look [ {type}] That Instantly Grabs the Viewer's Attention and Sets the Stage for an Unforgettable Experience:"""
         },
@@ -27,7 +30,7 @@ def openAiGenerate(language, feature, tone, input_message):
             "เขียนแคปชั่นขายของ" : "Write a social media announcement about [ {input}] and the feeling of message is [ {type}] [in Bahasa Indonesia Only]:",
             "ช่วยคิดคอนเทนต์" : """Create list of idea content with short biref about [ {input}] that all content should make feeling like [ {type}] 
         show list of idea with short biref [in Bahasa Indonesia Only]:""",
-            "เขียนบทความ": "Write a blog post with high demand SOD keyword that talks about [ {input}] that article should feel like [ {type}] in [Bahasa Indonesia]:" ,
+            "เขียนบทความ": "Write a blog post with high demand SED keyword that talks about [ {input}] that article should feel like [ {type}] in [Bahasa Indonesia]:" ,
             "เขียนสคริปวิดีโอสั้น" : "write full scripts for short video that talk about [ {input}] and the feeling of scripts is [ {type}] [in Bahasa Indonesia Only]:" ,
             "เขียนประโยคเปิดคลิป" : """Compose a Captivating Clickbait Sentence but not incloud 'Click' in Sentence for Openning a Short Video To Talk About [ {input}] And Look [ {type}] That Instantly Grabs the Viewer's Attention and Sets the Stage for an Unforgettable Experience [in Bahasa Indonesia Only]"""
         }
@@ -39,13 +42,23 @@ def openAiGenerate(language, feature, tone, input_message):
         input = input_message,
         type = tone
     ) 
-    
-    result = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo",
-        messages=[
-            {"role": "user", "content": prompt},
+        
+    message = client.messages.create(
+    model="claude-3-opus-20240229",
+    max_tokens=4000,
+    temperature=0.5,
+    system="",
+    messages=[
+        {
+            "role": "user",
+            "content": [
+                {
+                    "type": "text",
+                    "text": f"{prompt}"
+                }
+            ]
+        }
         ]
     )
-    assistant_reply = result['choices'][0]['message']['content']
-
-    return assistant_reply
+    print(message.content)
+    return message.content
