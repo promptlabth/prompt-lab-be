@@ -14,7 +14,7 @@ class GenerateService:
         openai.api_key = os.environ.get("OPENAI_KEY")
         credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
         vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
-        anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")
+        self.anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")
 )
 
     def generateMessageOpenAI(self, input_prompt: str):
