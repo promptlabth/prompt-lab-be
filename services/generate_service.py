@@ -124,7 +124,7 @@ class GenerateService:
                 ]
             )
             print(message.content)
-            return message.content
+            return message.content[0].text
     
 
 
