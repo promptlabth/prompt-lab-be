@@ -199,6 +199,7 @@ def generate_message_api(
                     break
                 except:
                     # when CLAUDE Model is DOWN !!
+                    print("CLAUDE IS DOWN LOGGING")
                     index = model_language_choices.index(model_language)
                     data = weights.pop(index)
                     weights[0] += data
