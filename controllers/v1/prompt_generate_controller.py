@@ -124,7 +124,7 @@ def generate_message_api(
 
     # random a model choices 
     model_language_choices = ["GPT", "CLAUDE", "VERTEX"]
-    weights = [0.1, 0.8, 0.1]
+    weights = [0.5, 0.3, 0.2]
     # if os.environ.get("ENV") == "DEV":
     #     # ! in dev state will random to VERTEX only
     #     weights = [0, 1]
