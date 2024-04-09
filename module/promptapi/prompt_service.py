@@ -91,7 +91,7 @@ def generateTextReasult(
     """
 
     model_language_choices = ["GPT", "VERTEX", "CLAUDE"]
-    weights = [0.0, 0.0, 1]
+    weights = [0.5, 0.2, 0.3]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     modelLanguage = "CLAUDE"
 
