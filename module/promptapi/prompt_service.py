@@ -91,9 +91,9 @@ def generateTextReasult(
     """
 
     model_language_choices = ["GPT", "VERTEX", "CLAUDE"]
-    weights = [0.5, 0.2, 0.3]
+    weights = [0.6, 0.2, 0.2]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
-    modelLanguage = "CLAUDE"
+    # modelLanguage = "CLAUDE"
 
     
     # if / else check a env is deploy yep?
