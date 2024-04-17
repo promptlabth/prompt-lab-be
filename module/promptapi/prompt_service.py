@@ -90,8 +90,9 @@ def generateTextReasult(
     In this function is will be return a old message of user by userid
     """
 
-    model_language_choices = ["GPT", "VERTEX", "CLAUDE"]
-    weights = [0.6, 0.399, 0.001]
+    # model_language_choices = ["GPT", "VERTEX", "CLAUDE"]
+    model_language_choices = ["GPT", "VERTEX"]
+    weights = [0.6, 0.4]
     modelLanguage = random.choices(model_language_choices, weights, k=1)[0]
     # modelLanguage = "CLAUDE"
 
