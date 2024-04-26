@@ -25,7 +25,7 @@ userRouter = APIRouter(
     },
 )
 
-@userRouter.get("/remind-message", status_code=200)
+@userRouter.get("remaining-message", status_code=200)
 def remind_message(
     firebase_user: Annotated[str, Depends(get_current_user)],
 
