@@ -6,6 +6,7 @@ if TYPE_CHECKING:
     from model.featureusings.feature_usings_model import Featureusings
     from model.coins.coins_model import Coins
     from model.plans.plans_model import Plans
+    from model.user_message_reminds.user_message_reminds_model import UserMessageReminds
 
 class Users(SQLModel, table=True):
     id: Optional[int] = Field(default=None, primary_key=True)
@@ -32,5 +33,6 @@ class Users(SQLModel, table=True):
     # 1 User have many UserSponsorselects
     usersponsorselects: List["Usersponsorselects"] = Relationship(back_populates="user")
     
-
+    # 1 User have 1 UserMessageReminds
+    user_message_reminds: Optional["UserMessageReminds"] = Relationship(back_populates="user")
 

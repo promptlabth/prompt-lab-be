@@ -24,6 +24,7 @@ from usecases.languages import LanguageUsecase
 from usecases.features import FeatureUsecase
 from usecases.input_prompts import InputPromptUsecase
 from usecases.models import ModelUsecase
+from usecases.user_message_remind import UserMessageRemindUsecase
 
 
 
@@ -52,7 +53,9 @@ def generate_message_api(
     languageUsecase: Annotated[LanguageUsecase, Depends()],
     featureUsecase: Annotated[FeatureUsecase, Depends()],
     inputPromptUsecase: Annotated[InputPromptUsecase, Depends()],
-    modelUsecase: Annotated[ModelUsecase, Depends()]
+    modelUsecase: Annotated[ModelUsecase, Depends()],
+    userMessageRemindUsecase: Annotated[UserMessageRemindUsecase, Depends()]
+
 ) -> GenerateMessageResponse:
     """
     this function will generate a message and save this message to user history
@@ -81,9 +84,9 @@ def generate_message_api(
     # handle when user limit message per month
     enableLimitMessage = True
     if(enableLimitMessage):
-        total_messages_this_month = promptMessageUsecase.get_count_this_month_by_user_id(user.id) 
+        total_messages_this_month = userMessageRemindUsecase.getUserRemind(user.firebase_id)
         maxMessage = plan.maxMessages
-        if(total_messages_this_month >= maxMessage):
+        if(total_messages_this_month.message_reminded >= maxMessage):
             return GenerateMessageResponse(
                 reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในเดือนถัดไป หรือปรับระดับ plan",
                 error="limit message"
@@ -230,6 +233,13 @@ def generate_message_api(
         date_time=datetime.now()
     )
     prompt_message_db = promptMessageUsecase.create(promptMessage)
+
+    total_messages_this_month = userMessageRemindUsecase.getUserRemind(user.firebase_id)
+    total_messages_this_month.message_reminded+=1
+
+    # upsert a total message of the month
+    userMessageRemindUsecase.upsertUserRemind(total_messages_this_month)
+
     if prompt_message_db is None:
         response = GenerateMessageResponse(
             reply= result,

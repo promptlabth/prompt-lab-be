@@ -26,8 +26,10 @@ from middlewares.authentication import get_current_user
 
 from usecases.users import UsersUsecase
 from usecases.plans import PlanUsecases
+from usecases.user_message_remind import UserMessageRemindUsecase
 
 from model.users.users_model import Users
+from model.user_message_reminds.user_message_reminds_model import UserMessageReminds
 
 
 
@@ -44,6 +46,7 @@ def login(
     request: LoginRequest,
     userUsecases: Annotated[UsersUsecase, Depends()] ,
     planUsecases: Annotated[PlanUsecases, Depends()] ,
+    userMessageRemindUsecase: Annotated[UserMessageRemindUsecase, Depends()],
     firebase_user: Annotated[dict, Depends(get_current_user)]
 ) -> LoginResponse:
     """
@@ -85,6 +88,12 @@ def login(
         )
         
         user = userUsecases.create(new_user)
+
+        new_user_remind = UserMessageReminds(
+            firebase_id=user.firebase_id,
+            message_reminded=0
+        )
+        user_remind = userMessageRemindUsecase.upsertUserRemind(new_user_remind)
     else:
         # will update a profile 
 
@@ -105,6 +114,15 @@ def login(
             old_user.id,
             user_update
         )
+
+        # create if userRemindIsNotFound
+        user_remind = userMessageRemindUsecase.getUserRemind(user.firebase_id)
+        if user_remind == None:
+            new_user_remind = UserMessageReminds(
+                firebase_id=user.firebase_id,
+                message_reminded=0
+            )
+            user_remind = userMessageRemindUsecase.upsertUserRemind(new_user_remind)
     
     # get a plan from stripe service
     
