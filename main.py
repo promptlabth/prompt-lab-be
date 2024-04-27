@@ -1,19 +1,14 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from module.openapi import predict_service, tone_service
-from module.usersapi import userapi_service
-from module.facebook.controller import facebook_services
-
-from module.promptapi import prompt_service
 
 
-from controllers.v1.users_controller import userRouter
-from controllers.v1.login_controller import loginRouter
-from controllers.v1.facebook_controller import facebook_router
+from app.controllers.v1.users_controller import userRouter
+from app.controllers.v1.login_controller import loginRouter
+from app.controllers.v1.facebook_controller import facebook_router
 
-from controllers.v1.prompt_generate_controller import prompt_routers
+from app.controllers.v1.prompt_generate_controller import prompt_routers
 
-from controllers.v1.tone_controller import tone_routers
+from app.controllers.v1.tone_controller import tone_routers
 
 app = FastAPI()
 
@@ -53,17 +48,12 @@ app.add_middleware(
 def hello_word() -> dict :
   return {"hello" : "world"}
 
-app.include_router(predict_service.router)
-app.include_router(userapi_service.router, prefix="/users")
-app.include_router(prompt_service.router)
-app.include_router(facebook_services.router, prefix="/facebook")
 
 app.include_router(loginRouter)
 
 
 # app.include_router(testapit_service.router, prefix="/test")
 
-app.include_router(tone_service.router)
 
 app.include_router(userRouter)
 

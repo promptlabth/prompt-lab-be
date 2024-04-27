@@ -1,1 +1,0 @@
-from . import users_sponsor_select_model
