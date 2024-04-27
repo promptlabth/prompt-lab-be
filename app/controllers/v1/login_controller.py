@@ -17,10 +17,10 @@ from app.schemas.pydantic.userSchema import (
     UserUpdateRequest
 )
 
-from app.services.firebase_service import (
+from app.external_service.firebase_service import (
     FirebaseService
 )
-from app.services.stripe_service import StripeService
+from app.external_service.stripe_service import StripeService
 
 from app.middlewares.authentication import get_current_user
 

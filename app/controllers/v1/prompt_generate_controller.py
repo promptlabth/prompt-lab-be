@@ -10,7 +10,7 @@ from app.schemas.pydantic.generateSchema import (
     GenerateMessageResponse
 )
 
-from app.services.generate_service import GenerateService
+from app.external_service.generate_service import GenerateService
 
 from app.middlewares.authentication import get_current_user
 

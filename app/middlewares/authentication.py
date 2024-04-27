@@ -15,7 +15,7 @@ from fastapi import Depends
 
 from fastapi.security import OAuth2PasswordBearer
 
-from app.services.firebase_service import FirebaseService
+from app.external_service.firebase_service import FirebaseService
 
 dotenv.load_dotenv()
 
