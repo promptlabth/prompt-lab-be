@@ -16,7 +16,7 @@ DATABASE_NAME = os.environ.get("DB_NAME")
 
 postgres_URL = f"postgresql://{DATABASE_USER}:{DATABASE_PASSWORD}@{DATABASE_HOST}:{DATABASE_PORT}/{DATABASE_NAME}"
 
-engine = create_engine(postgres_URL, echo=True, future=True, pool_size=10, max_overflow=20)
+engine = create_engine(postgres_URL, echo=True, future=True, pool_size=20, max_overflow=40)
 
 def create_database():
     SQLModel.metadata.create_all(engine)
