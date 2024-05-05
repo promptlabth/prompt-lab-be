@@ -5,8 +5,10 @@ import json
 import vertexai
 from vertexai.preview.language_models import TextGenerationModel as Preview_TextGenerationModel
 from vertexai.language_models import TextGenerationModel
+from vertexai.generative_models import GenerativeModel 
 import anthropic
 from google.oauth2 import service_account
+ 
 
 class GenerateService:
 
@@ -30,7 +32,7 @@ class GenerateService:
     def getModelAndParameter(self, feature_name: str):
         model_list = {
         "เขียนแคปชั่นขายของ": {
-            "model": "text-bison@001",
+            "model": "gemini-1.5-pro-preview-0409",
             "parametor":
                 {
                     "max_output_tokens": 1024,
@@ -40,7 +42,7 @@ class GenerateService:
                 }
         },
         "ช่วยคิดคอนเทนต์": {
-            "model": "text-bison@001",
+            "model": "gemini-1.5-pro-preview-0409",
             "parametor":
                 {
                     "max_output_tokens": 1024,
@@ -50,7 +52,7 @@ class GenerateService:
                 }
         },
         "เขียนบทความ": {
-            "model": "text-bison-32k",
+            "model": "gemini-1.5-pro-preview-0409",
             "parametor":
                 {
                     "max_output_tokens": 5500,
@@ -60,7 +62,7 @@ class GenerateService:
                 }
         },
         "เขียนสคริปวิดีโอสั้น": {
-            "model": "text-bison-32k",
+            "model": "gemini-1.5-pro-preview-0409",
             "parametor":
                 {
                     "max_output_tokens": 6000,
@@ -70,7 +72,7 @@ class GenerateService:
                 }
         },
         "เขียนประโยคเปิดคลิป": {
-            "model":"text-bison@001",
+            "model":"gemini-1.5-pro-preview-0409",
             "parametor":
                 {
                     "max_output_tokens": 1024,
@@ -83,10 +85,12 @@ class GenerateService:
         return model_list[feature_name]
 
     def getVertexModel(self, model_name: str):
-        if model_name == "text-bison-32k":
-            vertex_model = Preview_TextGenerationModel.from_pretrained(model_name)
-        else:
-            vertex_model = TextGenerationModel.from_pretrained(model_name)
+        # if model_name == "text-bison-32k":
+        #     vertex_model = Preview_TextGenerationModel.from_pretrained(model_name)
+        # else:
+        #     vertex_model = TextGenerationModel.from_pretrained(model_name)
+        vertex_model = GenerativeModel.from_pretrained(model_name)
+
         return vertex_model
 
     def generateMessageVertexAI(
@@ -102,7 +106,8 @@ class GenerateService:
         # Choose model between Preview and Stable Version
         vertex_model = self.getVertexModel(model_name)
         
-        result = vertex_model.predict(input_prompt, **model_parameter)
+        # result = vertex_model.predict(input_prompt, **model_parameter)
+        result = vertex_model.generate(input_prompt, **model_parameter)
         return result.text
     
     def claudeGennertor(self, input_prompt: str):
