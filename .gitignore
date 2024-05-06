@@ -12,5 +12,6 @@ temp
 .vscode/
 
 database.db
+gcp_vertex_key.json
 
 .DS_Store

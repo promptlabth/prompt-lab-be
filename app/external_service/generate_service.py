@@ -4,7 +4,6 @@ import os
 import json
 import vertexai
 from vertexai.preview.language_models import TextGenerationModel as Preview_TextGenerationModel
-from vertexai.language_models import TextGenerationModel
 from vertexai.generative_models import GenerativeModel 
 import anthropic
 from google.oauth2 import service_account
@@ -15,7 +14,7 @@ class GenerateService:
     def __init__(self) -> None:
         openai.api_key = os.environ.get("OPENAI_KEY")
         credential = service_account.Credentials.from_service_account_file("gcp_sa_key.json")
-        vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="us-central1", credentials=credential)
+        vertexai.init(project=os.environ.get("GCP_PROJECT_ID"), location="asia-southeast1", credentials=credential)
         self.anthropic_client = anthropic.Anthropic(api_key=os.environ.get("ANTHROPIC_API_KEY")
 )
 
@@ -85,11 +84,12 @@ class GenerateService:
         return model_list[feature_name]
 
     def getVertexModel(self, model_name: str):
+        vertex_model = GenerativeModel(model_name)
         # if model_name == "text-bison-32k":
         #     vertex_model = Preview_TextGenerationModel.from_pretrained(model_name)
         # else:
         #     vertex_model = TextGenerationModel.from_pretrained(model_name)
-        vertex_model = GenerativeModel.from_pretrained(model_name)
+        
 
         return vertex_model
 
@@ -101,13 +101,18 @@ class GenerateService:
         # get vertex parameter
         model = self.getModelAndParameter(feature_name)
         model_name = model["model"]
-        model_parameter = model["parametor"]
+        # generation_config = model["parametor"]
+        generation_config = {
+            "max_output_tokens": 8192,
+            "temperature": 1,
+            "top_p": 0.95,
+        }
 
         # Choose model between Preview and Stable Version
         vertex_model = self.getVertexModel(model_name)
         
         # result = vertex_model.predict(input_prompt, **model_parameter)
-        result = vertex_model.generate(input_prompt, **model_parameter)
+        result = vertex_model.generate_content([input_prompt], generation_config = generation_config)
         return result.text
     
     def claudeGennertor(self, input_prompt: str):
