@@ -29,49 +29,50 @@ class GenerateService:
         return assistant_reply
     
     def getModelAndParameter(self, feature_name: str):
+        model = "gemini-1.0-pro-002"
         model_list = {
         "เขียนแคปชั่นขายของ": {
-            "model": "gemini-1.5-pro-preview-0409",
+            "model": model,
             "parametor":
                 {
-                    "max_output_tokens": 1024,
+                    "max_output_tokens": 4096,
                     "temperature": 0.6,
                     "top_p": 0.8,
                     "top_k": 40
                 }
         },
         "ช่วยคิดคอนเทนต์": {
-            "model": "gemini-1.5-pro-preview-0409",
+            "model": model,
             "parametor":
                 {
-                    "max_output_tokens": 1024,
+                    "max_output_tokens": 8192,
                     "temperature": 0.2,
                     "top_p": 0.8,
                     "top_k": 40
                 }
         },
         "เขียนบทความ": {
-            "model": "gemini-1.5-pro-preview-0409",
+            "model": model,
             "parametor":
                 {
-                    "max_output_tokens": 5500,
+                    "max_output_tokens": 8192,
                     "temperature": 0.2,
                     "top_p": 0.8,
                     "top_k": 40
                 }
         },
         "เขียนสคริปวิดีโอสั้น": {
-            "model": "gemini-1.5-pro-preview-0409",
+            "model": model,
             "parametor":
                 {
-                    "max_output_tokens": 6000,
+                    "max_output_tokens": 8192,
                     "temperature": 0.4,
                     "top_p": 0.8,
                     "top_k": 40
                 }
         },
         "เขียนประโยคเปิดคลิป": {
-            "model":"gemini-1.5-pro-preview-0409",
+            "model":model,
             "parametor":
                 {
                     "max_output_tokens": 1024,
