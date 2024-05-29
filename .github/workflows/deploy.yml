@@ -11,12 +11,13 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v2
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v0.3.0
+    - id: 'auth'
+      uses: 'google-github-actions/auth@v2'
       with:
-        project_id: ${{ secrets.GCP_PROJECT_ID }}
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        export_default_credentials: true
+        credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v2'
 
     - name: Configure Docker
       run: |
@@ -38,13 +39,13 @@ jobs:
 
     - name: Build and push Docker image
       run: |
-        docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/prompt-lab-be:${{ github.sha }} .
-        docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/prompt-lab-be:${{ github.sha }}
+        docker build -t asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/main/prompt-lab-be:${{ github.sha }} .
+        docker push asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/main/prompt-lab-be:${{ github.sha }}
 
     - name: Deploy to Cloud Run
       run: |
         gcloud run deploy prompt-lab-be \
-        --image gcr.io/${{ secrets.GCP_PROJECT_ID }}/prompt-lab-be:${{ github.sha }} \
+        --image asia-southeast1-docker.pkg.dev/${{ secrets.GCP_PROJECT_ID }}/main/prompt-lab-be:${{ github.sha }} \
         --region asia-southeast1 \
         --platform managed \
         --allow-unauthenticated \
@@ -52,9 +53,10 @@ jobs:
         --max-instances=10 \
         --memory 2Gi \
         --concurrency=80 \
+        --tag=prod
         --timeout=300s
     - name: update tags stating
       run: |
         gcloud run services update-traffic prompt-lab-be \
-        --to-latest \
+        --to-tag=prod=100 \
         --region=asia-southeast1
