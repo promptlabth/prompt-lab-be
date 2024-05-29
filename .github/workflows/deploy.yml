@@ -59,5 +59,5 @@ jobs:
     - name: update tags stating
       run: |
         gcloud run services update-traffic prompt-lab-be \
-        --to-tag=prod=100 \
+        --to-tags=prod=100 \
         --region=asia-southeast1
