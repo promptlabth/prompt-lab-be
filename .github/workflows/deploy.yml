@@ -54,7 +54,7 @@ jobs:
         --max-instances=10 \
         --memory 2Gi \
         --concurrency=80 \
-        --tag=prod
+        --tag=prod \
         --timeout=300s
     - name: update tags stating
       run: |
