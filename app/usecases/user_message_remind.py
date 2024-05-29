@@ -3,7 +3,7 @@ from fastapi import Depends
 from app.repositories.user_message_remind import UserMessageRemindRepository
 
 
-from app.model.user_message_reminds.user_message_reminds_model import UserMessageReminds
+from app.model.user_balance_messages.user_balance_messages_model import UserMessageBalance
 
 class UserMessageRemindUsecase:
     userMessageRemindRepository: UserMessageRemindRepository
@@ -14,11 +14,11 @@ class UserMessageRemindUsecase:
     )-> None:
         self.userMessageRemindRepository = userMessageRemindRepo
 
-    def getUserRemind(self, firebase_id: str) -> Optional[UserMessageReminds]:
+    def getUserRemind(self, firebase_id: str) -> Optional[UserMessageBalance]:
         return self.userMessageRemindRepository.getUserRemind(firebase_id)
     
-    def upsertUserRemind(self, user_remind: UserMessageReminds) -> UserMessageReminds:
+    def upsertUserRemind(self, user_remind: UserMessageBalance) -> UserMessageBalance:
         return self.userMessageRemindRepository.upsertUserRemind(user_remind)
     
-    def updateUserRemind(self, user_remind: UserMessageReminds) -> UserMessageReminds:
+    def updateUserRemind(self, user_remind: UserMessageBalance) -> UserMessageBalance:
         return self.userMessageRemindRepository.updateUserRemind(user_remind)

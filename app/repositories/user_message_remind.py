@@ -3,7 +3,7 @@ from sqlmodel import Session, select
 from fastapi import Depends
 
 from app.model.database import get_session
-from app.model.user_message_reminds.user_message_reminds_model import UserMessageReminds
+from app.model.user_balance_messages.user_balance_messages_model import UserMessageBalance
 
 class UserMessageRemindRepository:
     session: Session
@@ -13,22 +13,22 @@ class UserMessageRemindRepository:
     ) -> None: 
         self.session = session
     
-    def getUserRemind(self, firebase_id: str) -> Optional[UserMessageReminds]:
-        statement = select(UserMessageReminds).where(
-            UserMessageReminds.firebase_id == firebase_id
+    def getUserRemind(self, firebase_id: str) -> Optional[UserMessageBalance]:
+        statement = select(UserMessageBalance).where(
+            UserMessageBalance.firebase_id == firebase_id
         )
         result = self.session.exec(statement)
         return result.first()
 
-    def upsertUserRemind(self, userRemind: UserMessageReminds) -> UserMessageReminds: 
+    def upsertUserRemind(self, userRemind: UserMessageBalance) -> UserMessageBalance: 
         self.session.add(userRemind)
         self.session.commit()
         self.session.refresh(userRemind)
         return userRemind
 
-    def updateUserRemind(self, user_remind: UserMessageReminds) -> UserMessageReminds:
-        statement = select(UserMessageReminds).where(
-            UserMessageReminds.firebase_id == db_user_remind.firebase_id
+    def updateUserRemind(self, user_remind: UserMessageBalance) -> UserMessageBalance:
+        statement = select(UserMessageBalance).where(
+            UserMessageBalance.firebase_id == db_user_remind.firebase_id
             )
         result = self.session.exec(statement)
         db_user_remind = result.first()

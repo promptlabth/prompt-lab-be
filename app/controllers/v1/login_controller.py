@@ -29,7 +29,7 @@ from app.usecases.plans import PlanUsecases
 from app.usecases.user_message_remind import UserMessageRemindUsecase
 
 from app.model.users.users_model import Users
-from app.model.user_message_reminds.user_message_reminds_model import UserMessageReminds
+from app.model.user_balance_messages.user_balance_messages_model import UserMessageBalance
 
 
 
@@ -89,7 +89,7 @@ def login(
         
         user = userUsecases.create(new_user)
 
-        new_user_remind = UserMessageReminds(
+        new_user_remind = UserMessageBalance(
             firebase_id=user.firebase_id,
             message_reminded=0
         )
@@ -118,7 +118,7 @@ def login(
         # create if userRemindIsNotFound
         user_remind = userMessageRemindUsecase.getUserRemind(user.firebase_id)
         if user_remind == None:
-            new_user_remind = UserMessageReminds(
+            new_user_remind = UserMessageBalance(
                 firebase_id=user.firebase_id,
                 message_reminded=0
             )
