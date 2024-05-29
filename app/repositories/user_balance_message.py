@@ -5,7 +5,7 @@ from fastapi import Depends
 from app.model.database import get_session
 from app.model.user_balance_messages.user_balance_messages_model import UserMessageBalance
 
-class UserMessageRemindRepository:
+class UserBalanceMessageRepository:
     session: Session
     def __init__(
             self, 
@@ -13,20 +13,20 @@ class UserMessageRemindRepository:
     ) -> None: 
         self.session = session
     
-    def getUserRemind(self, firebase_id: str) -> Optional[UserMessageBalance]:
+    def getUserBalance(self, firebase_id: str) -> Optional[UserMessageBalance]:
         statement = select(UserMessageBalance).where(
             UserMessageBalance.firebase_id == firebase_id
         )
         result = self.session.exec(statement)
         return result.first()
 
-    def upsertUserRemind(self, userRemind: UserMessageBalance) -> UserMessageBalance: 
-        self.session.add(userRemind)
+    def upsertUserBalance(self, userBalance: UserMessageBalance) -> UserMessageBalance: 
+        self.session.add(userBalance)
         self.session.commit()
-        self.session.refresh(userRemind)
-        return userRemind
+        self.session.refresh(userBalance)
+        return userBalance
 
-    def updateUserRemind(self, user_remind: UserMessageBalance) -> UserMessageBalance:
+    def updateUserBalance(self, user_remind: UserMessageBalance) -> UserMessageBalance:
         statement = select(UserMessageBalance).where(
             UserMessageBalance.firebase_id == db_user_remind.firebase_id
             )

@@ -7,7 +7,7 @@ from app.middlewares.authentication import get_current_user
 from app.model.users.users_model import Users
 
 
-from app.usecases.user_message_remind import UserMessageRemindUsecase
+from app.usecases.user_balance_message import UserBalanceMessageUsecase
 from app.usecases.users import UsersUsecase
 from app.usecases.plans import PlanUsecases
 
@@ -34,9 +34,9 @@ def remind_message(
     firebase_user: Annotated[str, Depends(get_current_user)],
 
     # usecase
-    userMessageRemindUsecase: Annotated[UserMessageRemindUsecase, Depends()]
+    userMessageRemindUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
 ):
-    return userMessageRemindUsecase.getUserRemind(firebase_user["uid"]).message_reminded
+    return userMessageRemindUsecase.getUserBalance(firebase_user["uid"]).message_reminded
     
 
 @userRouter.get("/max-message", status_code=200)

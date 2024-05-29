@@ -24,7 +24,7 @@ from app.usecases.languages import LanguageUsecase
 from app.usecases.features import FeatureUsecase
 from app.usecases.input_prompts import InputPromptUsecase
 from app.usecases.models import ModelUsecase
-from app.usecases.user_message_remind import UserMessageRemindUsecase
+from app.usecases.user_balance_message import UserBalanceMessageUsecase
 
 
 
@@ -54,7 +54,7 @@ def generate_message_api(
     featureUsecase: Annotated[FeatureUsecase, Depends()],
     inputPromptUsecase: Annotated[InputPromptUsecase, Depends()],
     modelUsecase: Annotated[ModelUsecase, Depends()],
-    userMessageRemindUsecase: Annotated[UserMessageRemindUsecase, Depends()]
+    userBalanceMessageUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
 
 ) -> GenerateMessageResponse:
     """
@@ -84,7 +84,7 @@ def generate_message_api(
     # handle when user limit message per month
     enableLimitMessage = True
     if(enableLimitMessage):
-        total_messages_this_month = userMessageRemindUsecase.getUserRemind(user.firebase_id)
+        total_messages_this_month = userBalanceMessageUsecase.getUserBalance(user.firebase_id)
         maxMessage = plan.maxMessages
         if(total_messages_this_month.message_reminded >= maxMessage):
             return GenerateMessageResponse(
@@ -234,11 +234,11 @@ def generate_message_api(
     )
     prompt_message_db = promptMessageUsecase.create(promptMessage)
 
-    total_messages_this_month = userMessageRemindUsecase.getUserRemind(user.firebase_id)
-    total_messages_this_month.message_reminded+=1
+    total_messages_this_month = userBalanceMessageUsecase.getUserBalance(user.firebase_id)
+    total_messages_this_month.balance_message+=1
 
     # upsert a total message of the month
-    userMessageRemindUsecase.upsertUserRemind(total_messages_this_month)
+    userBalanceMessageUsecase.upsertUserBalance(total_messages_this_month)
 
     if prompt_message_db is None:
         response = GenerateMessageResponse(

@@ -26,7 +26,7 @@ from app.middlewares.authentication import get_current_user
 
 from app.usecases.users import UsersUsecase
 from app.usecases.plans import PlanUsecases
-from app.usecases.user_message_remind import UserMessageRemindUsecase
+from app.usecases.user_balance_message import UserBalanceMessageUsecase
 
 from app.model.users.users_model import Users
 from app.model.user_balance_messages.user_balance_messages_model import UserMessageBalance
@@ -46,7 +46,7 @@ def login(
     request: LoginRequest,
     userUsecases: Annotated[UsersUsecase, Depends()] ,
     planUsecases: Annotated[PlanUsecases, Depends()] ,
-    userMessageRemindUsecase: Annotated[UserMessageRemindUsecase, Depends()],
+    userBalanceMessageUsecases: Annotated[UserBalanceMessageUsecase, Depends()],
     firebase_user: Annotated[dict, Depends(get_current_user)]
 ) -> LoginResponse:
     """
@@ -93,7 +93,7 @@ def login(
             firebase_id=user.firebase_id,
             message_reminded=0
         )
-        user_remind = userMessageRemindUsecase.upsertUserRemind(new_user_remind)
+        user_remind = userBalanceMessageUsecases.upsertUserBalance(new_user_remind)
     else:
         # will update a profile 
 
@@ -116,13 +116,13 @@ def login(
         )
 
         # create if userRemindIsNotFound
-        user_remind = userMessageRemindUsecase.getUserRemind(user.firebase_id)
+        user_remind = userBalanceMessageUsecases.getUserBalance(user.firebase_id)
         if user_remind == None:
             new_user_remind = UserMessageBalance(
                 firebase_id=user.firebase_id,
-                message_reminded=0
+                balance_message=0
             )
-            user_remind = userMessageRemindUsecase.upsertUserRemind(new_user_remind)
+            user_remind = userBalanceMessageUsecases.upsertUserBalance(new_user_remind)
     
     # get a plan from stripe service
     
