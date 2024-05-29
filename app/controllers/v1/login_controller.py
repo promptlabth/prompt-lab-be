@@ -91,7 +91,7 @@ def login(
 
         new_user_remind = UserMessageBalance(
             firebase_id=user.firebase_id,
-            message_reminded=0
+            balance_message=0
         )
         user_remind = userBalanceMessageUsecases.upsertUserBalance(new_user_remind)
     else:

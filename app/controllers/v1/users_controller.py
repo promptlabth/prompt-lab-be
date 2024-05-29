@@ -36,7 +36,7 @@ def remind_message(
     # usecase
     userMessageRemindUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
 ):
-    return userMessageRemindUsecase.getUserBalance(firebase_user["uid"]).message_reminded
+    return userMessageRemindUsecase.getUserBalance(firebase_user["uid"]).balance_message
     
 
 @userRouter.get("/max-message", status_code=200)
