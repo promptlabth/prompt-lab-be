@@ -85,7 +85,7 @@ def generate_message_api(
     enableLimitMessage = True
     if(enableLimitMessage):
         total_messages_this_month = userBalanceMessageUsecase.getUserBalance(user.firebase_id)
-        maxMessage = plan.maxMessages
+        maxMessage = plan.max_messages
         if(total_messages_this_month.balance_message >= maxMessage):
             return GenerateMessageResponse(
                 reply="คุณใช้งานเกินจำนวนที่กำหนดแล้ว กรุณาลองใหม่ในเดือนถัดไป หรือปรับระดับ plan",

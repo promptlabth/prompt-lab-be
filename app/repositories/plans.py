@@ -20,7 +20,7 @@ class PlanRepository:
         return result.first()
     
     def get_by_plan_type(self, plan_type: str) -> Optional[Plans]:
-        statement = select(Plans).where(Plans.planType == plan_type)
+        statement = select(Plans).where(Plans.plan_type == plan_type)
         result = self.session.exec(statement)
         return result.first()
     

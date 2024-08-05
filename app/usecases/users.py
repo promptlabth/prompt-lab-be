@@ -68,4 +68,4 @@ class UsersUsecase:
         plan = self.plan_repository.get_by_id(user.plan_id)
         if plan == None:
             return None
-        return plan.maxMessages
+        return plan.max_messages
