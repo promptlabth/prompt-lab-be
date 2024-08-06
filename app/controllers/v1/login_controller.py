@@ -150,8 +150,14 @@ def login(
         # incase user have a stripe id (prev is have some action to payment to stripe)
         start_end_period = stripe_service.get_start_end_date(user.stripe_id)
         plan = planUsecases.get_by_id(user.plan_id)
+        planRes = LoginPlanResponse(
+            id=plan.id,
+            maxMessages=plan.max_messages,
+            planType=plan.plan_type,
+            product_id=plan.product_id
+        )
         stripe_res = LoginStripeResponse(
-            product=plan,
+            product=planRes,
             start_date=start_end_period.start_date,
             end_date=start_end_period.end_date
         )
