@@ -46,7 +46,7 @@ def increase_usage(
     userBalanceMessageUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
     
 ):
-    total = userBalanceMessageUsecase.getUserBalance(firebase_user["uid"]).balance_message
+    total = userBalanceMessageUsecase.getUserBalance(firebase_user["uid"])
     total.balance_message += 1
     userBalanceMessageUsecase.upsertUserBalance(total)
     return {"status" : "ok"}
