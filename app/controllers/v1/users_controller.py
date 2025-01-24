@@ -37,6 +37,19 @@ def remind_message(
     userMessageRemindUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
 ):
     return userMessageRemindUsecase.getUserBalance(firebase_user["uid"]).balance_message
+
+@userRouter.post("/increase-usage", status_code=200)
+def increase_usage(
+    firebase_user: Annotated[str, Depends(get_current_user)],
+
+    # usecase
+    userBalanceMessageUsecase: Annotated[UserBalanceMessageUsecase, Depends()]
+    
+):
+    total = userBalanceMessageUsecase.getUserBalance(firebase_user["uid"]).balance_message
+    total += 1
+    userBalanceMessageUsecase.upsertUserBalance(total)
+    return {"status" : "ok"}
     
 
 @userRouter.get("/max-message", status_code=200)
