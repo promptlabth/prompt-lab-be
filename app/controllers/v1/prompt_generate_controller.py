@@ -126,11 +126,9 @@ def generate_message_api(
     generate_service = GenerateService()
 
     # random a model choices 
-    model_language_choices = ["GPT", "CLAUDE", "VERTEX"]
-    weights = [0.5, 0.3, 0.2]
-    # if os.environ.get("ENV") == "DEV":
-    #     # ! in dev state will random to VERTEX only
-    #     weights = [0, 1]
+    model_language_choices = ["GPT", "CLAUDE", "GEMINI"]
+    weights = [0.4, 0.3, 0.3]
+    
     result = ""
     # generate a text message 
     try:
@@ -160,10 +158,10 @@ def generate_message_api(
                     weights[0] += data
                     model_language_choices.remove(model_language)
                     continue
-            elif(model_language == "VERTEX"):
-                # if select model is a vertex model
+            elif(model_language == "GEMINI"):
+                # if select model is Gemini
                 try:
-                    model = modelUsecase.get_by_name("VERTEX")
+                    model = modelUsecase.get_by_name("GEMINI")
                     db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
                         feature.id, model.id, language.id
                     )
@@ -173,13 +171,10 @@ def generate_message_api(
                         input = generateMessageRequest.input_message,
                         type = tone.tone_name
                     )
-                    result = generate_service.generateMessageVertexAI(
-                        input_prompt,
-                        feature.name
-                    )
+                    result = generate_service.generateMessageGemini(input_prompt)
                     break
                 except:
-                    # WHEN VERTEX AI IS DOWN!!
+                    # WHEN GEMINI IS DOWN!!
                     index = model_language_choices.index(model_language)
                     data = weights.pop(index)
                     weights[0] += data
