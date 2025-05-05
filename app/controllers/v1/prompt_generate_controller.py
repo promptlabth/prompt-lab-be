@@ -124,100 +124,47 @@ def generate_message_api(
 
     # call generate service
     generate_service = GenerateService()
-
-    # random a model choices 
-    model_language_choices = ["GPT", "CLAUDE", "GEMINI"]
-    weights = [0.4, 0.3, 0.3]
     
     result = ""
     # generate a text message 
     try:
-        # try to generate a model
-        while len(model_language_choices) > 0:
-            # if model in choice is have will loop
-            model_language = random.choices(model_language_choices, weights, k=1)[0] # random model
-            if(model_language == "GPT"):
-                # if choice is a GPT
-                try:
-                    model = modelUsecase.get_by_name(model_language)
-                    db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
-                        feature.id, model.id, language.id
-                    )
-                    if db_prompt is None:
-                        raise Exception('not found prompt')
-                    input_prompt = db_prompt.prompt_input.format(
-                        input = generateMessageRequest.input_message,
-                        type = tone.tone_name
-                    )
-                    result = generate_service.generateMessageOpenAI(input_prompt)
-                    break
-                except:
-                    # when GPT Model is DOWN !!
-                    index = model_language_choices.index(model_language)
-                    data = weights.pop(index)
-                    weights[0] += data
-                    model_language_choices.remove(model_language)
-                    continue
-            elif(model_language == "GEMINI"):
-                # if select model is Gemini
-                try:
-                    model = modelUsecase.get_by_name("GEMINI")
-                    db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
-                        feature.id, model.id, language.id
-                    )
-                    if db_prompt is None:
-                        raise Exception('not found prompt')
-                    input_prompt = db_prompt.prompt_input.format(
-                        input = generateMessageRequest.input_message,
-                        type = tone.tone_name
-                    )
-                    result = generate_service.generateMessageGemini(input_prompt)
-                    break
-                except:
-                    # WHEN GEMINI IS DOWN!!
-                    index = model_language_choices.index(model_language)
-                    data = weights.pop(index)
-                    weights[0] += data
-                    model_language_choices.remove(model_language)
-                    continue
-            elif(model_language == "CLAUDE"):
-                # if select model is a CLAUDE model
-                try:
-                    model = modelUsecase.get_by_name(model_language)
-                    db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
-                        feature.id, model.id, language.id
-                    )
-                    if db_prompt is None:
-                        raise Exception('not found prompt')
-                    input_prompt = db_prompt.prompt_input.format(
-                        input = generateMessageRequest.input_message,
-                        type = tone.tone_name
-                    )
-                    result = generate_service.claudeGennertor(input_prompt)
-                    break
-                except:
-                    # when CLAUDE Model is DOWN !!
-                    print("CLAUDE IS DOWN LOGGING")
-                    index = model_language_choices.index(model_language)
-                    data = weights.pop(index)
-                    weights[0] += data
-                    model_language_choices.remove(model_language)
-                    continue
+        # Get Gemini model
+        model = modelUsecase.get_by_name("GEMINI")
+        if model is None:
+            raise Exception('Gemini model not found in database')
+            
+        # Get prompt template
+        db_prompt = inputPromptUsecase.get_by_feature_id_and_model_id(
+            feature.id, model.id, language.id
+        )
+        if db_prompt is None:
+            raise Exception('Prompt template not found')
+            
+        # Format the prompt
+        input_prompt = db_prompt.prompt_input.format(
+            input = generateMessageRequest.input_message,
+            type = tone.tone_name
+        )
+        
+        # Generate with Gemini
+        result = generate_service.generateMessageGemini(input_prompt)
+        
     except Exception as e:
+        print(f"Error in generation: {str(e)}")  # Add logging
         response.status_code = 404
         return GenerateMessageResponse(
             reply= "กรุณาลองใหม่ในภายหลัง",
-            error= "process generate error exception"
+            error= f"process generate error: {str(e)}"
         )
     
     if result == "":
         response.status_code = 404
         return GenerateMessageResponse(
             reply= "กรุณาลองใหม่ในภายหลัง",
-            error= "process error"
+            error= "process error: empty response"
         )
 
-
+    # Save the generated message
     promptMessage = Promptmessages(
         input_message=generateMessageRequest.input_message,
         result_message=result,
@@ -229,10 +176,9 @@ def generate_message_api(
     )
     prompt_message_db = promptMessageUsecase.create(promptMessage)
 
+    # Update user balance
     total_messages_this_month = userBalanceMessageUsecase.getUserBalance(user.firebase_id)
     total_messages_this_month.balance_message+=1
-
-    # upsert a total message of the month
     userBalanceMessageUsecase.upsertUserBalance(total_messages_this_month)
 
     if prompt_message_db is None:
