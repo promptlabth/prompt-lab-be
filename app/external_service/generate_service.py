@@ -22,7 +22,7 @@ class GenerateService:
         return assistant_reply
 
     def generateMessageGemini(self, input_prompt: str) -> str:
-        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-8b:generateContent?key={self.gemini_api_key}"
+        url = f"https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key={self.gemini_api_key}"
         
         headers = {
             'Content-Type': 'application/json'
